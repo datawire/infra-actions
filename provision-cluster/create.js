@@ -4,6 +4,7 @@ const core = require('@actions/core')
 const github = require('@actions/github')
 const fs = require('fs')
 
+const kubeception = require('./kubeception.js')
 const registry = require('./registry.js')
 
 async function create() {
@@ -13,30 +14,42 @@ async function create() {
   const version = core.getInput('version')
   const kubeconfigPath = core.getInput('kubeconfig')
 
-  let provider = registry.getProvider(distribution)
-
   if (action === 'expire') {
     return
   }
 
-  core.notice(`Creating ${distribution} ${version} and writing kubeconfig to file: ${kubeconfigPath}!`)
-  let cluster = await provider.allocateCluster()
-  core.saveState(registry.CLUSTER_NAME, cluster.name)
+  switch (distribution.toLowerCase()) {
+  case "kubeception":
+    const kubeConfig = kubeception.createKluster("aosorio-test-kluster", version)
+    kubeConfig.then(contents => { writeKubeconfig(kubeconfigPath, contents) })
+    break
+  default:
+    let provider = registry.getProvider(distribution)
 
-  core.notice(`Created ${distribution} cluster ${cluster.name}!`)
+    core.notice(`Creating ${distribution} ${version} and writing kubeconfig to file: ${kubeconfigPath}!`)
+    let cluster = await provider.allocateCluster()
+    core.saveState(registry.CLUSTER_NAME, cluster.name)
 
-  let kubeconfig = await provider.makeKubeconfig(cluster)
-  let contents = JSON.stringify(kubeconfig, undefined, 2) + "\n"
-  fs.writeFile(kubeconfigPath, contents, err => {
-    if (err) {
-      core.setFailed(`${err}`)
-    }
-  })
+    core.notice(`Created ${distribution} cluster ${cluster.name}!`)
 
-  core.notice(`Exporting KUBECONFIG as ${kubeconfigPath}`)
-  core.exportVariable("KUBECONFIG", kubeconfigPath)
+    let kubeconfig = await provider.makeKubeconfig(cluster)
+    let contents = JSON.stringify(kubeconfig, undefined, 2) + "\n"
+    writeKubeconfig(kubeconfigPath, contents)
+
+    core.notice(`Exporting KUBECONFIG as ${kubeconfigPath}`)
+    core.exportVariable("KUBECONFIG", kubeconfigPath)
+    break
+  }
 }
 
 create().catch((error)=>{
   core.setFailed(error.message)
 })
+
+function writeKubeconfig(path, contents) {
+  fs.writeFile(path, contents, err => {
+    if (err) {
+      core.setFailed(`${err}`)
+    }
+  })
+}
