@@ -10,6 +10,9 @@ inputs:
   kubeconfig:
     description: "Path to the resulting kubeconfig file."
     required: true
+  kubeceptionToken:
+    description: "Kubeception token used to create Klusters. Optional if Klusters are not required"
+    required: false
 runs:
   using: node16
   main: create.js
