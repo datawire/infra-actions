@@ -38,6 +38,8 @@ jobs:
 #           version: "1.21"
 #         - distribution: AKS
 #           version: "1.20"
+         - distribution: Kubeception
+           version: "1.22"
 
         cluster_telepresence_version:  ["none", "2.7"]
 #        cluster_telepresence_version:  ["none", "2.7", "2.6", "2.5"]
