@@ -85,3 +85,6 @@ jobs:
       - run: KUBECONFIG=kubeconifig.yaml make tests
 ...
 ```
+
+# Dev loop
+ See [DEVELOPING.md](docs/DEVELOPING.md)
