@@ -41,6 +41,9 @@ jobs:
          - distribution: AKS
            version: "1.22"
 
+         - distribution: Kubeception
+           version: "1.22"
+
         cluster_telepresence_version:  ["none", "2.7"]
 
 ## Below is a larger matrix intended to illustrate how more permutations would be expressed. The
