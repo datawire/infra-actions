@@ -38,6 +38,9 @@ jobs:
          - distribution: GKE
            version: "1.23"
 
+         - distribution: Kubeception
+           version: "1.22"
+
         cluster_telepresence_version:  ["none"]
 
 ## Below is a larger matrix intended to illustrate how more permutations would be expressed. The
