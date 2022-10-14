@@ -38,4 +38,18 @@ async function createKluster(name, version) {
   return body;
 };
 
-module.exports = { createKluster };
+async function deleteKluster(name) {
+  const credentialHandler = getCredentialHandler();
+  const client = new httpClient.HttpClient(userAgent, [credentialHandler]);
+
+  const response = await client.del(`https://sw.bakerstreet.io/kubeception/api/klusters/${name}`);
+  if (!response || !response.message) {
+    throw Error("Unknown error getting response");
+  }
+
+  if (response.message.statusCode != 200) {
+    throw Error(`Expected status code 200 but got ${response.message.statusCode}`);
+  }
+}
+
+module.exports = { createKluster, deleteKluster};
