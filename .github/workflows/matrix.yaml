@@ -1,3 +1,15 @@
+# This github workflow illustrates how to use the github actions matrix strategy to run the same
+# test code in many different environments using many different versions of various dependencies.
+#
+# The test matrix as a whole consits of two parts/sub-matrices (1) the various client environments,
+# and (2) the various cluster environments.
+#
+# The client environment is provided by the github runner itself (see the "runs-on" field for more
+# details). The cluster environment is created by the (currently stubbed) provision-cluster github
+# action.
+#
+# See the "matrix" field below for more info about how the test matrix is described.
+
 name: "Telepresence Test Matrix"
 on:
   # Using pull_request for ease of iteration, but "workflow_dispatch" will let us manually trigger with parameters.
@@ -11,39 +23,60 @@ on:
 jobs:
   telepresence_matrix:
     strategy:
+      # Each value in the test matrix map is a list of options. This strategy spawns one job for
+      # every element in the cross product of all these lists. The values for that particular cell
+      # of the test matrix are accessed in the job definition via the matrix context below, e.g.:
+      #   ${{ matrix.client_os }}
       matrix:
-
-        # Comment out the full range of dimensions and use just a subset for faster iteration.
 
         client_os: [ubuntu]
         client_arch: [latest]
-#        client_os: [ubuntu-22.04, ubuntu-20.04]
-#        client_arch: [arm, x86]
 
         client_telepresence_version: ["2.7"]
-#        client_telepresence_version: ["2.7", "2.6", "2.5"]
 
         clusters:
-
          - distribution: GKE
            version: "1.23"
+
+         - distribution: AKS
+           version: "1.22"
+
+        cluster_telepresence_version:  ["none", "2.7"]
+
+## Below is a larger matrix intended to illustrate how more permutations would be expressed. The
+## above constrained set is used for dev purposes:
+#
+#        client_os: [ubuntu-22.04, ubuntu-20.04]
+#        client_arch: [arm, x86]
+#
+#        client_telepresence_version: ["2.7", "2.6", "2.5"]
+#
+#        clusters:
+#         - distribution: GKE
+#           version: "1.23"
 #         - distribution: GKE
 #           version: "1.22"
 #         - distribution: GKE
 #           version: "1.21"
-
-         - distribution: AKS
-           version: "1.22"
+#
+#         - distribution: AKS
+#           version: "1.22"
 #         - distribution: AKS
 #           version: "1.21"
 #         - distribution: AKS
 #           version: "1.20"
-
-        cluster_telepresence_version:  ["none", "2.7"]
+#
 #        cluster_telepresence_version:  ["none", "2.7", "2.6", "2.5"]
+
+    # The runs-on field defines the client portion of the environment. This currently includes all
+    # github hosted runner options and will be augmented by our self hosted macos runners to fill in
+    # that portion of the matrix.
     runs-on: ${{ matrix.client_os }}-${{ matrix.client_arch }}
     steps:
       - uses: actions/checkout@v3
+
+      # The provision-cluster action will automatically register a cleanup hook to remove the
+      # cluster it provisions when the job is done.
       - uses: ./provision-cluster
         with:
           distribution: ${{ matrix.clusters.distribution }}
