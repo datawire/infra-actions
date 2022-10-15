@@ -10,15 +10,18 @@ async function do_delete() {
   // inputs are defined in action metadata file
   const distribution = core.getInput('distribution')
 
+  const clusterName = core.getState(registry.CLUSTER_NAME)
+  const clusterNameKubeception = process.env['clusterName']
+  if (!clusterName) {
+    throw Error(`Variable clusterName is undefined`);
+  }
+
   switch(distribution.toLowerCase()) {
   case "kubeception":
-    kubeception.deleteKluster("aosorio-test-kluster").then(
-      console.log(`Deleting ${distribution} ${version}!`)
-    )
+    kubeception.deleteKluster(clusterNameKubeception)
+      .then(() => { console.log(`Kluster ${clusterNameKubeception} has been deleted`) })
     break
   default:
-    let clusterName = core.getState(registry.CLUSTER_NAME)
-
     let provider = registry.getProvider(distribution)
 
     let promises = []

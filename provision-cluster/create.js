@@ -5,6 +5,9 @@ const github = require('@actions/github')
 const fs = require('fs')
 
 const kubeception = require('./kubeception.js')
+const { v4: uuidv4 } = require('uuid')
+const utils = require('./lib/utils.js')
+
 const registry = require('./registry.js')
 
 async function create() {
@@ -20,8 +23,12 @@ async function create() {
 
   switch (distribution.toLowerCase()) {
   case "kubeception":
-    const kubeConfig = kubeception.createKluster("aosorio-test-kluster", version)
-    kubeConfig.then(contents => { writeKubeconfig(kubeconfigPath, contents) })
+    const clusterName = utils.getUniqueClusterName()
+    core.exportVariable('clusterName', clusterName)
+
+    core.notice(`Creating ${distribution} ${version} and writing kubeconfig to file: ${kubeconfigPath}!`)
+    const kubeConfig = kubeception.createKluster(clusterName, version)
+    kubeConfig.then(contents => { writeKubeconfig(kubeconfig, contents) })
     break
   default:
     let provider = registry.getProvider(distribution)
