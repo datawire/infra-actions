@@ -11,10 +11,12 @@ try {
   //const payload = JSON.stringify(github.context.payload, undefined, 2)
   //console.log(`The event payload: ${payload}`);
 
+  const clusterName = process.env['clusterName']
+
 	switch(distribution) {
 	   case "Kubeception": {
-	      kubeception.deleteKluster("aosorio-test-kluster").then(
-	        console.log(`Deleting ${distribution} ${version}!`)
+	      kubeception.deleteKluster(clusterName).then(
+	        console.log(`Deleting Kluster ${clusterName}!`)
 	      );
 	      break;
 	   }
