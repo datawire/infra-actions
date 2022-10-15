@@ -11,11 +11,15 @@ try {
   //const payload = JSON.stringify(github.context.payload, undefined, 2)
   //console.log(`The event payload: ${payload}`);
 
+  const clusterName = process.env['clusterName']
+  if (!clusterName) {
+    throw Error(`Variable clusterName is undefined`);
+  }
+
   switch(distribution.toLowerCase()) {
     case "kubeception": {
-      kubeception.deleteKluster("aosorio-test-kluster").then(
-        console.log(`Deleting ${distribution} ${version}!`)
-      );
+      kubeception.deleteKluster(clusterName)
+        .then(() => { console.log(`Kluster ${clusterName} has been deleted`); });
       break;
     }
     default: {

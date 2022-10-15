@@ -3,6 +3,8 @@ const core = require('@actions/core');
 const github = require('@actions/github');
 const fs = require('fs');
 const kubeception = require('./kubeception.js');
+const { v4: uuidv4 } = require('uuid');
+const utils = require('./lib/utils.js');
 
 try {
   // inputs are defined in action metadata file
@@ -10,9 +12,12 @@ try {
   const version = core.getInput('version');
   const kubeconfig = core.getInput('kubeconfig');
 
+  const clusterName = utils.getUniqueClusterName()
+  core.exportVariable('clusterName', clusterName);
+
   switch(distribution.toLowerCase()) {
     case "kubeception": {
-      const kubeConfig = kubeception.createKluster("aosorio-test-kluster", version);
+      const kubeConfig = kubeception.createKluster(clusterName, version);
       kubeConfig.then(contents => { writeKubeconfig(kubeconfig, contents); });
       break;
     }
@@ -38,3 +43,4 @@ function writeKubeconfig(path, contents) {
     }
   });
 }
+
