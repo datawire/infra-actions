@@ -1,4 +1,5 @@
 const { v4: uuidv4 } = require('uuid');
+const fs = require('fs');
 
 function getUniqueClusterName() {
   const repoName = process.env['GITHUB_REPOSITORY'].replace(/^.*\//, '');
@@ -7,9 +8,17 @@ function getUniqueClusterName() {
 	const uuid = uuidv4().replace('-', '').substring(0, 8);
 
   let name = `test-${uuid}-${repoName}-${sha}-${branch}`;
-  let sanitizedName = name.replace(/[^A-Za-z0-9-]/g, '-').toLowerCase().substring(0, 63);
+  let sanitizedName = name.replace(/[^A-Za-z0-9-]/g, '-').replace(/-+$/g, '').toLowerCase().substring(0, 63);
 
 	return sanitizedName;
 }
 
-module.exports = { getUniqueClusterName};
+function writeFile(path, contents) {
+  fs.writeFile(path, contents, err => {
+    if (err) {
+      core.setFailed(`${err}`);
+    }
+  });
+}
+
+module.exports = { getUniqueClusterName, writeFile};

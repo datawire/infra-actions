@@ -1,7 +1,6 @@
 'use strict';
 const core = require('@actions/core');
 const github = require('@actions/github');
-const fs = require('fs');
 const kubeception = require('./lib/kubeception.js');
 const utils = require('./lib/utils.js');
 
@@ -17,13 +16,13 @@ try {
 	switch(distribution) {
 	   case "Kubeception": {
 	      const kubeConfig = kubeception.createKluster(clusterName, version);
-	      kubeConfig.then(contents => { writeKubeconfig(kubeconfig, contents); });
+	      kubeConfig.then(contents => { utils.writeFile(kubeconfig, contents); });
 	      break;
 	   }
 	   default: {
 			  console.log(`Creating ${distribution} ${version} and writing kubeconfig to file: ${kubeconfig}!`);
 			  let kubeconfigContents = `Mock kubeconfig file for ${distribution} ${version}.\n`;
-			  writeKubeconfig(kubeconfig, kubeconfigContents);
+			  utils.writeFile(kubeconfig, kubeconfigContents);
 	      break;
 	   }
 	}
@@ -33,13 +32,5 @@ try {
   //console.log(`The event payload: ${payload}`);
 } catch (error) {
   core.setFailed(error.message);
-}
-
-function writeKubeconfig(path, contents) {
-  fs.writeFile(path, contents, err => {
-    if (err) {
-      core.setFailed(`${err}`);
-    }
-  });
 }
 
