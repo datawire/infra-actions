@@ -1,7 +1,7 @@
 'use strict';
 const core = require('@actions/core');
 const github = require('@actions/github');
-const kubeception = require('./kubeception.js');
+const kubeception = require('./lib/kubeception.js');
 
 try {
   // inputs are defined in action metadata file
