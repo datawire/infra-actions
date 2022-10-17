@@ -1,4 +1,6 @@
+const fs = require('fs');
 const crypto = require('crypto')
+const core = require('@actions/core')
 
 function getUniqueClusterName() {
   const repoName = process.env['GITHUB_REPOSITORY'].replace(/^.*\//, '');
@@ -11,8 +13,16 @@ function getUniqueClusterName() {
 	return sanitizedName;
 }
 
+function writeFile(path, contents) {
+  fs.writeFile(path, contents, err => {
+    if (err) {
+      core.setFailed(`${err}`);
+    }
+  });
+}
+
 function uniqueId() {
   return crypto.randomBytes(16).toString("hex")
 }
 
-module.exports = { getUniqueClusterName};
+module.exports = { getUniqueClusterName, writeFile};

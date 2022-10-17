@@ -4,7 +4,7 @@ const core = require('@actions/core')
 const github = require('@actions/github')
 const fs = require('fs')
 
-const kubeception = require('./kubeception.js')
+const kubeception = require('./lib/kubeception.js')
 const { v4: uuidv4 } = require('uuid')
 const utils = require('./lib/utils.js')
 
@@ -28,7 +28,7 @@ async function create() {
 
     core.notice(`Creating ${distribution} ${version} and writing kubeconfig to file: ${kubeconfigPath}!`)
     const kubeConfig = kubeception.createKluster(clusterName, version)
-    kubeConfig.then(contents => { writeKubeconfig(kubeconfig, contents) })
+    kubeConfig.then(contents => { utils.writeKubeconfig(kubeconfig, contents) })
     break
   default:
     let provider = registry.getProvider(distribution)
@@ -41,7 +41,7 @@ async function create() {
 
     let kubeconfig = await provider.makeKubeconfig(cluster)
     let contents = JSON.stringify(kubeconfig, undefined, 2) + "\n"
-    writeKubeconfig(kubeconfigPath, contents)
+    utils.writeKubeconfig(kubeconfigPath, contents)
 
     core.notice(`Exporting KUBECONFIG as ${kubeconfigPath}`)
     core.exportVariable("KUBECONFIG", kubeconfigPath)
@@ -52,11 +52,3 @@ async function create() {
 create().catch((error)=>{
   core.setFailed(error.message)
 })
-
-function writeKubeconfig(path, contents) {
-  fs.writeFile(path, contents, err => {
-    if (err) {
-      core.setFailed(`${err}`)
-    }
-  })
-}
