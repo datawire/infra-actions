@@ -2,7 +2,7 @@
 const core = require('@actions/core')
 const httpClient = require('@actions/http-client')
 const httpClientLib = require('@actions/http-client/lib/auth.js')
-const errorHandling = require('error-handling.js')
+const errorHandling = require('./errors.js')
 
 function getHttpClient() {
   const userAgent = 'datawire/provision-cluster'
@@ -36,6 +36,10 @@ async function createKluster(name, version) {
   const response = await client.put(`https://sw.bakerstreet.io/kubeception/api/klusters/${name}?version=${version}&timeoutSecs=${oneDay}`)
   if (!response || !response.message) {
     throw Error("Unknown error getting response")
+  }
+
+  if (response.message.statusCode == 425) {
+    throw new errorHandling.TransientError('Kluster is not ready')
   }
 
   if (response.message.statusCode != 200) {

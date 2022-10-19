@@ -1,20 +1,20 @@
-// These errors will be caught by the retry logic and the action that failed will be executed again.
-// Any action that throws this error should be idempotent.
-class TransientError extends Error {
-  constructor(message) {
-    super(message)
-    this.name = "TransientError"
-  }
+const core = require('@actions/core')
+const utils = require('./utils.js')
+const kubeception = require('./kubeception.js');
+
+function runWithRetry(promise) {
+  core.info(`executing ${promise}`)
+  result = promise
+    .then(result => {
+      core.debug(`Finished creation`)
+      return result
+      })
+    .catch(error => {
+      core.debug(`Caught temporary error ${error}`)
+      setTimeout(promise, 1000)
+     })
+
+  return result
 }
 
-function runWithRetry(func) {
-	for (let i = 0; i < 3; i++) {
-		try {
-			func()
-		} catch (TransientError) {
-			console.log(`Caught temporary error`)
-	 }
-	}
-}
-
-module.exports = { TransientError, runWithRetry }
+module.exports = { runWithRetry }
