@@ -3,6 +3,7 @@ const core = require('@actions/core');
 const github = require('@actions/github');
 const kubeception = require('./lib/kubeception.js');
 const utils = require('./lib/utils.js');
+const actionErrors = require('./lib/error-handling.js');
 
 const MAX_KLUSTER_NAME_LEN = 63
 
@@ -17,8 +18,13 @@ try {
 
   switch(distribution.toLowerCase()) {
     case "kubeception": {
-      const kubeConfig = kubeception.createKluster(clusterName, version);
-      kubeConfig.then(contents => { utils.writeFile(kubeconfig, contents); });
+      actionErrors.runWithRetry( () => {
+        const kubeConfig = kubeception.createKluster(clusterName, version);
+        kubeConfig.then(contents => { utils.writeFile(kubeconfig, contents); });
+        };
+      );
+      core.debug(`Finished creating kluster`);
+
       break;
     }
     default: {
