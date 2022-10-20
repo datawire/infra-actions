@@ -11,7 +11,10 @@ try {
   //const payload = JSON.stringify(github.context.payload, undefined, 2)
   //console.log(`The event payload: ${payload}`);
 
-  const clusterName = process.env['clusterName']
+  const clusterName = process.env['clusterName'];
+  if (!clusterName) {
+    throw Error(`Variable clusterName is undefined`);
+  }
 
 	switch(distribution) {
 	   case "Kubeception": {
