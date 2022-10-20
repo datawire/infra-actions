@@ -32,7 +32,7 @@ async function createKluster(name, version) {
   const client = getHttpClient();
 
   const oneDay = 86400
-  const response = await client.put(`https://sw.bakerstreet.io/kubeception/api/klusters/${name}?version=${version}&wait=true&timeoutSecs=${oneDay}`);
+  const response = await client.put(`https://sw.bakerstreet.io/kubeception/api/klusters/${name}?version=${version}&timeoutSecs=${oneDay}`);
   if (!response || !response.message) {
     throw Error("Unknown error getting response");
   }
