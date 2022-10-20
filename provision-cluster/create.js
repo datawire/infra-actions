@@ -10,6 +10,8 @@ const utils = require('./lib/utils.js')
 
 const registry = require('./registry.js')
 
+const MAX_KLUSTER_NAME_LEN = 63
+
 async function create() {
   // inputs are defined in action metadata file
   const distribution = core.getInput('distribution')
@@ -23,12 +25,12 @@ async function create() {
 
   switch (distribution.toLowerCase()) {
   case "kubeception":
-    const clusterName = utils.getUniqueClusterName()
+    const clusterName = utils.getUniqueClusterName(MAX_KLUSTER_NAME_LEN)
     core.exportVariable('clusterName', clusterName)
 
     core.notice(`Creating ${distribution} ${version} and writing kubeconfig to file: ${kubeconfigPath}!`)
     const kubeConfig = kubeception.createKluster(clusterName, version)
-    kubeConfig.then(contents => { utils.writeKubeconfig(kubeconfig, contents) })
+    kubeConfig.then(contents => { utils.writeFile(kubeconfig, contents) })
     break
   default:
     let provider = registry.getProvider(distribution)
@@ -41,7 +43,7 @@ async function create() {
 
     let kubeconfig = await provider.makeKubeconfig(cluster)
     let contents = JSON.stringify(kubeconfig, undefined, 2) + "\n"
-    utils.writeKubeconfig(kubeconfigPath, contents)
+    utils.writeFile(kubeconfigPath, contents)
 
     core.notice(`Exporting KUBECONFIG as ${kubeconfigPath}`)
     core.exportVariable("KUBECONFIG", kubeconfigPath)
