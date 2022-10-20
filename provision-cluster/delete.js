@@ -19,7 +19,7 @@ async function do_delete() {
   switch(distribution.toLowerCase()) {
   case "kubeception":
     kubeception.deleteKluster(clusterNameKubeception)
-      .then(() => { console.log(`Kluster ${clusterNameKubeception} has been deleted`) })
+      .then(() => { core.notice(`Kluster ${clusterNameKubeception} has been deleted`) })
     break
   default:
     let provider = registry.getProvider(distribution)
