@@ -18,9 +18,8 @@ try {
 
 	switch(distribution) {
 	   case "Kubeception": {
-	      kubeception.deleteKluster(clusterName).then(
-	        console.log(`Deleting Kluster ${clusterName}!`)
-	      );
+	      kubeception.deleteKluster(clusterName)
+	        .then(() => { console.log(`Kluster ${clusterName} has been deleted`); });
 	      break;
 	   }
 	   default: {
