@@ -8,7 +8,7 @@ Once `act` is installed, it can be invoked from the repository root like this:
 act pull_request
 ```
 
-`act` can pass secrets with the command line option `-e`. For example, to pass a secret called `KUBECEPTION_TOKEN` run it 
+`act` can pass secrets with the command line option `-s`. For example, to pass a secret called `KUBECEPTION_TOKEN` run it 
 like this:
 
 ```
