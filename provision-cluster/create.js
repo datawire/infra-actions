@@ -4,13 +4,15 @@ const github = require('@actions/github');
 const kubeception = require('./lib/kubeception.js');
 const utils = require('./lib/utils.js');
 
+const MAX_KLUSTER_NAME_LEN = 63
+
 try {
   // inputs are defined in action metadata file
   const distribution = core.getInput('distribution');
   const version = core.getInput('version');
   const kubeconfig = core.getInput('kubeconfig');
 
-  const clusterName = utils.getUniqueClusterName();
+  const clusterName = utils.getUniqueClusterName(MAX_KLUSTER_NAME_LEN);
   core.exportVariable('clusterName', clusterName);
 
   switch(distribution) {
