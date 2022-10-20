@@ -10,7 +10,7 @@ try {
   const version = core.getInput('version');
   const kubeconfig = core.getInput('kubeconfig');
 
-	let clusterName = utils.getUniqueClusterName()
+	const clusterName = utils.getUniqueClusterName();
   core.exportVariable('clusterName', clusterName);
 
 	switch(distribution) {
@@ -31,6 +31,7 @@ try {
   //const payload = JSON.stringify(github.context.payload, undefined, 2)
   //console.log(`The event payload: ${payload}`);
 } catch (error) {
+  console.log(`Error creating cluster ${error}`);
   core.setFailed(error.message);
 }
 
