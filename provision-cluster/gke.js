@@ -90,8 +90,12 @@ class Client {
 
   // Iterate over all the clusters in the zone and delete any expired clusters.
   async expireClusters(lifespanOverride) {
+    let promises = []
     for (let c of await this.listClusters()) {
-      this.maybeExpireCluster(c, lifespanOverride)
+      promises.push(this.maybeExpireCluster(c, lifespanOverride))
+    }
+    for (let p of promises) {
+      await p
     }
   }
 
@@ -271,5 +275,6 @@ function uid() {
 module.exports = {
   Client,
   sleep,
-  uid
+  uid,
+  fibonacciDelaySequence
 }
