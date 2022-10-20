@@ -94,9 +94,7 @@ class Client {
     for (let c of await this.listClusters()) {
       promises.push(this.maybeExpireCluster(c, lifespanOverride))
     }
-    for (let p of promises) {
-      await p
-    }
+    Promise.allSettled(promises)
   }
 
   async listClusters() {
