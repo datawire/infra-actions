@@ -16,6 +16,14 @@ function getHttpClient() {
 }
 
 async function createKluster(name, version) {
+  if (!name) {
+    throw new Error('Function createKluster() needs a Kluster name');
+  }
+
+  if (!version) {
+    throw Error('Function createKluster() needs a Kluster version');
+  }
+
   const kubeceptionToken = core.getInput('kubeceptionToken');
   if (!kubeceptionToken) {
     throw Error(`kubeceptionToken is missing. Make sure that input parameter kubeceptionToken was provided`);
@@ -39,6 +47,10 @@ async function createKluster(name, version) {
 };
 
 async function deleteKluster(name) {
+  if (!name) {
+    throw Error('Function deleteKluster() needs a Kluster name');
+  }
+
   const client = getHttpClient();
 
 	const response = await client.del(`https://sw.bakerstreet.io/kubeception/api/klusters/${name}`);
