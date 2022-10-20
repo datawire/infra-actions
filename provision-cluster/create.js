@@ -10,22 +10,22 @@ try {
   const version = core.getInput('version');
   const kubeconfig = core.getInput('kubeconfig');
 
-	const clusterName = utils.getUniqueClusterName();
+  const clusterName = utils.getUniqueClusterName();
   core.exportVariable('clusterName', clusterName);
 
-	switch(distribution) {
-	   case "Kubeception": {
-	      const kubeConfig = kubeception.createKluster(clusterName, version);
-	      kubeConfig.then(contents => { utils.writeFile(kubeconfig, contents); });
-	      break;
-	   }
-	   default: {
-			  console.log(`Creating ${distribution} ${version} and writing kubeconfig to file: ${kubeconfig}!`);
-			  let kubeconfigContents = `Mock kubeconfig file for ${distribution} ${version}.\n`;
-			  utils.writeFile(kubeconfig, kubeconfigContents);
-	      break;
-	   }
-	}
+  switch(distribution) {
+    case "Kubeception": {
+      const kubeConfig = kubeception.createKluster(clusterName, version);
+      kubeConfig.then(contents => { utils.writeFile(kubeconfig, contents); });
+      break;
+    }
+    default: {
+      console.log(`Creating ${distribution} ${version} and writing kubeconfig to file: ${kubeconfig}!`);
+      let kubeconfigContents = `Mock kubeconfig file for ${distribution} ${version}.\n`;
+      utils.writeFile(kubeconfig, kubeconfigContents);
+      break;
+    }
+  }
 
   // Get the JSON webhook payload for the event that triggered the workflow
   //const payload = JSON.stringify(github.context.payload, undefined, 2)

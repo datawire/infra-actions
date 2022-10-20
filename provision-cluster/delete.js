@@ -16,17 +16,17 @@ try {
     throw Error(`Variable clusterName is undefined`);
   }
 
-	switch(distribution) {
-	   case "Kubeception": {
-	      kubeception.deleteKluster(clusterName)
-	        .then(() => { console.log(`Kluster ${clusterName} has been deleted`); });
-	      break;
-	   }
-	   default: {
-			  console.log(`Deleting ${distribution} ${version}!`);
-	      break;
-	   }
-	}
+  switch(distribution) {
+    case "Kubeception": {
+      kubeception.deleteKluster(clusterName)
+        .then(() => { console.log(`Kluster ${clusterName} has been deleted`); });
+      break;
+    }
+    default: {
+      console.log(`Deleting ${distribution} ${version}!`);
+      break;
+    }
+  }
 } catch (error) {
   console.log(`Error creating cluster ${error}`);
   core.setFailed(error.message);
