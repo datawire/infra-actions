@@ -7,4 +7,14 @@ class TransientError extends Error {
   }
 }
 
-module.exports = { TransientError }
+function runWithRetry(func) {
+	for (let i = 0; i < 3; i++) {
+		try {
+			func()
+		} catch (TransientError) {
+			console.log(`Caught temporary error`)
+	 }
+	}
+}
+
+module.exports = { TransientError, runWithRetry }
