@@ -33,7 +33,6 @@ try {
   //const payload = JSON.stringify(github.context.payload, undefined, 2)
   //console.log(`The event payload: ${payload}`);
 } catch (error) {
-  console.log(`Error creating cluster ${error}`);
-  core.setFailed(error.message);
+  core.setFailed(`Error creating cluster. ${error.message}`);
 }
 

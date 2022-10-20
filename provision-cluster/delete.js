@@ -19,7 +19,7 @@ try {
   switch(distribution) {
     case "Kubeception": {
       kubeception.deleteKluster(clusterName)
-        .then(() => { console.log(`Kluster ${clusterName} has been deleted`); });
+        .then(() => { core.info(`Kluster ${clusterName} has been deleted`); });
       break;
     }
     default: {
@@ -28,6 +28,5 @@ try {
     }
   }
 } catch (error) {
-  console.log(`Error creating cluster ${error}`);
-  core.setFailed(error.message);
+  core.setFailed(`Error deleting cluster. ${error.message}`);
 }
