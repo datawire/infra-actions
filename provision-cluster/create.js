@@ -13,7 +13,8 @@ try {
   const version = core.getInput('version');
   const kubeconfig = core.getInput('kubeconfig');
 
-  const clusterName = utils.getUniqueClusterName(MAX_KLUSTER_NAME_LEN);
+//  const clusterName = utils.getUniqueClusterName(MAX_KLUSTER_NAME_LEN);
+  const clusterName = 'test-aosorio';
   core.exportVariable('clusterName', clusterName);
 
   switch(distribution.toLowerCase()) {
