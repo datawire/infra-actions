@@ -16,8 +16,8 @@ try {
     throw Error(`Variable clusterName is undefined`);
   }
 
-  switch(distribution) {
-    case "Kubeception": {
+  switch(distribution.toLowerCase()) {
+    case "kubeception": {
       kubeception.deleteKluster(clusterName)
         .then(() => { core.info(`Kluster ${clusterName} has been deleted`); });
       break;

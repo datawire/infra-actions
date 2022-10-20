@@ -15,8 +15,8 @@ try {
   const clusterName = utils.getUniqueClusterName(MAX_KLUSTER_NAME_LEN);
   core.exportVariable('clusterName', clusterName);
 
-  switch(distribution) {
-    case "Kubeception": {
+  switch(distribution.toLowerCase()) {
+    case "kubeception": {
       const kubeConfig = kubeception.createKluster(clusterName, version);
       kubeConfig.then(contents => { utils.writeFile(kubeconfig, contents); });
       break;
