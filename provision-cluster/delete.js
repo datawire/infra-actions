@@ -29,5 +29,6 @@ try {
 	   }
 	}
 } catch (error) {
+  console.log(`Error creating cluster ${error}`);
   core.setFailed(error.message);
 }
