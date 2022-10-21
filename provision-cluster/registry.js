@@ -3,9 +3,10 @@
 const gke = require('./gke.js')
 
 const CLUSTER_NAME = 'CLUSTER_NAME'
+const clusterZone = 'us-central1-b'
 
 const distributions = {
-  "gke": new gke.Client()
+  "gke": new gke.Client(clusterZone)
 }
 
 function getProvider(distribution) {
