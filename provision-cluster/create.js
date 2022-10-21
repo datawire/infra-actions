@@ -9,7 +9,7 @@ const registry = require('./registry.js')
 async function create() {
   // inputs are defined in action metadata file
   const distribution = core.getInput('distribution')
-  const noop = core.getBooleanInput('noop')
+  const noop = core.getBooleanInput('noop', {required: false})
   const version = core.getInput('version')
   const kubeconfigPath = core.getInput('kubeconfig')
 
