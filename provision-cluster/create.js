@@ -9,13 +9,13 @@ const registry = require('./registry.js')
 async function create() {
   // inputs are defined in action metadata file
   const distribution = core.getInput('distribution')
-  const noop = core.getBooleanInput('noop', {required: false})
+  const action = core.getInput('action')
   const version = core.getInput('version')
   const kubeconfigPath = core.getInput('kubeconfig')
 
   let provider = registry.getProvider(distribution)
 
-  if (noop) {
+  if (action === 'expire') {
     return
   }
 

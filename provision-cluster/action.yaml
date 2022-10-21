@@ -4,8 +4,8 @@ inputs:
   distribution:
     description: "One of GKE, AKS, EKS, OpenShift, or Kubeception"
     required: true
-  noop:
-    description: "If true then no cluster will be provisioned, but the action will still delete any expired clusters. Use this in a schedueled workflow to garbage collect orphaned clusters."
+  action:
+    description: "If set to expire then no cluster will be provisioned, but the action will still delete any expired clusters. Use this in a schedueled workflow to garbage collect orphaned clusters."
     required: false
   version:
     description: "The version of the cluster to create."
