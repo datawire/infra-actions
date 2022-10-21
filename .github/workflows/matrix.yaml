@@ -55,9 +55,16 @@ jobs:
           version: ${{ matrix.clusters.version }}
           kubeconfig: kubeconfig.yaml
           kubeceptionToken: ${{ secrets.KUBECEPTION_TOKEN }}
-      - name: Load image
+      - name: Deploy httpbin
         shell: bash
         run: |
+          set -ex
           export KUBECONFIG=kubeconfig.yaml
-          echo "Cluster version"
-          kubectl version
+          echo ''
+          kubectl version --short
+          echo ''
+          kubectl apply -f https://github.com/istio/istio/raw/master/samples/httpbin/httpbin.yaml
+          echo ''
+          kubectl rollout status -w deployment/httpbin
+          echo ''
+          kubectl get all
