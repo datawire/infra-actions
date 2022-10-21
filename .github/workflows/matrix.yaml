@@ -74,7 +74,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - run: echo ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }} > gac.json
+      - run: |
+          cat <<'EOF' >> gac.json
+          ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
 
       - name: Kubectl tool installer
         uses: Azure/setup-kubectl@v3
