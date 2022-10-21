@@ -28,7 +28,7 @@ async function expire(provider) {
 }
 
 async function delete_allocated(provider, name) {
-  let cluster = await provider.getCluster(clusterName)
+  let cluster = await provider.getCluster(name)
   return provider.deleteCluster(cluster)
 }
 
