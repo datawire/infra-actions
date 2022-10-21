@@ -1,0 +1,278 @@
+{
+  "nodePools": [
+    {
+      "locations": [
+        "us-central1-f"
+      ],
+      "instanceGroupUrls": [
+        "https://www.googleapis.com/compute/v1/projects/datawireio/zones/us-central1-f/instanceGroupManagers/gke-test-3fceb6744f7639b-default-pool-5fd3f611-grp"
+      ],
+      "conditions": [],
+      "name": "default-pool",
+      "config": {
+        "oauthScopes": [
+          "https://www.googleapis.com/auth/logging.write",
+          "https://www.googleapis.com/auth/monitoring"
+        ],
+        "tags": [],
+        "accelerators": [],
+        "taints": [],
+        "metadata": {
+          "disable-legacy-endpoints": "true"
+        },
+        "labels": {},
+        "machineType": "e2-standard-2",
+        "diskSizeGb": 100,
+        "imageType": "COS_CONTAINERD",
+        "localSsdCount": 0,
+        "serviceAccount": "default",
+        "preemptible": false,
+        "diskType": "pd-standard",
+        "minCpuPlatform": "",
+        "workloadMetadataConfig": null,
+        "sandboxConfig": null,
+        "nodeGroup": "",
+        "reservationAffinity": null,
+        "shieldedInstanceConfig": {
+          "enableSecureBoot": false,
+          "enableIntegrityMonitoring": true
+        },
+        "linuxNodeConfig": null,
+        "kubeletConfig": null,
+        "bootDiskKmsKey": "",
+        "gcfsConfig": null,
+        "advancedMachineFeatures": null,
+        "gvnic": null,
+        "spot": false,
+        "confidentialNodes": null,
+        "loggingConfig": null
+      },
+      "initialNodeCount": 1,
+      "autoscaling": null,
+      "management": {
+        "autoUpgrade": true,
+        "autoRepair": true,
+        "upgradeOptions": null
+      },
+      "maxPodsConstraint": {
+        "maxPodsPerNode": "110"
+      },
+      "podIpv4CidrSize": 24,
+      "networkConfig": {
+        "createPodRange": false,
+        "podRange": "gke-test-3fceb6744f7639bc0d6e9b601a051071-pods-da48a07c",
+        "podIpv4CidrBlock": "10.0.0.0/14"
+      },
+      "selfLink": "https://container.googleapis.com/v1/projects/datawireio/zones/us-central1-f/clusters/test-3fceb6744f7639bc0d6e9b601a051071/nodePools/default-pool",
+      "version": "1.22.12-gke.2300",
+      "status": "RUNNING",
+      "statusMessage": "",
+      "upgradeSettings": {
+        "maxSurge": 1,
+        "maxUnavailable": 0,
+        "strategy": "SURGE",
+        "_strategy": "strategy"
+      },
+      "updateInfo": null
+    }
+  ],
+  "locations": [
+    "us-central1-f"
+  ],
+  "instanceGroupUrls": [
+    "https://www.googleapis.com/compute/v1/projects/datawireio/zones/us-central1-f/instanceGroupManagers/gke-test-3fceb6744f7639b-default-pool-5fd3f611-grp"
+  ],
+  "conditions": [],
+  "resourceLabels": {
+    "provisioned-category": "ephemeral",
+    "provisioned-lifespan": "1800"
+  },
+  "name": "test-3fceb6744f7639bc0d6e9b601a051071",
+  "description": "",
+  "initialNodeCount": 1,
+  "nodeConfig": {
+    "oauthScopes": [
+      "https://www.googleapis.com/auth/logging.write",
+      "https://www.googleapis.com/auth/monitoring"
+    ],
+    "tags": [],
+    "accelerators": [],
+    "taints": [],
+    "metadata": {
+      "disable-legacy-endpoints": "true"
+    },
+    "labels": {},
+    "machineType": "e2-standard-2",
+    "diskSizeGb": 100,
+    "imageType": "COS_CONTAINERD",
+    "localSsdCount": 0,
+    "serviceAccount": "default",
+    "preemptible": false,
+    "diskType": "pd-standard",
+    "minCpuPlatform": "",
+    "workloadMetadataConfig": null,
+    "sandboxConfig": null,
+    "nodeGroup": "",
+    "reservationAffinity": null,
+    "shieldedInstanceConfig": {
+      "enableSecureBoot": false,
+      "enableIntegrityMonitoring": true
+    },
+    "linuxNodeConfig": null,
+    "kubeletConfig": null,
+    "bootDiskKmsKey": "",
+    "gcfsConfig": null,
+    "advancedMachineFeatures": null,
+    "gvnic": null,
+    "spot": false,
+    "confidentialNodes": null,
+    "loggingConfig": null
+  },
+  "masterAuth": {
+    "username": "",
+    "password": "",
+    "clientCertificateConfig": null,
+    "clusterCaCertificate": "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVMVENDQXBXZ0F3SUJBZ0lSQUpXa0xadDFDVS9RNGpHcDkwTjZiWkl3RFFZSktvWklodmNOQVFFTEJRQXcKTHpFdE1Dc0dBMVVFQXhNa09HUmhNamhqTTJRdE9ETXlOUzAwWTJGakxXSm1NRGN0WkRKbE9EbGxOakF5TXpRdwpNQ0FYRFRJeU1UQXlNREUzTWpZME4xb1lEekl3TlRJeE1ERXlNVGd5TmpRM1dqQXZNUzB3S3dZRFZRUURFeVE0ClpHRXlPR016WkMwNE16STFMVFJqWVdNdFltWXdOeTFrTW1VNE9XVTJNREl6TkRBd2dnR2lNQTBHQ1NxR1NJYjMKRFFFQkFRVUFBNElCandBd2dnR0tBb0lCZ1FEVU1yWHdwMGdIVkt4cDVubTdJMlZDRGNtYldBS3l6eHowYmtsSAp0Z0tLMUk3MWt0Uyt4MGRSZFFvWEFvY3Q4aTBmVTlMT3V0MExCaERna3lVczhRamZ6V2NULytZL3ZpclhwZGJUCjF5R2R1MjlEVTJ6emZtSTFNOU9vNlRRK21mZmVSZjBpY3N2eE5JRjI2RE5Jdk0xcG1WUm4yZDRwUW03SFdMb04KSGpJWlJlS2I0RmtjSkpSWW9aVTNSUWg3blhsUWREcXhRaUxGZnBtL1dBTUVPVkdlUmVTb0prODdTSDBXU0IydQpmQTk0YzZRekdVQmwwRUtnQzJnU0ZlQXNpZmZNVUdTTjJHWHdTTXRlTTJtL3FKa2I5ZVV5bmVleEVwM3czRmlCClZ5Nmo1bXVCakdweStNWmhrN3VqY1ROS1lJekpMcEhMZ2d5cGxkVm5abEhxMnB5c09Zazc0VVlZTzFXY012ZkYKTDM0K1NYV0kzc3REWTFVdXFGNklNT3FSRVB5UGlGdmRic3VTMmdFVGNLV0U1Vk4rOHRoS3prQlA4VEduNlFaMgowTEpDSGJ3eVRxQ1E4Q2lJR2sxdTBUZEVzMjdJVXIvcmlQL1R6aWdDRHo3cGhhK1liNUo2RnJvVWFmMEhxL0hpCnRDUDVhOTBEV29lMzA4aEdieFhaMldVUWdwOENBd0VBQWFOQ01FQXdEZ1lEVlIwUEFRSC9CQVFEQWdJRU1BOEcKQTFVZEV3RUIvd1FGTUFNQkFmOHdIUVlEVlIwT0JCWUVGT2JhL1lReWVMbElnWVU1RjZCMXg2VjVkYTlITUEwRwpDU3FHU0liM0RRRUJDd1VBQTRJQmdRQXZwTFVBTUR1NXprQ0tjNE45YlJiOGhyRHBTOHkzYXBxcEZwY1dHYytRCnRmMmZ0ZkpYc2lxQW1Tems1Uy9VNlJYYjBSc0NIRkFlK1dGQWpTbkFYRFE4eEU0MUJWODNOYW9wNlZxQ3pXSFMKS2JUZ2ZBVmZ4NFBCQjRqMmhBZDN1YWpqZGE3Z3BpakZmSkdHN3NuNVR1d3hvQ0tKQW16aW9WUkIzT2psQTB3RQoyZVBhQ1RGVTEzM0EweU5PNUc1bkhrU3hGUFdWUUs4T05WeWJZNGFZRThjUkRuVDFSUTZSVHorMkdodmlRN2tNClhaRVY4Q2FCSzlKeW1UTVB4T3Mvc0hsYUlaMHdURDEwYndKSFZaU3krRHVjbGd6NjM5R3FlY1V0bXBzdE1QcG8KN2l6ejlmejhicVY4citZMmE4Y0FBd1dWOHVEMU1HZDBqZFB1TDNsOTI2U09ENUJrUTM2ZHh6aHB1cjFJekVibwpnM1ltaDNaVkhzVXRBQ2Z0aytsdUxEckpDNHNJai9sRjNBQXh0MDIyY0VHMnpOSzN5b2VuV0tacWVseC9xdUluCm01TWJQMndmcm12RUpxcUo1UkpiNm9jZlhyS3NUQW0rajRTSzJPM1JBNVloa2tjVTFGTzZUcnZCUnFtNTBBSVIKN216YWs5M1dFdWw1NnFTVTNsUTZYaE09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K",
+    "clientCertificate": "",
+    "clientKey": ""
+  },
+  "loggingService": "logging.googleapis.com/kubernetes",
+  "monitoringService": "monitoring.googleapis.com/kubernetes",
+  "network": "default",
+  "clusterIpv4Cidr": "10.0.0.0/14",
+  "addonsConfig": {
+    "httpLoadBalancing": null,
+    "horizontalPodAutoscaling": null,
+    "kubernetesDashboard": {
+      "disabled": true
+    },
+    "networkPolicyConfig": {
+      "disabled": true
+    },
+    "cloudRunConfig": null,
+    "dnsCacheConfig": null,
+    "configConnectorConfig": null,
+    "gcePersistentDiskCsiDriverConfig": {
+      "enabled": true
+    },
+    "gcpFilestoreCsiDriverConfig": null
+  },
+  "subnetwork": "default",
+  "enableKubernetesAlpha": false,
+  "labelFingerprint": "81c637a5",
+  "legacyAbac": {
+    "enabled": false
+  },
+  "networkPolicy": null,
+  "ipAllocationPolicy": {
+    "useIpAliases": true,
+    "createSubnetwork": false,
+    "subnetworkName": "",
+    "clusterIpv4Cidr": "10.0.0.0/14",
+    "nodeIpv4Cidr": "",
+    "servicesIpv4Cidr": "10.124.16.0/20",
+    "clusterSecondaryRangeName": "gke-test-3fceb6744f7639bc0d6e9b601a051071-pods-da48a07c",
+    "servicesSecondaryRangeName": "gke-test-3fceb6744f7639bc0d6e9b601a051071-services-da48a07c",
+    "clusterIpv4CidrBlock": "10.0.0.0/14",
+    "nodeIpv4CidrBlock": "",
+    "servicesIpv4CidrBlock": "10.124.16.0/20",
+    "tpuIpv4CidrBlock": "",
+    "useRoutes": false
+  },
+  "masterAuthorizedNetworksConfig": null,
+  "maintenancePolicy": {
+    "window": null,
+    "resourceVersion": "e3b0c442"
+  },
+  "binaryAuthorization": null,
+  "autoscaling": null,
+  "networkConfig": {
+    "network": "projects/datawireio/global/networks/default",
+    "subnetwork": "projects/datawireio/regions/us-central1/subnetworks/default",
+    "enableIntraNodeVisibility": false,
+    "defaultSnatStatus": null,
+    "enableL4ilbSubsetting": false,
+    "datapathProvider": "DATAPATH_PROVIDER_UNSPECIFIED",
+    "privateIpv6GoogleAccess": "PRIVATE_IPV6_GOOGLE_ACCESS_UNSPECIFIED",
+    "dnsConfig": null,
+    "serviceExternalIpsConfig": {
+      "enabled": false
+    }
+  },
+  "defaultMaxPodsConstraint": {
+    "maxPodsPerNode": "110"
+  },
+  "resourceUsageExportConfig": null,
+  "authenticatorGroupsConfig": null,
+  "privateClusterConfig": null,
+  "databaseEncryption": {
+    "keyName": "",
+    "state": "DECRYPTED"
+  },
+  "verticalPodAutoscaling": null,
+  "shieldedNodes": {
+    "enabled": true
+  },
+  "releaseChannel": {
+    "channel": "REGULAR"
+  },
+  "workloadIdentityConfig": null,
+  "notificationConfig": {
+    "pubsub": {
+      "enabled": false,
+      "topic": "",
+      "filter": null
+    }
+  },
+  "confidentialNodes": null,
+  "identityServiceConfig": null,
+  "meshCertificates": null,
+  "selfLink": "https://container.googleapis.com/v1/projects/datawireio/zones/us-central1-f/clusters/test-3fceb6744f7639bc0d6e9b601a051071",
+  "zone": "us-central1-f",
+  "endpoint": "34.172.65.239",
+  "initialClusterVersion": "1.22.12-gke.2300",
+  "currentMasterVersion": "1.22.12-gke.2300",
+  "currentNodeVersion": "1.22.12-gke.2300",
+  "createTime": "2022-10-20T18:26:46+00:00",
+  "status": "RUNNING",
+  "statusMessage": "",
+  "nodeIpv4CidrSize": 0,
+  "servicesIpv4Cidr": "10.124.16.0/20",
+  "currentNodeCount": 1,
+  "expireTime": "",
+  "location": "us-central1-f",
+  "enableTpu": false,
+  "tpuIpv4CidrBlock": "",
+  "autopilot": null,
+  "id": "da48a07c0cfa48b695157561e99b1d450480354adabf4861a783ab59ca8436b9",
+  "loggingConfig": {
+    "componentConfig": {
+      "enableComponents": [
+        "SYSTEM_COMPONENTS",
+        "WORKLOADS"
+      ]
+    }
+  },
+  "monitoringConfig": {
+    "componentConfig": {
+      "enableComponents": [
+        "SYSTEM_COMPONENTS"
+      ]
+    },
+    "managedPrometheusConfig": null
+  },
+  "nodePoolAutoConfig": {
+    "networkTags": null
+  },
+  "nodePoolDefaults": {
+    "nodeConfigDefaults": {
+      "gcfsConfig": null,
+      "loggingConfig": {
+        "variantConfig": {
+          "variant": "DEFAULT"
+        }
+      }
+    }
+  },
+  "_nodePoolDefaults": "nodePoolDefaults"
+}
