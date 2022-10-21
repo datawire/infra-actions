@@ -1,5 +1,6 @@
 const fs = require('fs');
 const crypto = require('crypto')
+const core = require('@actions/core')
 
 function getUniqueClusterName(maxNameLength) {
   const repoName = process.env['GITHUB_REPOSITORY'].replace(/^.*\//, '');
