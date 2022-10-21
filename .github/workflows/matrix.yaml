@@ -70,9 +70,11 @@ jobs:
     # that portion of the matrix.
     runs-on: ${{ matrix.client_os }}-${{ matrix.client_arch }}
     env:
-      GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+      GOOGLE_APPLICATION_CREDENTIALS: gac.json
     steps:
       - uses: actions/checkout@v3
+
+      - run: echo ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }} > gac.json
 
       - name: Kubectl tool installer
         uses: Azure/setup-kubectl@v3
