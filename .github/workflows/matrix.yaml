@@ -77,6 +77,7 @@ jobs:
       - run: |
           cat <<'EOF' >> gac.json
           ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+          EOF
 
       - name: Kubectl tool installer
         uses: Azure/setup-kubectl@v3
