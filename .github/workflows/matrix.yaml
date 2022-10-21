@@ -32,41 +32,39 @@ jobs:
         client_os: [ubuntu]
         client_arch: [latest]
 
-        client_telepresence_version: ["2.7"]
+        client_telepresence_version: ["2.7", "2.6"]
 
         clusters:
+         - distribution: Kubeception
+           version: "1.23"
+         - distribution: Kubeception
+           version: "1.22"
+         - distribution: Kubeception
+           version: "1.21"
+
          - distribution: GKE
            version: "1.23"
+         - distribution: GKE
+           version: "1.22"
+         - distribution: GKE
+           version: "1.21"
 
          - distribution: AKS
            version: "1.22"
+         - distribution: AKS
+           version: "1.21"
+         - distribution: AKS
+           version: "1.20"
 
-        cluster_telepresence_version:  ["none", "2.7"]
+         - distribution: EKS
+           version: "1.21"
+         - distribution: EKS
+           version: "1.20"
 
-## Below is a larger matrix intended to illustrate how more permutations would be expressed. The
-## above constrained set is used for dev purposes:
-#
-#        client_os: [ubuntu-22.04, ubuntu-20.04]
-#        client_arch: [arm, x86]
-#
-#        client_telepresence_version: ["2.7", "2.6", "2.5"]
-#
-#        clusters:
-#         - distribution: GKE
-#           version: "1.23"
-#         - distribution: GKE
-#           version: "1.22"
-#         - distribution: GKE
-#           version: "1.21"
-#
-#         - distribution: AKS
-#           version: "1.22"
-#         - distribution: AKS
-#           version: "1.21"
-#         - distribution: AKS
-#           version: "1.20"
-#
-#        cluster_telepresence_version:  ["none", "2.7", "2.6", "2.5"]
+         - distribution: OpenShift
+           version: "1.22"
+
+        cluster_telepresence_version:  ["none", "2.7", "2.6"]
 
     # The runs-on field defines the client portion of the environment. This currently includes all
     # github hosted runner options and will be augmented by our self hosted macos runners to fill in
