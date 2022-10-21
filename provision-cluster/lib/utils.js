@@ -6,7 +6,7 @@ function getUniqueClusterName(maxNameLength) {
   const branch = process.env['GITHUB_HEAD_REF'];
   const sha = process.env['GITHUB_SHA'].substring(0, 8);
 
-  let name = `test-${uniqueId()}-${repoName}-${sha}-${branch}`;
+  let name = `ci-${uniqueId()}-${repoName}-${sha}-${branch}`;
   let sanitizedName = name.replace(/[^A-Za-z0-9-]/g, '-').replace(/-+$/g, '').toLowerCase().substring(0, maxNameLength);
 
 	return sanitizedName;
