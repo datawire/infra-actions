@@ -32,7 +32,8 @@ async function createKluster(name, version) {
   const client = getHttpClient();
 
   const oneDay = 86400
-  let response = await client.put(`https://sw.bakerstreet.io/kubeception/api/klusters/${name}?version=${version}&wait=true&timeoutSecs=${oneDay}`);
+  const url = `https://sw.bakerstreet.io/kubeception/api/klusters/${name}?version=${version}&wait=true&timeoutSecs=${oneDay}&EnableSNIRelay=true`
+  let response = await client.put(url);
   if (!response || !response.message) {
     throw Error("Unknown error getting response");
   }
@@ -40,7 +41,7 @@ async function createKluster(name, version) {
   //Temporarily retry 504 errors to be able to use this in a sample job
   if (response.message.statusCode == 504) {
     core.warning("Retrying 504 error")
-    response = await client.put(`https://sw.bakerstreet.io/kubeception/api/klusters/${name}?version=${version}&wait=true&timeoutSecs=${oneDay}`)
+    response = await client.put(url)
   }
 
   if (response.message.statusCode != 200) {
