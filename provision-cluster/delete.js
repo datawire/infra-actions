@@ -15,7 +15,7 @@ async function do_delete() {
   let promises = []
   promises.push(expire(provider))
 
-  if (typeof clusterName !== typeof undefined) {
+  if (typeof clusterName !== typeof undefined && clusterName !== "") {
     core.notice(`Deleting ${distribution} cluster ${clusterName}!`)
     promises.push(delete_allocated(provider, clusterName))
   }
