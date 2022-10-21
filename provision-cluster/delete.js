@@ -20,7 +20,7 @@ async function do_delete() {
     promises.push(delete_allocated(provider, clusterName))
   }
 
-  Promise.allSettled(promises)
+  return Promise.all(promises)
 }
 
 async function expire(provider) {
