@@ -44,6 +44,12 @@ async function createKluster(name, version) {
     response = await client.put(url)
   }
 
+  //Temporarily retry 504 errors to be able to use this in a sample job
+  if (response.message.statusCode == 504) {
+    core.warning("Retrying 504 error")
+    response = await client.put(url)
+  }
+
   if (response.message.statusCode != 200) {
     throw Error(`Expected status code 200 but got ${response.message.statusCode}`);
   }
