@@ -1,7 +1,7 @@
 on:
-  # Once every 5 minutes is the max we can run a scheduled job.
+  # Run expire once per hour.
   schedule:
-    - cron: '5 * * * *'
+    - cron: '0 * * * *'
 
 jobs:
   expire_clusters:
