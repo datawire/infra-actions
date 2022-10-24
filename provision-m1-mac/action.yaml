@@ -1,0 +1,40 @@
+name: "Provision M1 Mac"
+description: "Provision an M1 MacOS runner in AWS"
+inputs: 
+  aws_access_key_id: 
+    description: 'Use a secret - this account needs "ec2-admin" permissions'
+    required: true
+  aws_secret_access_key: 
+    description: 'Use a secret - this account needs "ec2-admin" permissions'
+    required: true
+  github_runner_token: 
+    description: "Use a secret. Token used to register a github action runner."
+    required: true
+  region: 
+    description: 'aws region for the runner. Default us-east-1'
+    required: false
+    default: 'us-east-1'
+  macos_arm64_ami_id: 
+    description: "ami ID that will run on the mac2 instance. Must be associated with the Host Resource Group license."
+    required: false
+    default: 'ami-071cf1597857cbcc8'
+  host_resource_group_arn: 
+    description: "the arn of the HRG that will automate setup of the dedicated hosts for the runners"
+    required: false
+    default: "arn:aws:resource-groups:us-east-1:914373874199:group/GitHub-Runners"
+  
+  
+runs: 
+  using: 'composite'
+  steps: 
+    name: "Provision M1 Runner"
+    runs-on: amazon/aws-cli
+    steps: 
+      #TODO: replace defaults for AMI and change instance type
+      run: | 
+        export AWS_ACCESS_KEY_ID
+        sed -i 's/GITHUB_RUNNER_TOKEN/${INPUT_GITHUB_RUNNER_TOKEN}/g' userdata.sh
+        aws ec2 run-instances --image-id $INPUT_MACOS_ARM64_AMI_ID --count 1 --instance-type t3.micro \
+          --key-name m1_mac_runners --user-data file://user_data.txt --instance-initiated-shutdown-behavior terminate \
+          --placement="HostResourceGroupArn=${INPUT_HOST_RESOURCE_GROUP_ARN}"
+
