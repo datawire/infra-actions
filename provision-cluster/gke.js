@@ -19,8 +19,11 @@ const DEFAULT_LIFESPAN = 1800 // 30 minutes
 // of the boilerplate between different operations.
 class Client {
 
-  constructor(zone) {
-    this.client = new container.v1.ClusterManagerClient()
+  constructor(zone, gkeClient) {
+    if (typeof gkeClient == typeof undefined) {
+      gkeClient = new container.v1.ClusterManagerClient()
+    }
+    this.client = gkeClient
     this.project = null
     this.zone = zone
   }
@@ -94,7 +97,7 @@ class Client {
     for (let c of await this.listClusters()) {
       promises.push(this.maybeExpireCluster(c, lifespanOverride))
     }
-    Promise.allSettled(promises)
+    return Promise.allSettled(promises)
   }
 
   async listClusters() {
