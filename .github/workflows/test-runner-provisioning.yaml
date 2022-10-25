@@ -1,0 +1,19 @@
+# This github workflow illustrates how to use the runner provisioning action
+name: "Provision Runner Demo"
+on: push
+jobs:
+  Test_T4g:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./provision-runners
+        with:
+          aws_access_key_id: $AWS_ACCESS_KEY_ID
+          aws_secret_access_key: $AWS_SECRET_ACCESS_KEY
+          github_token: $GITHUB_TOKEN
+          ami_id: ami-081dc0707789c2daf
+          instance_type: T4g.micro
+          github_runner_installer: https://github.com/actions/runner/releases/download/v2.298.2/actions-runner-linux-arm64-2.298.2.tar.gz
+      - run: |
+          echo "hello world"
+  # m1_mac:

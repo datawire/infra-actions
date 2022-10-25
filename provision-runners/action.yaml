@@ -35,7 +35,10 @@ inputs:
 runs: 
   using: 'composite'
   steps: 
-  - name: "Prepare GitHub Runner Token"
-    uses: docker://ubuntu:22.04
-    run: setup-runner.sh
+  - name: "Prepare GitHub Runner"
+    # uses: docker://ubuntu-latest
+    # with: 
+    #   entrypoint: /bin/bash
+    #   args: ./setup-runner.sh
+    run: ./setup-runner.sh
     shell: bash
