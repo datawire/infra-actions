@@ -7,7 +7,7 @@ inputs:
   aws_secret_access_key: 
     description: 'Use a secret - this account needs "ec2-admin" permissions'
     required: true
-  github_token: 
+  github_repo_token: 
     description: "Use a secret. Token used to register a github action runner. If D6E Automaton token make sure it is added to the repo with Admin powers."
     required: true
   region: 
@@ -25,20 +25,25 @@ inputs:
   host_resource_group_arn: 
     description: "the arn of the HRG that will automate setup of the dedicated hosts for the runners"
     required: false
-    default: "arn:aws:resource-groups:us-east-1:914373874199:group/GitHub-Runners"
+    default: ""
   github_runner_installer:
     description: "the url of the tar archive for the github runner installer. Must match desired instance architecture"
     required: true
     default: https://github.com/actions/runner/releases/download/v2.298.2/actions-runner-osx-arm64-2.298.2.tar.gz
   
-  
 runs: 
   using: 'composite'
   steps: 
   - name: "Prepare GitHub Runner"
-    # uses: docker://ubuntu-latest
-    # with: 
-    #   entrypoint: /bin/bash
-    #   args: ./setup-runner.sh
-    run: ./setup-runner.sh
+    run: $GITHUB_ACTION_PATH/setup-runner.sh
     shell: bash
+    env: 
+      GITHUB_REPOSITORY: ${{ github.repository }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.aws_access_key_id }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.aws_secret_access_key }}
+      AWS_DEFAULT_REGION: ${{ inputs.region }}
+      GITHUB_REPO_TOKEN: ${{ secrets.github_repo_token }} 
+      AMI_ID: ${{ inputs.ami_id }}
+      INSTANCE_TYPE: ${{ inputs.instance_type }}
+      GITHUB_RUNNER_INSTALLER: ${{ inputs.github_runner_installer }}
+      HOST_RESOURCE_GROUP_ARN: ${{ inputs.host_resource_group_arn }}

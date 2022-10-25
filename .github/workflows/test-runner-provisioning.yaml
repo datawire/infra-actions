@@ -2,18 +2,38 @@
 name: "Provision Runner Demo"
 on: push
 jobs:
-  Test_T4g:
+  Create_T4g:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: ./provision-runners
         with:
-          aws_access_key_id: $AWS_ACCESS_KEY_ID
-          aws_secret_access_key: $AWS_SECRET_ACCESS_KEY
-          github_token: $GITHUB_TOKEN
+          aws_access_key_id: ${{ secrets.aws_access_key_id }}
+          aws_secret_access_key: ${{ secrets.aws_secret_access_key }}
+          github_repo_token: ${{ secrets.github_repo_token }}
           ami_id: ami-081dc0707789c2daf
           instance_type: T4g.micro
           github_runner_installer: https://github.com/actions/runner/releases/download/v2.298.2/actions-runner-linux-arm64-2.298.2.tar.gz
-      - run: |
-          echo "hello world"
-  # m1_mac:
+  # Test_T4g: 
+  #   runs-on: [self-hosted, linux, arm64]
+  #   steps: 
+  #     - run: sysctl machdep.cpu.brand_string
+  # Create_M1_Mac:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: ./provision-runners
+  #       with:
+  #         aws_access_key_id: ${{ secrets.aws_access_key_id }}
+  #         aws_secret_access_key: ${{ secrets.aws_secret_access_key }}
+  #         github_repo_token: ${{ secrets.github_repo_token }}
+  #         ami_id: ami-071cf1597857cbcc8
+  #         instance_type: mac2.metal
+  #         github_runner_installer: https://github.com/actions/runner/releases/download/v2.298.2/actions-runner-osx-arm64-2.298.2.tar.gz
+  #         host_resource_group_arn: arn:aws:resource-groups:us-east-1:914373874199:group/GitHub-Runners
+  #     - run: |
+  #         echo "hello world"
+  # Test_M1_Mac: 
+  #   runs-on: [self-hosted, macOS, arm64]
+  #   steps: 
+  #     - run: sysctl machdep.cpu.brand_string
