@@ -1,3 +1,4 @@
 provision-runners/.github
 provision-runners/payload.json
+provision-runners/.secrets
 env_vars.env

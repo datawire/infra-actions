@@ -7,7 +7,7 @@ inputs:
   aws_secret_access_key: 
     description: 'Use a secret - this account needs "ec2-admin" permissions'
     required: true
-  github_repo_token: 
+  runner_admin_token: 
     description: "Use a secret. Token used to register a github action runner. If D6E Automaton token make sure it is added to the repo with Admin powers."
     required: true
   region: 
@@ -18,6 +18,10 @@ inputs:
     description: "ami ID that will run on the mac2 instance. Must be associated with the Host Resource Group license."
     required: false
     default: 'ami-071cf1597857cbcc8'
+  ami_user: 
+    description: "the automatically configured user on the ami. Usually ec2-user"
+    required: false
+    default: "ec2-user"
   instance_type: 
     description: "the instance type to spin up in the Host Resource Group"
     required: true
@@ -30,6 +34,9 @@ inputs:
     description: "the url of the tar archive for the github runner installer. Must match desired instance architecture"
     required: true
     default: https://github.com/actions/runner/releases/download/v2.298.2/actions-runner-osx-arm64-2.298.2.tar.gz
+  runner_labels: 
+    description: "labels to add when registering the runner Ex: \"m1_mac\". Use this label in the `runs-on` section of the jobs."
+    required: false
   
 runs: 
   using: 'composite'
@@ -39,11 +46,13 @@ runs:
     shell: bash
     env: 
       GITHUB_REPOSITORY: ${{ github.repository }}
-      AWS_ACCESS_KEY_ID: ${{ secrets.aws_access_key_id }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.aws_secret_access_key }}
+      AWS_ACCESS_KEY_ID: ${{ inputs.aws_access_key_id }}
+      AWS_SECRET_ACCESS_KEY: ${{ inputs.aws_secret_access_key }}
       AWS_DEFAULT_REGION: ${{ inputs.region }}
-      GITHUB_REPO_TOKEN: ${{ secrets.github_repo_token }} 
+      RUNNER_ADMIN_TOKEN: ${{ inputs.runner_admin_token }} 
       AMI_ID: ${{ inputs.ami_id }}
+      AMI_USER: ${{ inputs.ami_user }}
       INSTANCE_TYPE: ${{ inputs.instance_type }}
       GITHUB_RUNNER_INSTALLER: ${{ inputs.github_runner_installer }}
       HOST_RESOURCE_GROUP_ARN: ${{ inputs.host_resource_group_arn }}
+      RUNNER_LABELS: ${{ inputs.runner_labels }}
