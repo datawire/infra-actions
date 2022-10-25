@@ -3,37 +3,24 @@
 const core = require('@actions/core')
 const github = require('@actions/github')
 
-const kubeception = require('./kubeception.js')
 const registry = require('./registry.js')
 
 async function do_delete() {
   // inputs are defined in action metadata file
   const distribution = core.getInput('distribution')
-
   const clusterName = core.getState(registry.CLUSTER_NAME)
-  const clusterNameKubeception = process.env['clusterName']
-  if (!clusterName) {
-    throw Error(`Variable clusterName is undefined`);
+
+  let provider = registry.getProvider(distribution)
+
+  let promises = []
+  promises.push(expire(provider))
+
+  if (typeof clusterName !== typeof undefined && clusterName !== "") {
+    core.notice(`Deleting ${distribution} cluster ${clusterName}!`)
+    promises.push(delete_allocated(provider, clusterName))
   }
 
-  switch(distribution.toLowerCase()) {
-  case "kubeception":
-    kubeception.deleteKluster(clusterNameKubeception)
-      .then(() => { core.notice(`Kluster ${clusterNameKubeception} has been deleted`) })
-    break
-  default:
-    let provider = registry.getProvider(distribution)
-
-    let promises = []
-    promises.push(expire(provider))
-
-    if (typeof clusterName !== typeof undefined && clusterName !== "") {
-      core.notice(`Deleting ${distribution} cluster ${clusterName}!`)
-      promises.push(delete_allocated(provider, clusterName))
-    }
-
-    return Promise.all(promises)
-  }
+  return Promise.all(promises)
 }
 
 async function expire(provider) {
