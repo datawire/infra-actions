@@ -2,6 +2,38 @@
 const core = require('@actions/core');
 const httpClient = require('@actions/http-client');
 const httpClientLib = require('@actions/http-client/lib/auth.js');
+const utils = require('./utils.js')
+const yaml = require('yaml')
+
+const MAX_KLUSTER_NAME_LEN = 63
+
+class Client {
+
+  async allocateCluster(version) {
+    const clusterName = utils.getUniqueClusterName(MAX_KLUSTER_NAME_LEN)
+    const kubeConfig = createKluster(clusterName, version)
+    return {
+      "name": clusterName,
+      "config": kubeConfig
+    }
+  }
+
+  async makeKubeconfig(cluster) {
+    return yaml.parse(cluster.config)
+  }
+
+  async getCluster(clusterName) {
+    return clusterName
+  }
+
+  async deleteCluster(clusterName) {
+    return deleteKluster(clusterName)
+  }
+
+  async expireClusters() {
+    // Kubeception automatically expires klusters, no client side expiration is required.
+  }
+}
 
 function getHttpClient() {
   const userAgent = 'datawire/provision-cluster'
@@ -63,4 +95,4 @@ async function deleteKluster(name) {
   }
 }
 
-module.exports = { createKluster, deleteKluster};
+module.exports = { Client, createKluster, deleteKluster};
