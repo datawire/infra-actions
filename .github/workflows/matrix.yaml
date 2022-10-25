@@ -38,10 +38,7 @@ jobs:
          - distribution: GKE
            version: "1.23"
 
-         - distribution: AKS
-           version: "1.22"
-
-        cluster_telepresence_version:  ["none", "2.7"]
+        cluster_telepresence_version:  ["none"]
 
 ## Below is a larger matrix intended to illustrate how more permutations would be expressed. The
 ## above constrained set is used for dev purposes:
@@ -72,8 +69,18 @@ jobs:
     # github hosted runner options and will be augmented by our self hosted macos runners to fill in
     # that portion of the matrix.
     runs-on: ${{ matrix.client_os }}-${{ matrix.client_arch }}
+    env:
+      GOOGLE_APPLICATION_CREDENTIALS: gac.json
     steps:
       - uses: actions/checkout@v3
+
+      - run: |
+          cat <<'EOF' >> gac.json
+          ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+          EOF
+
+      - name: Kubectl tool installer
+        uses: Azure/setup-kubectl@v3
 
       # The provision-cluster action will automatically register a cleanup hook to remove the
       # cluster it provisions when the job is done.
@@ -82,6 +89,8 @@ jobs:
           distribution: ${{ matrix.clusters.distribution }}
           version: ${{ matrix.clusters.version }}
           kubeconfig: kubeconfig.yaml
+
       - run: |
           echo Testing telepresence client version ${{ matrix.client_telepresence_version }} on ${{ matrix.client_os }} ${{ matrix.client_arch }} against server version ${{ matrix.cluster_telepresence_version }} on ${{ matrix.clusters.distribution }} cluster version ${{ matrix.clusters.version }}
-          cat kubeconfig.yaml
+          kubectl version
+          kubectl get pods -A

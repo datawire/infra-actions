@@ -1,0 +1,26 @@
+name: "Testing for Action Code"
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  tests:
+    strategy:
+      matrix:
+        node-version: [14.x, 15.x, 16.x]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - working-directory: provision-cluster
+        run: npm ci
+      - working-directory: provision-cluster
+        run: npm run build --if-present
+      - working-directory: provision-cluster
+        run: npm test
