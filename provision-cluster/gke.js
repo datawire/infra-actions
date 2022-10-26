@@ -2,6 +2,7 @@
 
 const container = require('@google-cloud/container')
 const crypto = require('crypto')
+const utils = require('./lib/utils.js')
 
 const STATUS_ENUM = container.protos.google.container.v1.Operation.Status
 
@@ -43,7 +44,7 @@ class Client {
   // Create a new cluster with a unique name, wait for it to be fully provisioned, and then fetch
   // and return the resulting cluster object.
   async allocateCluster() {
-    let name = `test-${uid()}`
+    let name = `test-${utils.uid()}`
     let cluster = {
       name: name,
       network: 'default',
@@ -193,7 +194,7 @@ class Client {
 
   // Wait for the supplied operation to finish by polling up to limit times.
   async awaitOperation(operation, limit=20) {
-    let nextDelay = fibonacciDelaySequence(1000, 30000)
+    let nextDelay = utils.fibonacciDelaySequence(1000, 30000)
 
     for (let count = 0; count < limit; count += 1) {
       const op = await this.getOperation(operation)
@@ -202,7 +203,7 @@ class Client {
       } else if (count < limit) {
         let delay = nextDelay()
         console.log(`${op.status} will try after ${delay / 1000}s delay...`)
-        await sleep(delay)
+        await utils.sleep(delay)
       } else {
         throw new Error(op.status)
       }
@@ -246,36 +247,6 @@ class Operation {
 
 }
 
-// Convenience for sleeping in async functions/methods.
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-// Construct a thunk that returns a fibonacci sequence using the supplied initial and max delays.
-function fibonacciDelaySequence(initialDelay, maxDelay) {
-  let prevFibonacciDelay = 0
-  let curFibonacciDelay = initialDelay
-
-  return () => {
-    const result = curFibonacciDelay + prevFibonacciDelay
-    prevFibonacciDelay = curFibonacciDelay
-    curFibonacciDelay = result
-    if (typeof maxDelay === typeof undefined) {
-      return result
-    } else {
-      return Math.min(result, maxDelay)
-    }
-  }
-}
-
-// Construct a unique id.
-function uid() {
-  return crypto.randomBytes(16).toString("hex")
-}
-
 module.exports = {
-  Client,
-  sleep,
-  uid,
-  fibonacciDelaySequence
+  Client
 }
