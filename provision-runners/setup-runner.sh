@@ -10,9 +10,9 @@ set -e
 
 sudo apt -qq update
 sudo apt -qq install jq curl unzip moreutils -y
-#curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-#unzip -qq awscliv2.zip
-#./aws/install
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip -qq awscliv2.zip
+./aws/install
 
 #acquire runner token
 echo "Creating runner token for ${GITHUB_REPOSITORY}"
@@ -39,6 +39,7 @@ echo '#!/bin/bash
     sudo su '"${AMI_USER}"' -c "./run.sh"
     echo "this shouldnt run"' > userdata.sh
     #shutdown -h now' > userdata.sh
+cat userdata.sh
 
 #request the instance
 echo "CREATING ${INSTANCE_TYPE}"
