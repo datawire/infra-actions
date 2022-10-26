@@ -37,7 +37,8 @@ echo '#!/bin/bash
     sudo su '"${AMI_USER}"' -c "tar xzf ./github_runner_installer.tar.gz"
     sudo su '"${AMI_USER}"' -c "./config.sh --url https://github.com/'"${GITHUB_REPOSITORY}"' --token '"${GITHUB_RUNNER_TOKEN}"' --unattended --ephemeral --labels '"${RUNNER_LABELS}"'" 
     sudo su '"${AMI_USER}"' -c "./run.sh"
-    shutdown -h now' > userdata.sh
+    echo "this shouldnt run"' > userdata.sh
+    #shutdown -h now' > userdata.sh
 
 #request the instance
 echo "CREATING ${INSTANCE_TYPE}"
