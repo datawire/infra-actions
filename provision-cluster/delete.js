@@ -8,7 +8,7 @@ const registry = require('./registry.js')
 async function do_delete() {
   // inputs are defined in action metadata file
   const distribution = core.getInput('distribution')
-  let clusterName = core.getState(registry.CLUSTER_NAME)
+  const clusterName = core.getState(registry.CLUSTER_NAME)
 
   let provider = registry.getProvider(distribution)
 

@@ -1,12 +1,14 @@
 'use strict';
 
 const gke = require('./gke.js')
+const kubeception = require('./lib/kubeception.js')
 
 const CLUSTER_NAME = 'CLUSTER_NAME'
 const clusterZone = 'us-central1-b'
 
 const distributions = {
-  "gke": new gke.Client(clusterZone)
+  "gke": new gke.Client(clusterZone),
+  "kubeception": new kubeception.Client()
 }
 
 function getProvider(distribution) {

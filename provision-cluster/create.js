@@ -2,9 +2,9 @@
 
 const core = require('@actions/core')
 const github = require('@actions/github')
-const fs = require('fs')
 
 const registry = require('./registry.js')
+const utils = require('./lib/utils.js')
 
 async function create() {
   // inputs are defined in action metadata file
@@ -20,18 +20,14 @@ async function create() {
   }
 
   core.notice(`Creating ${distribution} ${version} and writing kubeconfig to file: ${kubeconfigPath}!`)
-  let cluster = await provider.allocateCluster()
+  let cluster = await provider.allocateCluster(version)
   core.saveState(registry.CLUSTER_NAME, cluster.name)
 
   core.notice(`Created ${distribution} cluster ${cluster.name}!`)
 
   let kubeconfig = await provider.makeKubeconfig(cluster)
   let contents = JSON.stringify(kubeconfig, undefined, 2) + "\n"
-  fs.writeFile(kubeconfigPath, contents, err => {
-    if (err) {
-      core.setFailed(`${err}`)
-    }
-  })
+  utils.writeFile(kubeconfigPath, contents)
 
   core.notice(`Exporting KUBECONFIG as ${kubeconfigPath}`)
   core.exportVariable("KUBECONFIG", kubeconfigPath)

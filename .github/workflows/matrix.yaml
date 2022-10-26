@@ -38,6 +38,9 @@ jobs:
          - distribution: GKE
            version: "1.23"
 
+         - distribution: Kubeception
+           version: "1.22"
+
         cluster_telepresence_version:  ["none"]
 
 ## Below is a larger matrix intended to illustrate how more permutations would be expressed. The
@@ -89,6 +92,7 @@ jobs:
           distribution: ${{ matrix.clusters.distribution }}
           version: ${{ matrix.clusters.version }}
           kubeconfig: kubeconfig.yaml
+          kubeceptionToken: ${{ secrets.KUBECEPTION_TOKEN }}
 
       - run: |
           echo Testing telepresence client version ${{ matrix.client_telepresence_version }} on ${{ matrix.client_os }} ${{ matrix.client_arch }} against server version ${{ matrix.cluster_telepresence_version }} on ${{ matrix.clusters.distribution }} cluster version ${{ matrix.clusters.version }}
