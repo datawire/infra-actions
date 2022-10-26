@@ -15,7 +15,7 @@ inputs:
     required: false
     default: 'us-east-1'
   ami_id: 
-    description: "ami ID that will run on the mac2 instance. Must be associated with the Host Resource Group license."
+    description: "ami ID that will run on the instance. Must be associated with the Host Resource Group license if it is a mac."
     required: true
   ami_home_directory:
     description: "the home directory for users on this AMI. Ex: /home"
@@ -29,7 +29,7 @@ inputs:
     required: true
     default: 'mac2.metal'
   host_resource_group_arn: 
-    description: "the arn of the HRG that will automate setup of the dedicated hosts for the runners"
+    description: "the arn of the HRG that will automate setup of the dedicated hosts for the runners. Only needed for Mac runners"
     required: false
     default: ""
   github_runner_installer:

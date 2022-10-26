@@ -23,7 +23,7 @@ fi
 
 #acquire runner token
 echo "Creating runner token for ${GITHUB_REPOSITORY}"
-curl -s -X POST \
+curl -s --fail-with-body -X POST \
   -H "Accept: application/vnd.github+json" \
   -H "Authorization: Bearer ${RUNNER_ADMIN_TOKEN}" \
   https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/runners/registration-token > token_output.json
