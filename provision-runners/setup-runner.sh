@@ -59,10 +59,4 @@ aws ec2 run-instances --image-id $AMI_ID --count 1 --instance-type $INSTANCE_TYP
 cat instance_info.json
 export INSTANCE_ID=$(cat instance_info.json | jq -r ".Instances[0].InstanceId")
 
-#wait for the instance to become available
-echo "Waiting for instance ${INSTANCE_ID} to come online"
-while true; do
-  aws ec2 wait instance-status-ok --instance-ids "$INSTANCE_ID" && break || echo "still waiting... " | ts
-done
-
-echo "Instance ${INSTANCE_ID} is ready to run jobs"
+echo "Instance ${INSTANCE_ID} will be ready to run jobs shortly"
