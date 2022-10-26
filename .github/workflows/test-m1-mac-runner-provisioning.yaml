@@ -1,0 +1,22 @@
+name: "Provision macOS-arm64 Runner Demo"
+on: release
+jobs:
+  Create_M1_Mac:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./provision-runners
+        with:
+          aws_access_key_id: ${{ secrets.aws_access_key_id }}
+          aws_secret_access_key: ${{ secrets.aws_secret_access_key }}
+          runner_admin_token: ${{ secrets.runner_admin_token }}
+          ami_id: ami-01b8fcd5770ceb9c1
+          ami_home: /Users
+          instance_type: mac2.metal
+          github_runner_installer: https://github.com/actions/runner/releases/download/v2.298.2/actions-runner-osx-arm64-2.298.2.tar.gz
+          runner_labels: "macOS-arm64"
+          host_resource_group_arn: arn:aws:resource-groups:us-east-1:914373874199:group/GitHub-Runners
+  Test_M1_Mac: 
+    runs-on: [macOS-arm64]
+    steps: 
+      - run: echo "$(uname -v) $(uname -m)"

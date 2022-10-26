@@ -1,0 +1,22 @@
+name: "Provision ubuntu-arm64 Runner Demo"
+on: push
+jobs:
+  Create_T4g:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./provision-runners
+        with:
+          aws_access_key_id: ${{ secrets.aws_access_key_id }}
+          aws_secret_access_key: ${{ secrets.aws_secret_access_key }}
+          runner_admin_token: ${{ secrets.runner_admin_token }}
+          ami_id: ami-0f69dd1d0d03ad669
+          ami_user: ubuntu
+          ami_home: /home
+          instance_type: t4g.micro
+          github_runner_installer: https://github.com/actions/runner/releases/download/v2.298.2/actions-runner-linux-arm64-2.298.2.tar.gz
+          runner_labels: "ubuntu-arm64"
+  Test_T4g: 
+    runs-on: [ubuntu-arm64]
+    steps: 
+      - run: echo "$(uname -v) $(uname -m)"
