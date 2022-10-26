@@ -56,7 +56,7 @@ runs:
       RUNNER_ADMIN_TOKEN: ${{ inputs.runner_admin_token }} 
       AMI_ID: ${{ inputs.ami_id }}
       AMI_USER: ${{ inputs.ami_user }}
-      AMI_HOME: ${{ inputs.ami_home }}
+      AMI_HOME: ${{ inputs.ami_home_directory }}
       INSTANCE_TYPE: ${{ inputs.instance_type }}
       GITHUB_RUNNER_INSTALLER: ${{ inputs.github_runner_installer }}
       HOST_RESOURCE_GROUP_ARN: ${{ inputs.host_resource_group_arn }}
