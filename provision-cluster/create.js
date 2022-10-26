@@ -23,12 +23,13 @@ async function create() {
   let cluster = await provider.allocateCluster(version)
   core.saveState(registry.CLUSTER_NAME, cluster.name)
 
-  core.notice(`Created ${distribution} cluster ${cluster.name}!`)
-
+  core.notice(`Creating ${distribution} cluster ${cluster.name} ...`)
   let kubeconfig = await provider.makeKubeconfig(cluster)
+  core.notice(`Cluster created: ${cluster.name}!`)
   let contents = JSON.stringify(kubeconfig, undefined, 2) + "\n"
   utils.writeFile(kubeconfigPath, contents)
 
+  core.notice(`Kubeconfig written to ${kubeconfigPath}.`)
   core.notice(`Exporting KUBECONFIG as ${kubeconfigPath}`)
   core.exportVariable("KUBECONFIG", kubeconfigPath)
 }
