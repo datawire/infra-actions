@@ -110,3 +110,14 @@ test('fibonacciRetry error', async () => {
   }
   expect(returned).toBeFalsy()
 })
+
+test('getUniqueClusterName', () => {
+  process.env["GITHUB_REPOSITORY"] = "repo"
+  process.env["GITHUB_HEAD_REF"] = "head-ref"
+  process.env["GITHUB_SHA"] = "1234"
+  for (let i = 10; i < 1000; i++) {
+    let name = utils.getUniqueClusterName(i)
+    expect(name.length <= i).toBeTruthy()
+    expect(name.endsWith("-")).toBeFalsy()
+  }
+})

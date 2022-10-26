@@ -10,7 +10,11 @@ function getUniqueClusterName(maxNameLength) {
   let name = `ci-${uid()}-${repoName}-${sha}-${branch}`;
   let sanitizedName = name.replace(/[^A-Za-z0-9-]/g, '-').replace(/-+$/g, '').toLowerCase().substring(0, maxNameLength);
 
-	return sanitizedName;
+  if (sanitizedName.endsWith("-")) {
+    sanitizedName = sanitizedName.substring(0, sanitizedName.length - 1)
+  }
+
+  return sanitizedName;
 }
 
 function writeFile(path, contents) {
