@@ -27,6 +27,7 @@ async function create() {
   let kubeconfig = await provider.makeKubeconfig(cluster)
   core.notice(`Cluster created: ${cluster.name}!`)
   let contents = JSON.stringify(kubeconfig, undefined, 2) + "\n"
+  core.info(`kubeconfig`, contents)
   utils.writeFile(kubeconfigPath, contents)
 
   core.notice(`Kubeconfig written to ${kubeconfigPath}.`)
