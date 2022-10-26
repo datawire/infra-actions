@@ -64,19 +64,19 @@ async function createKluster(name, version) {
 
   const client = getHttpClient();
 
-  const response = await client.put(`https://sw.bakerstreet.io/kubeception/api/klusters/${name}?version=${version}&wait=true&timeoutSecs=${oneHour}`);
-  if (!response || !response.message) {
-    throw Error("Unknown error getting response");
-  }
+  return utils.fibonacciRetry(async ()=>{
+    const response = await client.put(`https://sw.bakerstreet.io/kubeception/api/klusters/${name}?version=${version}&timeoutSecs=${oneHour}`)
+    if (!response || !response.message) {
+      throw Error("Unknown error getting response")
+    }
 
-  if (response.message.statusCode != 200) {
-    throw Error(`Expected status code 200 but got ${response.message.statusCode}`);
-  }
+    if (response.message.statusCode == 200) {
+      return await response.readBody()
+    }
 
-  const body = await response.readBody();
-
-  return body;
-};
+    throw new utils.Transient(`status code ${response.message.statusCode}`)
+  })
+}
 
 async function deleteKluster(name) {
   if (!name) {
