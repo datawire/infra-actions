@@ -72,9 +72,12 @@ async function createKluster(name, version) {
 
     if (response.message.statusCode == 200) {
       return await response.readBody()
+    } else if (response.message.statusCode == 425) {
+      throw new utils.Transient(`status code ${response.message.statusCode}`)
+    } else {
+      let body = await response.readBody()
+      throw new Error(`Status code ${response.message.statusCode}: ${body}`)
     }
-
-    throw new utils.Transient(`status code ${response.message.statusCode}`)
   })
 }
 
