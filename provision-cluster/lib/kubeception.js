@@ -12,7 +12,7 @@ class Client {
 
   async allocateCluster(version) {
     const clusterName = utils.getUniqueClusterName(MAX_KLUSTER_NAME_LEN)
-    const kubeConfig = createKluster(clusterName, version)
+    const kubeConfig = await createKluster(clusterName, version)
     return {
       "name": clusterName,
       "config": kubeConfig
