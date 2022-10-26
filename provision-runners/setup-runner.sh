@@ -8,8 +8,8 @@
 set -e
 #set up dependencies
 
-apt -qq update
-apt -qq install jq curl unzip moreutils -y
+sudo apt -qq update
+sudo apt -qq install jq curl unzip moreutils -y
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip awscliv2.zip
 ./aws/install &> /dev/null
@@ -20,7 +20,7 @@ curl -s -X POST \
   -H "Accept: application/vnd.github+json" \
   -H "Authorization: Bearer ${RUNNER_ADMIN_TOKEN}" \
   https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/runners/registration-token > token_output.json
-  
+
 export GITHUB_RUNNER_TOKEN=$(cat token_output.json | jq -r ".token")
 if [ ${GITHUB_RUNNER_TOKEN} == "null" ]; 
   then echo "Could not generate valid token. Make sure the token has admin access to the repository." && exit 1; 
