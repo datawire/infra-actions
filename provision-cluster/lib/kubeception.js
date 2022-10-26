@@ -6,6 +6,7 @@ const utils = require('./utils.js')
 const yaml = require('yaml')
 
 const MAX_KLUSTER_NAME_LEN = 63
+const oneHour = 60*1000
 
 class Client {
 
@@ -63,8 +64,7 @@ async function createKluster(name, version) {
 
   const client = getHttpClient();
 
-  const oneDay = 86400
-  const response = await client.put(`https://sw.bakerstreet.io/kubeception/api/klusters/${name}?version=${version}&wait=true&timeoutSecs=${oneDay}`);
+  const response = await client.put(`https://sw.bakerstreet.io/kubeception/api/klusters/${name}?version=${version}&wait=true&timeoutSecs=${oneHour}`);
   if (!response || !response.message) {
     throw Error("Unknown error getting response");
   }
