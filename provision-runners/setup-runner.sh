@@ -12,7 +12,7 @@ sudo apt -qq update
 sudo apt -qq install jq curl unzip moreutils -y
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip -qq awscliv2.zip
-./aws/install &> /dev/null
+./aws/install
 
 #acquire runner token
 echo "Creating runner token for ${GITHUB_REPOSITORY}"
