@@ -193,21 +193,15 @@ class Client {
   }
 
   // Wait for the supplied operation to finish by polling up to limit times.
-  async awaitOperation(operation, limit=20) {
-    let nextDelay = utils.fibonacciDelaySequence(1000, 30000)
-
-    for (let count = 0; count < limit; count += 1) {
+  async awaitOperation(operation) {
+    utils.fibonacciRetry(async ()=>{
       const op = await this.getOperation(operation)
       if (op.done) {
         return op
-      } else if (count < limit) {
-        let delay = nextDelay()
-        console.log(`${op.status} will try after ${delay / 1000}s delay...`)
-        await utils.sleep(delay)
       } else {
-        throw new Error(op.status)
+        throw new utils.Transient(op.status)
       }
-    }
+    })
   }
 
   // Get the current status of the supplied operation.
