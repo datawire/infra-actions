@@ -11,6 +11,7 @@ jobs:
           aws_secret_access_key: ${{ secrets.aws_secret_access_key }}
           runner_admin_token: ${{ secrets.runner_admin_token }}
           ami_id: ami-01b8fcd5770ceb9c1
+          ami_user: ec2-user
           ami_home_directory: /Users
           instance_type: mac2.metal
           github_runner_installer: https://github.com/actions/runner/releases/download/v2.298.2/actions-runner-osx-arm64-2.298.2.tar.gz

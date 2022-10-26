@@ -16,16 +16,14 @@ inputs:
     default: 'us-east-1'
   ami_id: 
     description: "ami ID that will run on the mac2 instance. Must be associated with the Host Resource Group license."
-    required: false
-    default: 'ami-071cf1597857cbcc8'
+    required: true
   ami_home_directory:
     description: "the home directory for users on this AMI. Ex: /home"
     required: true
     default: /home
   ami_user: 
     description: "the automatically configured user on the ami. Usually ec2-user"
-    required: false
-    default: "ec2-user"
+    required: true
   instance_type: 
     description: "the instance type to spin up in the Host Resource Group"
     required: true
@@ -37,7 +35,6 @@ inputs:
   github_runner_installer:
     description: "the url of the tar archive for the github runner installer. Must match desired instance architecture"
     required: true
-    default: https://github.com/actions/runner/releases/download/v2.298.2/actions-runner-osx-arm64-2.298.2.tar.gz
   runner_labels: 
     description: "labels to add when registering the runner Ex: \"m1_mac\". Use this label in the `runs-on` section of the jobs."
     required: false
