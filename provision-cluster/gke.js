@@ -194,7 +194,7 @@ class Client {
 
   // Wait for the supplied operation to finish by polling up to limit times.
   async awaitOperation(operation) {
-    utils.fibonacciRetry(async ()=>{
+    return utils.fibonacciRetry(async ()=>{
       const op = await this.getOperation(operation)
       if (op.done) {
         return op
