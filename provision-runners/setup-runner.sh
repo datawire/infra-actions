@@ -6,13 +6,20 @@
 [[ ! -z "$AWS_DEFAULT_REGION" ]] && echo "AWS_DEFAULT_REGION Not empty" || echo "AWS_DEFAULT_REGION Empty"
 
 set -e
-#set up dependencies
 
+echo "setting up dependencies"
 sudo apt -qq update
-sudo apt -qq install jq curl unzip moreutils -y
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-unzip -qq awscliv2.zip
-./aws/install
+sudo apt -qq install jq curl unzip moreutils -y &> /dev/null
+
+#Only install awscli if it's missing (running act)
+if [ ! -x "$(command -v aws)" ]
+  then 
+    echo "aws-cli was not found - installing now"
+    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+    unzip -qq awscliv2.zip
+    ./aws/install
+  else echo "aws-cli was found on system"
+fi 
 
 #acquire runner token
 echo "Creating runner token for ${GITHUB_REPOSITORY}"
