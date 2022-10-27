@@ -6,12 +6,13 @@ const utils = require('./utils.js')
 const yaml = require('yaml')
 
 const MAX_KLUSTER_NAME_LEN = 63
+const oneHour = 60*1000
 
 class Client {
 
   async allocateCluster(version) {
     const clusterName = utils.getUniqueClusterName(MAX_KLUSTER_NAME_LEN)
-    const kubeConfig = createKluster(clusterName, version)
+    const kubeConfig = await createKluster(clusterName, version)
     return {
       "name": clusterName,
       "config": kubeConfig
@@ -63,20 +64,25 @@ async function createKluster(name, version) {
 
   const client = getHttpClient();
 
-  const oneDay = 86400
-  const response = await client.put(`https://sw.bakerstreet.io/kubeception/api/klusters/${name}?version=${version}&wait=true&timeoutSecs=${oneDay}`);
-  if (!response || !response.message) {
-    throw Error("Unknown error getting response");
-  }
+  return utils.fibonacciRetry(async ()=>{
+    const response = await client.put(`https://sw.bakerstreet.io/kubeception/api/klusters/${name}?version=${version}&timeoutSecs=${oneHour}`)
+    if (!response || !response.message) {
+      throw Error("Unknown error getting response")
+    }
 
-  if (response.message.statusCode != 200) {
-    throw Error(`Expected status code 200 but got ${response.message.statusCode}`);
-  }
-
-  const body = await response.readBody();
-
-  return body;
-};
+    if (response.message.statusCode == 200) {
+      return await response.readBody()
+    } else if (response.message.statusCode == 425) {
+      // The kubeception API uses 425 to signal that cluster creation is "in progress", so we want
+      // to retry later.
+      throw new utils.Transient(`status code ${response.message.statusCode}`)
+    } else {
+      // Any other status code is likely a permanent error.
+      let body = await response.readBody()
+      throw new Error(`Status code ${response.message.statusCode}: ${body}`)
+    }
+  })
+}
 
 async function deleteKluster(name) {
   if (!name) {
