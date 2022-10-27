@@ -3,7 +3,7 @@
 const core = require('@actions/core')
 const github = require('@actions/github')
 
-const registry = require('./registry.js')
+const registry = require('./lib/registry.js')
 
 async function do_delete() {
   // inputs are defined in action metadata file
