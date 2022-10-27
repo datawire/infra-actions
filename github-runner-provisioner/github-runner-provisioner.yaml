@@ -1,3 +1,16 @@
+## Mapping
+---
+apiVersion: getambassador.io/v2
+kind: Mapping
+metadata:
+  annotations:
+  name: github-runner-provisioner
+spec:
+  host: sw.bakerstreet.io
+  prefix: /github-runner-provisioner/
+  service: github-runner-provisioner:80
+  timeout_ms: 60000
+
 ## Service
 ---
 apiVersion: v1
@@ -5,7 +18,7 @@ kind: Service
 metadata:
   name: github-runner-provisioner
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: github-runner-provisioner
   ports:
