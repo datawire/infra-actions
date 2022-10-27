@@ -96,6 +96,5 @@ jobs:
 
       - run: |
           echo Testing telepresence client version ${{ matrix.client_telepresence_version }} on ${{ matrix.client_os }} ${{ matrix.client_arch }} against server version ${{ matrix.cluster_telepresence_version }} on ${{ matrix.clusters.distribution }} cluster version ${{ matrix.clusters.version }}
-          cat ${KUBECONFIG}
           kubectl version
           kubectl get pods -A
