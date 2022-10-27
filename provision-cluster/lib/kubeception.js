@@ -73,8 +73,11 @@ async function createKluster(name, version) {
     if (response.message.statusCode == 200) {
       return await response.readBody()
     } else if (response.message.statusCode == 425) {
+      // The kubeception API uses 425 to signal that cluster creation is "in progress", so we want
+      // to retry later.
       throw new utils.Transient(`status code ${response.message.statusCode}`)
     } else {
+      // Any other status code is likely a permanent error.
       let body = await response.readBody()
       throw new Error(`Status code ${response.message.statusCode}: ${body}`)
     }
