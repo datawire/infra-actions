@@ -1,0 +1,9 @@
+resources:
+- github-runner-provisioner.yaml
+
+configMapGenerator:
+- name: code
+  files:
+  - go.mod
+  - go.sum
+  - main.go
