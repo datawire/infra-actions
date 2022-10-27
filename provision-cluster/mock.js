@@ -1,4 +1,4 @@
-'use string';
+'use strict';
 
 const gke = require('./gke.js')
 const fs = require('fs')

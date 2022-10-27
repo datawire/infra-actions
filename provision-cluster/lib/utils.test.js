@@ -1,9 +1,11 @@
+'use strict';
+
 const utils = require('./utils.js')
 
 test('fibonacciDelaySequence unlimited', () => {
   let seq = utils.fibonacciDelaySequence(1)
-  let prev = 0;
-  let cur = 1;
+  let prev = 0
+  let cur = 1
   for (let i = 0; i < 100; i++) {
     let next = cur + prev
     prev = cur
@@ -15,8 +17,8 @@ test('fibonacciDelaySequence unlimited', () => {
 test('fibonacciDelaySequence limited', () => {
   let limit = 10
   let seq = utils.fibonacciDelaySequence(1, limit)
-  let prev = 0;
-  let cur = 1;
+  let prev = 0
+  let cur = 1
   for (let i = 0; i < 100; i++) {
     let next = cur + prev
     prev = cur
