@@ -1,7 +1,7 @@
 'use strict';
 
 const gke = require('./gke.js')
-const kubeception = require('./lib/kubeception.js')
+const kubeception = require('./kubeception.js')
 
 const CLUSTER_NAME = 'CLUSTER_NAME'
 const clusterZone = 'us-central1-b'

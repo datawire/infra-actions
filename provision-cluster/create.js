@@ -3,7 +3,7 @@
 const core = require('@actions/core')
 const github = require('@actions/github')
 
-const registry = require('./registry.js')
+const registry = require('./lib/registry.js')
 const utils = require('./lib/utils.js')
 
 async function create() {
