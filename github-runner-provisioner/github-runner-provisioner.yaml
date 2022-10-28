@@ -3,7 +3,7 @@
 apiVersion: getambassador.io/v2
 kind: Mapping
 metadata:
-  annotations:
+  annotations: {}
   name: github-runner-provisioner
 spec:
   host: sw.bakerstreet.io
@@ -46,7 +46,7 @@ spec:
     spec:
       containers:
       - name: github-runner-provisioner
-        image: golang:1.17.11
+        image: golang:1.18.7
         imagePullPolicy: IfNotPresent
         command: ["go", "run", "."]
         workingDir: "/src"
@@ -55,9 +55,18 @@ spec:
         volumeMounts:
         - name: code
           mountPath: "/src"
+        env:
+        - name: AWS_DEFAULT_REGION
+          value: us-east-1
+        envFrom:
+          - secretRef:
+              name: github-runner-provisioner-secrets
       volumes:
         - name: code
           configMap:
             # Provide the name of the ConfigMap containing the files you want
             # to add to the container
             name: code
+        - name: github-runner-provisioner-aws-config
+          secret:
+            secretName: github-runner-provisioner-aws-config
