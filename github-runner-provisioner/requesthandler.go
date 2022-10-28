@@ -50,6 +50,7 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if *workflowJobEvent.Action != "queued" {
+		log.Printf("Ignoring GitHub event with action %s.", *workflowJobEvent.Action)
 		http.Error(w, "OK", http.StatusOK)
 		return
 	}
@@ -59,12 +60,16 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	log.Printf("Job %s requested a Mac M1 runner\n", *workflowJobEvent.Repo.Name)
+
 	dryRun := len(r.Form["dry-run"]) > 0 && r.Form["dry-run"][0] == "true"
 	if err := createMacM1Runner(r.Context(), *workflowJobEvent.Repo.Owner.Login, *workflowJobEvent.Repo.Name, dryRun); err != nil {
+		log.Printf("Error creating Mac M1 runner for job %s [%s]: %v", *workflowJobEvent.WorkflowJob.Name, *workflowJobEvent.WorkflowJob.HTMLURL, err)
 		http.Error(w, fmt.Sprintf("Error creating Mac M1 runner: %v", err), http.StatusBadRequest)
 		return
 	}
 
+	log.Printf("Mac M1 runner has been scheduled for job %s\n", *workflowJobEvent.Repo.Name)
 	if _, err := w.Write([]byte("OK")); err != nil {
 		log.Printf("Error sending HTTP response: %v", err)
 	}

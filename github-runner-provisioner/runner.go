@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 )
 
@@ -23,11 +22,10 @@ func createMacM1Runner(ctx context.Context, owner string, repo string, dryRun bo
 		UserData:                          &userData,
 	}
 
-	output, err := ec2Client.RunInstances(ctx, &params)
+	_, err = ec2Client.RunInstances(ctx, &params)
 	if err != nil {
 		return err
 	}
 
-	fmt.Printf("Output: %v\n", output)
 	return nil
 }
