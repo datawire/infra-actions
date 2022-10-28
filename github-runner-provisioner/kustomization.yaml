@@ -6,6 +6,7 @@ configMapGenerator:
   files:
   - go.mod
   - go.sum
+  - aws.go
   - config.go
   - main.go
   - requesthandler.go
