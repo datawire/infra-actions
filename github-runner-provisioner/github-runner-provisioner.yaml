@@ -3,11 +3,12 @@
 apiVersion: getambassador.io/v2
 kind: Mapping
 metadata:
-  annotations:
+  annotations: {}
   name: github-runner-provisioner
 spec:
   host: sw.bakerstreet.io
   prefix: /github-runner-provisioner/
+  rewrite: /github-runner-provisioner
   service: github-runner-provisioner:80
   timeout_ms: 60000
 
@@ -16,6 +17,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  annotations:
+    a8r.io/chat: '#team-infra'
+    a8r.io/description: "Mac M1 provisioner for GitHub jobs in Ambassador Labs repositories"
+    a8r.io/logs: ""
+    a8r.io/owner: Infrastructure
+    a8r.io/repository: https://github.com/datawire/infra-actions
+    a8r.io/runbook: ""
+    a8r.io/uptime: ""
   name: github-runner-provisioner
 spec:
   type: ClusterIP
@@ -46,7 +55,7 @@ spec:
     spec:
       containers:
       - name: github-runner-provisioner
-        image: golang:1.17.11
+        image: golang:1.18.7
         imagePullPolicy: IfNotPresent
         command: ["go", "run", "."]
         workingDir: "/src"
@@ -55,9 +64,38 @@ spec:
         volumeMounts:
         - name: code
           mountPath: "/src"
+        env:
+        - name: AWS_DEFAULT_REGION
+          value: us-east-1
+        envFrom:
+          - secretRef:
+              name: github-runner-provisioner-secrets
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /healthz
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 40
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /healthz
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 40
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
       volumes:
         - name: code
           configMap:
             # Provide the name of the ConfigMap containing the files you want
             # to add to the container
             name: code
+        - name: github-runner-provisioner-aws-config
+          secret:
+            secretName: github-runner-provisioner-aws-config

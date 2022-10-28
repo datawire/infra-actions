@@ -6,4 +6,10 @@ configMapGenerator:
   files:
   - go.mod
   - go.sum
+  - aws.go
+  - config.go
+  - github.go
+  - macm1.go
   - main.go
+  - requesthandler.go
+  - runner.go
