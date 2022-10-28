@@ -8,6 +8,7 @@ metadata:
 spec:
   host: sw.bakerstreet.io
   prefix: /github-runner-provisioner/
+  rewrite: /github-runner-provisioner
   service: github-runner-provisioner:80
   timeout_ms: 60000
 
