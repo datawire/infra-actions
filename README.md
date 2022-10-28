@@ -124,7 +124,7 @@ In the future, we may make additional runners available (like Ubuntu ARM64 or Al
 Note that Mac M1 runners are created on demand, and it will take between 30 minutes and up to 3 hours to have one available 
 depending on how many workflows are requesting these runners.
 
-Also, there is a limit of 10 runners at any point in time. Any build that request a Mac M1 during this time will fail.  
+Also, there is a limit of 10 runners at any point in time. Any build that requests a Mac M1 during this time will fail.  
 
 # Dev loop
  See [DEVELOPING.md](docs/DEVELOPING.md)
