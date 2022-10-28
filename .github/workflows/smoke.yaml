@@ -31,7 +31,7 @@ jobs:
 
       # The provision-cluster action will automatically register a cleanup hook to remove the
       # cluster it provisions when the job is done.
-      - uses: github.com/datawire/infra-actions/provision-cluster@v0.1.3
+      - uses: datawire/infra-actions/provision-cluster@v0.1.3
         with:
           distribution: ${{ matrix.clusters.distribution }}
           version: ${{ matrix.clusters.version }}

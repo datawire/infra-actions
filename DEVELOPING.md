@@ -22,7 +22,7 @@ released tag, e.g.:
 
 ```
 ...
-       - uses: github.com/datawire/infra-actions/provision-cluster@vX.Y.Z
+       - uses: datawire/infra-actions/provision-cluster@vX.Y.Z
 ...
 ```
 
