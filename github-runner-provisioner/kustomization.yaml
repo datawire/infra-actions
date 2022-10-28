@@ -9,6 +9,7 @@ configMapGenerator:
   - aws.go
   - config.go
   - github.go
+  - macm1.go
   - main.go
   - requesthandler.go
   - runner.go
