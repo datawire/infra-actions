@@ -1,10 +1,12 @@
-# This github workflow is for smoke testing the latest release of the actions defined in this repo.
+# This github workflow is for smoke testing the latest release of the actions defined in this
+# repo. This workflow is executed whenever this file is changed. That will happen when the "uses"
+# line below is updated to reference the latest release as defined in the release process.
 
 name: "Release Smoke Test"
 on:
   push:
-    tags:
-      - 'v*.*.*'
+    paths:
+      - '.github/workflows/smoke.yaml'
 jobs:
   release_smoke:
     strategy:
@@ -19,9 +21,6 @@ jobs:
     env:
       GOOGLE_APPLICATION_CREDENTIALS: gac.json
     steps:
-      - name: Set RELEASE_VERSION
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-
       - run: |
           cat <<'EOF' >> gac.json
           ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
@@ -32,7 +31,7 @@ jobs:
 
       # The provision-cluster action will automatically register a cleanup hook to remove the
       # cluster it provisions when the job is done.
-      - uses: github.com/datawire/infra-actions/provision-cluster@${{ env.RELEASE_VERSION }}
+      - uses: github.com/datawire/infra-actions/provision-cluster@v0.1.3
         with:
           distribution: ${{ matrix.clusters.distribution }}
           version: ${{ matrix.clusters.version }}
