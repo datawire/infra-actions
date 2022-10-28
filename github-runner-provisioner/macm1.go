@@ -19,7 +19,7 @@ type runnerConfig struct {
 var macM1HostResourceGroupArn = "arn:aws:resource-groups:us-east-1:914373874199:group/GitHub-Runners"
 
 var macM1Config = runnerConfig{
-	imageId: "ami-01b8fcd5770ceb9c1",
+	imageId: AMI_MACOS_12_6_ARM64,
 	placement: types.Placement{
 		HostResourceGroupArn: &macM1HostResourceGroupArn,
 	},
