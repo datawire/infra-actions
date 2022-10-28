@@ -16,6 +16,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  annotations:
+    a8r.io/chat: '#team-infra'
+    a8r.io/description: "Mac M1 provisioner for GitHub jobs in Ambassador Labs repositories"
+    a8r.io/logs: ""
+    a8r.io/owner: Infrastructure
+    a8r.io/repository: https://github.com/datawire/infra-actions
+    a8r.io/runbook: ""
+    a8r.io/uptime: ""
   name: github-runner-provisioner
 spec:
   type: ClusterIP
