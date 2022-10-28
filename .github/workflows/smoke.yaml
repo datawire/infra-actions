@@ -19,9 +19,8 @@ jobs:
     env:
       GOOGLE_APPLICATION_CREDENTIALS: gac.json
     steps:
-      - name: Set output
-        id: vars
-        run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+      - name: Set RELEASE_VERSION
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
       - run: |
           cat <<'EOF' >> gac.json
@@ -33,7 +32,7 @@ jobs:
 
       # The provision-cluster action will automatically register a cleanup hook to remove the
       # cluster it provisions when the job is done.
-      - uses: github.com/datawire/infra-actions/provision-cluster@${{ steps.vars.outputs.tag }}
+      - uses: github.com/datawire/infra-actions/provision-cluster@${{ env.RELEASE_VERSION }}
         with:
           distribution: ${{ matrix.clusters.distribution }}
           version: ${{ matrix.clusters.version }}
