@@ -56,7 +56,7 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !slices.Contains(workflowJobEvent.WorkflowJob.Labels, "macOS-arm64") {
-		http.Error(w, fmt.Sprintf("Only runners of type macOS-arm64 are supported. Got %v", workflowJobEvent.WorkflowJob.Labels), http.StatusBadRequest)
+		http.Error(w, fmt.Sprintf("Only runners of type macOS-arm64 are supported. Got %v", workflowJobEvent.WorkflowJob.Labels), http.StatusOK)
 		return
 	}
 
