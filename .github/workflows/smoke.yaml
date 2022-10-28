@@ -1,0 +1,41 @@
+# This github workflow is for smoke testing the latest release of the actions defined in this repo.
+
+name: "Release Smoke Test"
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+jobs:
+  release_smoke:
+    strategy:
+      matrix:
+        clusters:
+         - distribution: GKE
+           version: "1.23"
+
+         - distribution: Kubeception
+           version: "1.22"
+    runs-on: ubuntu-latest
+    env:
+      GOOGLE_APPLICATION_CREDENTIALS: gac.json
+    steps:
+      - run: |
+          cat <<'EOF' >> gac.json
+          ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+          EOF
+
+      - name: Kubectl tool installer
+        uses: Azure/setup-kubectl@v3
+
+      # The provision-cluster action will automatically register a cleanup hook to remove the
+      # cluster it provisions when the job is done.
+      - uses: github.com/datawire/infra-actions/provision-cluster@${GITHUB_REF#refs/*/}
+        with:
+          distribution: ${{ matrix.clusters.distribution }}
+          version: ${{ matrix.clusters.version }}
+          kubeconfig: kubeconfig.yaml
+          kubeceptionToken: ${{ secrets.KUBECEPTION_TOKEN }}
+
+      - run: |
+          kubectl version
+          kubectl get pods -A
