@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-func handleRequest(w http.ResponseWriter, r *http.Request) {
+func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 	if !strings.HasPrefix(r.URL.String(), "/github-runner-provisioner") {
 		http.Error(w, fmt.Sprintf("URL %s is invalid", r.URL.String()), http.StatusBadRequest)
 		return
@@ -73,4 +73,8 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 	if _, err := w.Write([]byte("OK")); err != nil {
 		log.Printf("Error sending HTTP response: %v", err)
 	}
+}
+
+func handleHealthCheckRequest(w http.ResponseWriter, _ *http.Request) {
+	http.Error(w, "OK", http.StatusOK)
 }

@@ -17,7 +17,8 @@ func init() {
 func main() {
 	makeHandler := func(name string) http.Handler {
 		mux := http.NewServeMux()
-		mux.HandleFunc("/", handleRequest)
+		mux.HandleFunc("/", handleProvisioningRequest)
+		mux.HandleFunc("/healthz", handleHealthCheckRequest)
 		return mux
 	}
 
