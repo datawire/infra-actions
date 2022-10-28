@@ -6,4 +6,7 @@ configMapGenerator:
   files:
   - go.mod
   - go.sum
+  - config.go
   - main.go
+  - requesthandler.go
+  - runner.go
