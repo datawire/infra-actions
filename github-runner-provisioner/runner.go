@@ -7,11 +7,6 @@ import (
 )
 
 func createMacM1Runner(ctx context.Context, owner string, repo string) error {
-	client, err := newAwsClient()
-	if err != nil {
-		return err
-	}
-
 	dryRun := true
 
 	userData, err := macRunnerUserData(ctx, owner, repo)
@@ -30,7 +25,7 @@ func createMacM1Runner(ctx context.Context, owner string, repo string) error {
 		UserData:                          &userData,
 	}
 
-	output, err := client.RunInstances(ctx, &params)
+	output, err := ec2Client.RunInstances(ctx, &params)
 	if err != nil {
 		return err
 	}

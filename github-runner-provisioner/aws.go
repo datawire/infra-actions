@@ -7,6 +7,7 @@ import (
 	config2 "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
+	"log"
 )
 
 type runnerConfig struct {
@@ -18,6 +19,7 @@ type runnerConfig struct {
 	instanceType         types.InstanceType
 }
 
+var ec2Client *ec2.Client
 var amcM1HostResourceGroupArn = "arn:aws:resource-groups:us-east-1:914373874199:group/GitHub-Runners"
 
 var macM1Config = runnerConfig{
@@ -28,6 +30,15 @@ var macM1Config = runnerConfig{
 	instanceCount:    1,
 	shutdownBehavior: "terminate",
 	instanceType:     "mac2.metal",
+}
+
+func init() {
+	var err error
+
+	ec2Client, err = newAwsClient()
+	if err != nil {
+		log.Fatalf("Error initializinf AWS client: %v", err)
+	}
 }
 
 func newAwsClient() (*ec2.Client, error) {
