@@ -8,6 +8,7 @@ configMapGenerator:
   - go.sum
   - aws.go
   - config.go
+  - github.go
   - main.go
   - requesthandler.go
   - runner.go

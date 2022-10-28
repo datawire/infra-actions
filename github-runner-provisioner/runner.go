@@ -4,8 +4,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
-	"github.com/google/go-github/v48/github"
-	"golang.org/x/oauth2"
 )
 
 func createMacM1Runner(ctx context.Context, owner string, repo string) error {
@@ -39,19 +37,4 @@ func createMacM1Runner(ctx context.Context, owner string, repo string) error {
 
 	fmt.Printf("Output: %v\n", output)
 	return nil
-}
-
-func getGitHubRunnerToken(ctx context.Context, owner string, repo string) (token string, err error) {
-	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: config.GithubToken},
-	)
-	tc := oauth2.NewClient(ctx, ts)
-
-	client := github.NewClient(tc)
-	registrationToken, _, err := client.Actions.CreateRegistrationToken(ctx, owner, repo)
-	if err != nil {
-		return "", err
-	}
-
-	return *registrationToken.Token, nil
 }
