@@ -6,9 +6,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 )
 
-func createMacM1Runner(ctx context.Context, owner string, repo string) error {
-	dryRun := true
-
+func createMacM1Runner(ctx context.Context, owner string, repo string, dryRun bool) error {
 	userData, err := macRunnerUserData(ctx, owner, repo)
 	if err != nil {
 		return err

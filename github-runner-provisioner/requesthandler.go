@@ -59,7 +59,8 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := createMacM1Runner(r.Context(), *workflowJobEvent.Repo.Owner.Login, *workflowJobEvent.Repo.Name); err != nil {
+	dryRun := len(r.Form["dry-run"]) > 0 && r.Form["dry-run"][0] == "true"
+	if err := createMacM1Runner(r.Context(), *workflowJobEvent.Repo.Owner.Login, *workflowJobEvent.Repo.Name, dryRun); err != nil {
 		http.Error(w, fmt.Sprintf("Error creating Mac M1 runner: %v", err), http.StatusBadRequest)
 		return
 	}
