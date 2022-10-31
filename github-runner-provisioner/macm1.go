@@ -33,6 +33,7 @@ type runnerConfig struct {
 	instanceCount        int32
 	shutdownBehavior     types.ShutdownBehavior
 	instanceType         types.InstanceType
+	keyName              string
 }
 
 var macM1HostResourceGroupArn = "arn:aws:resource-groups:us-east-1:914373874199:group/GitHub-Runners"
@@ -45,6 +46,7 @@ var macM1Config = runnerConfig{
 	instanceCount:    1,
 	shutdownBehavior: "terminate",
 	instanceType:     "mac2.metal",
+	keyName:          "m1_mac_runners",
 }
 
 func macRunnerUserData(ctx context.Context, owner string, repo string) (string, error) {
