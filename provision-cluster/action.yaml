@@ -13,6 +13,9 @@ inputs:
   kubeconfig:
     description: "Path to the resulting kubeconfig file."
     required: true
+  lifespan:
+    descrption: "Lifespan of cluster in seconds."
+    required: false
   kubeceptionToken:
     description: "Kubeception token used to create Klusters. Optional if Klusters are not required"
     required: false

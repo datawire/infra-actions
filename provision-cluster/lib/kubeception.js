@@ -7,13 +7,13 @@ const utils = require('./utils.js')
 const yaml = require('yaml')
 
 const MAX_KLUSTER_NAME_LEN = 63
-const oneHour = 60*1000
+const defaultLifespan = 60*60 // One hour worth of seconds
 
 class Client {
 
-  async allocateCluster(version) {
+  async allocateCluster(version, lifespan) {
     const clusterName = utils.getUniqueClusterName(MAX_KLUSTER_NAME_LEN)
-    const kubeConfig = await createKluster(clusterName, version)
+    const kubeConfig = await createKluster(clusterName, version, lifespan)
     return {
       "name": clusterName,
       "config": kubeConfig
@@ -49,13 +49,17 @@ function getHttpClient() {
   return new httpClient.HttpClient(userAgent, [credentialHandler])
 }
 
-async function createKluster(name, version) {
+async function createKluster(name, version, lifespan) {
   if (!name) {
     throw new Error('Function createKluster() needs a Kluster name')
   }
 
   if (!version) {
     throw Error('Function createKluster() needs a Kluster version')
+  }
+
+  if (typeof lifespan === typeof undefined || lifespan === "" || lifespan === 0) {
+    lifespan = defaultLifespan
   }
 
   const kubeceptionToken = core.getInput('kubeceptionToken')
@@ -66,7 +70,7 @@ async function createKluster(name, version) {
   const client = getHttpClient()
 
   return utils.fibonacciRetry(async ()=>{
-    const response = await client.put(`https://sw.bakerstreet.io/kubeception/api/klusters/${name}?version=${version}&timeoutSecs=${oneHour}`)
+    const response = await client.put(`https://sw.bakerstreet.io/kubeception/api/klusters/${name}?version=${version}&timeoutSecs=${lifespan}`)
     if (!response || !response.message) {
       throw Error("Unknown error getting response")
     }

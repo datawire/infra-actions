@@ -55,7 +55,7 @@ class Client {
 
   // Create a new cluster with a unique name, wait for it to be fully provisioned, and then fetch
   // and return the resulting cluster object.
-  async allocateCluster() {
+  async allocateCluster(version, lifespan) {
     let name = `test-${utils.uid()}`
     let cluster = {
       name: name,
@@ -65,6 +65,16 @@ class Client {
         machineType: 'e2-standard-2',
       }
     }
+
+    if (lifespan) {
+      if (typeof cluster.resourceLabels === typeof undefined) {
+        cluster.resourceLabels = {}
+      }
+      if (typeof cluster.resourceLabels[LIFESPAN_PROPERTY] === typeof undefined) {
+        cluster.resourceLabels[LIFESPAN_PROPERTY] = lifespan
+      }
+    }
+
     await this.createCluster(cluster)
     return this.getCluster(name)
   }
