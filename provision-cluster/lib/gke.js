@@ -13,9 +13,8 @@ const CATEGORY_PROPERTY = 'provisioned-category'
 // ok to delete the cluster.
 const LIFESPAN_PROPERTY = 'provisioned-lifespan'
 const EPHEMERAL = 'ephemeral'
-// Default lifespan of 30 minutes.
-const DEFAULT_LIFESPAN = 1800 // 30 minutes
-//const DEFAULT_LIFESPAN = 600 // 10 minutes for dev
+// Default lifespan of 60 minutes.
+const DEFAULT_LIFESPAN = 3600 // 60 minutes
 
 // The Client class is a convenience wrapper around the google API that allows for sharing of some
 // of the boilerplate between different operations.
