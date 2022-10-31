@@ -65,7 +65,7 @@ spec:
         - name: code
           mountPath: "/src"
         env:
-        - name: AWS_DEFAULT_REGION
+        - name: AWS_REGION
           value: us-east-1
         envFrom:
           - secretRef:
