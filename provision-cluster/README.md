@@ -11,4 +11,14 @@ Use the `provision-cluster` action as described below:
           version: 1.23
           # Tells provision-cluster where to write the kubeconfig file.
           kubeconfig: path/to/kubeconfig.yaml
+
+          ## For kubeception klusters
+
+          # A kubeception secret token
+          kubeceptionToken: ...
+
+          ## For GKE clusters:
+
+          # A json encoded string containing GKE credentials:
+          gkeCredentials: ...
 ```
