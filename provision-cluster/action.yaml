@@ -19,6 +19,12 @@ inputs:
   kubeceptionToken:
     description: "Kubeception token used to create Klusters. Optional if Klusters are not required"
     required: false
+  gkeCredentials:
+    description: "GKE credentials used to create GKE clusters. Optional if GKE clusters are not required"
+    required: false
+  gkeConfig:
+    description: "A JSON string containing additional configuration for the given GKE cluster."
+    required: false
 runs:
   using: node16
   main: create.js
