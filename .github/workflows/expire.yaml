@@ -1,24 +1,24 @@
-on:
-  # Run expire once per hour.
-  schedule:
-    - cron: '0 * * * *'
-
-jobs:
-  expire_clusters:
-    strategy:
-      matrix:
-        distribution: [GKE]
-    runs-on: ubuntu-latest
-    env:
-      GOOGLE_APPLICATION_CREDENTIALS: gac.json
-    steps:
-      - uses: actions/checkout@v3
-      - run: |
-          cat <<'EOF' >> gac.json
-          ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
-          EOF
-      # Use the provision-cluster action with the noop input to delete any expired clusters.
-      - uses: ./provision-cluster
-        with:
-          distribution: ${{ matrix.distribution }}
-          noop: true
+#on:
+#  # Run expire once per hour.
+#  schedule:
+#    - cron: '0 * * * *'
+#
+#jobs:
+#  expire_clusters:
+#    strategy:
+#      matrix:
+#        distribution: [GKE]
+#    runs-on: ubuntu-latest
+#    env:
+#      GOOGLE_APPLICATION_CREDENTIALS: gac.json
+#    steps:
+#      - uses: actions/checkout@v3
+#      - run: |
+#          cat <<'EOF' >> gac.json
+#          ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+#          EOF
+#      # Use the provision-cluster action with the noop input to delete any expired clusters.
+#      - uses: ./provision-cluster
+#        with:
+#          distribution: ${{ matrix.distribution }}
+#          noop: true
