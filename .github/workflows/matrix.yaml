@@ -72,16 +72,8 @@ jobs:
     # github hosted runner options and will be augmented by our self hosted macos runners to fill in
     # that portion of the matrix.
     runs-on: ${{ matrix.client_os }}-${{ matrix.client_arch }}
-    env:
-      GOOGLE_APPLICATION_CREDENTIALS: gac.json
     steps:
       - uses: actions/checkout@v3
-
-      - run: |
-          cat <<'EOF' >> gac.json
-          ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
-          EOF
-
       - name: Kubectl tool installer
         uses: Azure/setup-kubectl@v3
 
@@ -93,6 +85,7 @@ jobs:
           version: ${{ matrix.clusters.version }}
           kubeconfig: kubeconfig.yaml
           kubeceptionToken: ${{ secrets.KUBECEPTION_TOKEN }}
+          gkeCredentials: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
 
       - run: |
           echo Testing telepresence client version ${{ matrix.client_telepresence_version }} on ${{ matrix.client_os }} ${{ matrix.client_arch }} against server version ${{ matrix.cluster_telepresence_version }} on ${{ matrix.clusters.distribution }} cluster version ${{ matrix.clusters.version }}

@@ -1,5 +1,6 @@
 'use strict';
 
+const core = require('@actions/core')
 const container = require('@google-cloud/container')
 const crypto = require('crypto')
 const utils = require('./utils.js')
@@ -22,7 +23,19 @@ class Client {
 
   constructor(zone, gkeClient) {
     if (typeof gkeClient == typeof undefined) {
-      gkeClient = new container.v1.ClusterManagerClient()
+      const rawCredentials = core.getInput('gkeCredentials')
+      if (!rawCredentials) {
+        throw new Error(`gkeCredentials are missing. Make sure that input parameter gkeCredentials was provided`)
+      }
+      const credentials = JSON.parse(rawCredentials)
+      const options = {
+        projectId: core.getInput('gkeProject') || credentials.project_id,
+        credentials: credentials
+      }
+      if (!options.projectId) {
+        throw new Error(`Unable to determine the name of the gke project, please specify the gkeProject input parameter or make sure it is included in the gkeCredentials input.`)
+      }
+      gkeClient = new container.v1.ClusterManagerClient(options)
     }
     this.client = gkeClient
     this.project = null

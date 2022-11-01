@@ -44,6 +44,9 @@ jobs:
           version: ${{ matrix.clusters.version }}
           # Tells provision-cluster where to write the kubeconfig file.
           kubeconfig: kubeconfig.yaml
+
+          kubeceptionToken: ${{ secrets.KUBECEPTION_TOKEN }}
+          gkeCredentials: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
       - run: KUBECONFIG=kubeconifig.yaml make tests
 ...
 ```
