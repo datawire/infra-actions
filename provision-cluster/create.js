@@ -11,6 +11,7 @@ async function create() {
   const distribution = core.getInput('distribution')
   const action = core.getInput('action')
   const version = core.getInput('version')
+  const lifespan = core.getInput('lifespan')
   const kubeconfigPath = core.getInput('kubeconfig')
 
   let provider = registry.getProvider(distribution)
@@ -20,7 +21,7 @@ async function create() {
   }
 
   core.notice(`Creating ${distribution} ${version} and writing kubeconfig to file: ${kubeconfigPath}!`)
-  let cluster = await provider.allocateCluster(version)
+  let cluster = await provider.allocateCluster(version, lifespan)
   core.saveState(registry.CLUSTER_NAME, cluster.name)
 
   core.notice(`Creating ${distribution} cluster ${cluster.name} ...`)

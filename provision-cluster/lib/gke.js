@@ -13,9 +13,16 @@ const CATEGORY_PROPERTY = 'provisioned-category'
 // ok to delete the cluster.
 const LIFESPAN_PROPERTY = 'provisioned-lifespan'
 const EPHEMERAL = 'ephemeral'
-// Default lifespan of 30 minutes.
-const DEFAULT_LIFESPAN = 1800 // 30 minutes
-//const DEFAULT_LIFESPAN = 600 // 10 minutes for dev
+// Default lifespan of 60 minutes.
+const DEFAULT_LIFESPAN = 3600 // 60 minutes
+
+const gkeDefaults = {
+  network: 'default',
+  initialNodeCount: 1,
+  nodeConfig: {
+    machineType: 'e2-standard-2',
+  }
+}
 
 // The Client class is a convenience wrapper around the google API that allows for sharing of some
 // of the boilerplate between different operations.
@@ -56,16 +63,25 @@ class Client {
 
   // Create a new cluster with a unique name, wait for it to be fully provisioned, and then fetch
   // and return the resulting cluster object.
-  async allocateCluster() {
-    let name = `test-${utils.uid()}`
-    let cluster = {
-      name: name,
-      network: 'default',
-      initialNodeCount: 1,
-      nodeConfig: {
-        machineType: 'e2-standard-2',
+  async allocateCluster(version, lifespan) {
+    const config = core.getInput('gkeConfig') || {}
+    let cluster = {...gkeDefaults, ...config}
+
+    const name = `test-${utils.uid()}`
+    cluster.name = name
+    if (!cluster.initialClusterVersion) {
+      cluster.initialClusterVersion = version
+    }
+
+    if (lifespan) {
+      if (typeof cluster.resourceLabels === typeof undefined) {
+        cluster.resourceLabels = {}
+      }
+      if (typeof cluster.resourceLabels[LIFESPAN_PROPERTY] === typeof undefined) {
+        cluster.resourceLabels[LIFESPAN_PROPERTY] = lifespan
       }
     }
+
     await this.createCluster(cluster)
     return this.getCluster(name)
   }
