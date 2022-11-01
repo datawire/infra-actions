@@ -24,7 +24,10 @@ sudo su ec2-user -c "tar xzf ./github_runner_installer.tar.gz"
 sudo su ec2-user -c "./config.sh --url https://github.com/%[2]s/%[3]s --token %[4]s --unattended --labels %[5]s" 
 
 # Run agent for to 24 hours
-sudo su ec2-user -c "timeout 24h ./run.sh"
+sudo su ec2-user -c "timeout 24h ./run.sh" || true
+
+# De-register agent
+sudo su ec2-user -c "./config.sh --remove --token %[4]s" 
 
 shutdown -h now`
 
