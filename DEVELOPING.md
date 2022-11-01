@@ -7,7 +7,8 @@ are needed.
 
 ### Step 1: Query existing tags
 
-Use `git tag -l` to find existing tag names. Releases are 
+Use `git pull` to make sure you have all tags locally and then use `git tag -l` to find existing tag
+names. Release tags are of the form `vX.Y.Z` and release versions should follow semver.
 
 ### Step 2: Tag with your new version number
 
