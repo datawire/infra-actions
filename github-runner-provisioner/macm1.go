@@ -14,7 +14,7 @@ set -ex
 
 cd /Users/ec2-user
 
-brew install coreutils
+sudo su ec2-user -c "brew install coreutils"
 
 # Download the latest runner package
 curl -o github_runner_installer.tar.gz -L '%[1]s'
