@@ -10,26 +10,39 @@ import (
 const runnerLabel = "macOS-arm64"
 const runnerInstaller = "https://github.com/actions/runner/releases/download/v2.298.2/actions-runner-osx-arm64-2.298.2.tar.gz"
 const userDataTemplate = `#!/bin/bash
-set -ex
+set -x
 
 cd /Users/ec2-user
 
-sudo su ec2-user -c "brew install coreutils"
+# Download the latest runner package
+cat <<EOF > run_agent.sh
+set -ex
+
+mkdir -p github-agent
+cd github-agent
+
+/opt/homebrew/bin/brew install coreutils
 
 # Download the latest runner package
 curl -o github_runner_installer.tar.gz -L '%[1]s'
 
 # Extract the installer
-sudo su ec2-user -c "tar xzf ./github_runner_installer.tar.gz"
-sudo su ec2-user -c "./config.sh --url https://github.com/%[2]s/%[3]s --token %[4]s --unattended --labels %[5]s" 
+tar xzf ./github_runner_installer.tar.gz
 
-# Run agent for to 24 hours
-sudo su ec2-user -c "timeout 24h ./run.sh" || true
+# Configure the agent
+./config.sh --url https://github.com/%[2]s/%[3]s --token %[4]s --unattended --labels %[5]s 
 
-# De-register agent
-sudo su ec2-user -c "./config.sh --remove --token %[4]s" 
+# Run the agent for 1 day
+/opt/homebrew/bin/timeout 1d ./run.sh || true
 
-shutdown -h now`
+# De-register the agent
+./config.sh remove --token %[4]s
+EOF
+
+chmod +x run_agent.sh
+sudo su ec2-user - ./run_agent.sh 2>&1 | tee /var/log/github-agent.log
+shutdown -h now
+`
 
 type runnerConfig struct {
 	imageId              string
