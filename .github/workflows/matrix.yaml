@@ -25,7 +25,7 @@ jobs:
     strategy:
       matrix:
         runner:
-          - "masOS-arm64"
+          - "macOS-arm64"
 #        include:
 #          - runner: Windows-2019
 #            clusters: [ { distribution: "Kubeception", version: "1.21" } ]
