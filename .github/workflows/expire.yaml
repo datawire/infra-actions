@@ -3,6 +3,11 @@ on:
   schedule:
     - cron: '0 * * * *'
 
+  # Run on any PR that changes this workflow.
+  pull_request:
+    paths:
+      - .github/workflows/expire.yaml
+
 jobs:
   expire_clusters:
     strategy:
