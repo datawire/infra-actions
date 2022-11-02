@@ -24,6 +24,8 @@ const gkeDefaults = {
   }
 }
 
+const oneHourMillis = 60*60*1000
+
 // The Client class is a convenience wrapper around the google API that allows for sharing of some
 // of the boilerplate between different operations.
 class Client {
@@ -124,10 +126,21 @@ class Client {
   // Iterate over all the clusters in the zone and delete any expired clusters.
   async expireClusters(lifespanOverride) {
     let promises = []
+    let orphaned = []
     for (let c of await this.listClusters()) {
       promises.push(this.maybeExpireCluster(c, lifespanOverride))
+      const ageMillis = clusterAgeMillis(c)
+      const lifespanMillis = clusterLifespanMillis(c)
+      // We may not run often enough to expire short lifespan clusters, so use the max of the
+      // lifespan and one hour.
+      const threshold = Math.max(lifespanMillis, oneHourMillis)
+      if (lifespanMillis > 0 && ageMillis >= 2*threshold) {
+        // The self link is a very descriptive way to reference the cluster.
+        orphaned.push(c.selfLink)
+      }
     }
-    return Promise.allSettled(promises)
+    await Promise.allSettled(promises)
+    return orphaned
   }
 
   async listClusters() {
