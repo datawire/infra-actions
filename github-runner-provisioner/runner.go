@@ -18,6 +18,7 @@ func createMacM1Runner(ctx context.Context, owner string, repo string, dryRun bo
 		ImageId:                           &macM1Config.imageId,
 		InstanceInitiatedShutdownBehavior: macM1Config.shutdownBehavior,
 		InstanceType:                      macM1Config.instanceType,
+		KeyName:                           &macM1Config.keyName,
 		Placement:                         &macM1Config.placement,
 		UserData:                          &userData,
 	}
