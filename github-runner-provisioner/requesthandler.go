@@ -21,24 +21,14 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//workflowJobEvent := github.WorkflowJobEvent{}
-	if err := r.ParseForm(); err != nil {
-		http.Error(w, fmt.Sprintf("Error parsing form: %v", err), http.StatusBadRequest)
+	payload, err := github.ValidatePayload(r, []byte(config.WebhookToken))
+	if err != nil {
+		http.Error(w, "Webhook token invalid", http.StatusUnauthorized)
 		return
-	}
-
-	if len(r.PostForm) == 0 {
-		http.Error(w, "Request contains no data", http.StatusBadRequest)
-		return
-	}
-
-	formData, ok := r.PostForm["payload"]
-	if !ok {
-		http.Error(w, "Request has no payload", http.StatusBadRequest)
 	}
 
 	workflowJobEvent := github.WorkflowJobEvent{}
-	err := json.Unmarshal([]byte(formData[0]), &workflowJobEvent)
+	err = json.Unmarshal(payload, &workflowJobEvent)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Request is not a workflow job event: %v", err), http.StatusBadRequest)
 		return
