@@ -188,21 +188,9 @@ class Client {
       return
     }
 
-    // Lifespan is in seconds
-    let lifespan = labels[LIFESPAN_PROPERTY]
-    if (typeof lifespan === typeof undefined) {
-      console.log(`Keeping cluster ${cluster.name} because it has no provisioned-lifespan label.`)
-      return
-    }
-
-    let lifespanMillis = 0
-
+    let lifespanMillis = clusterLifespanMillis(cluster)
     if (typeof lifespanOverride !== typeof undefined) {
-      lifespanMillis = 1000*lifespanOverride
-    } else {
-      if (typeof lifespan === "string" && lifespan !== "") {
-        lifespanMillis = Number(lifespan)*1000
-      }
+      lifespanMillis = lifespanMillis(lifespanOverride)
     }
 
     if (lifespanMillis <= 0) {
@@ -210,7 +198,7 @@ class Client {
       return
     }
 
-    let ageMillis = Date.now() - Date.parse(cluster.createTime)
+    const ageMillis = clusterAgeMillis(cluster)
     if (ageMillis < lifespanMillis) {
       console.log(`Keeping ${cluster.name} because ${ageMillis/1000}s < ${lifespanMillis/1000}s.`)
       return
@@ -241,6 +229,29 @@ class Client {
     return Operation.wrap(op)
   }
 
+}
+
+function clusterAgeMillis(cluster) {
+  return Date.now() - Date.parse(cluster.createTime)
+}
+
+function clusterLifespanMillis(cluster) {
+  let labels = cluster.resourceLabels
+  return lifespanMillis(labels[LIFESPAN_PROPERTY])
+}
+
+function lifespanMillis(lifespan) {
+  if (typeof lifespan === typeof undefined) {
+    lifespan = 0
+  } else if (typeof lifespan === typeof "") {
+    if (lifespan === "") {
+      lifespan = 0
+    } else {
+      lifespan = Number(lifespan)
+    }
+  }
+
+  return lifespan * 1000
 }
 
 // The Operation object is used to report the status of a long running procedures.
