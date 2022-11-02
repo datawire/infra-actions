@@ -23,3 +23,7 @@ jobs:
           distribution: ${{ matrix.distribution }}
           kubeceptionToken: ${{ secrets.KUBECEPTION_TOKEN }}
           gkeCredentials: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+          slackWebhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          slackChannel: "#team-infra"
+          slackRunbook: "Runbook TBD"
+          slackUsername: "${{ matrix.distribution }} Cluster Provisioner"
