@@ -23,3 +23,10 @@ To run tests against a local instance of the provisioner use the HOSTNAME parame
 ```shell
  make test-github-provisioner HOSTNAME=http://localhost:8080
 ```
+
+# Env Vars
+The runner provisioner requires the following variables to be configured:
+- `GITHUB_TOKEN` - a personal access token with admin access to the repo configuring the runners. 
+We use the `D6E-Automaton`'s token in production.
+- `WEBHOOK_TOKEN` - the secret used to configure the webhook in GitHub. We use the token stored at 
+`/Keybase/team/datawireio/infra/github-runner-provisioner-secrets`
