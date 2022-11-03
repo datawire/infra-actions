@@ -50,6 +50,13 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if isRunnerAvailable(r.Context(), *workflowJobEvent.Repo.Owner.Login, *workflowJobEvent.Repo.Name, [1]string{0: "macOS-arm64"}) {
+		log.Printf("Mac runner already available. No action scaling action required.")
+		if _, err := w.Write([]byte("OK")); err != nil {
+			log.Printf("Error sending HTTP response: %v", err)
+		}
+	}
+
 	log.Printf("Job %s requested a Mac M1 runner\n", *workflowJobEvent.Repo.Name)
 
 	dryRun := len(r.Form["dry-run"]) > 0 && r.Form["dry-run"][0] == "true"
