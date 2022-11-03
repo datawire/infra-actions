@@ -50,7 +50,8 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if isRunnerAvailable(r.Context(), *workflowJobEvent.Repo.Owner.Login, *workflowJobEvent.Repo.Name, [1]string{0: "macOS-arm64"}) {
+	runnerLabels := []string{0: "macOS-arm64"}
+	if isRunnerAvailable(r.Context(), *workflowJobEvent.Repo.Owner.Login, *workflowJobEvent.Repo.Name, runnerLabels) {
 		log.Printf("Mac runner already available. No action scaling action required.")
 		if _, err := w.Write([]byte("OK")); err != nil {
 			log.Printf("Error sending HTTP response: %v", err)
