@@ -24,6 +24,8 @@ const gkeDefaults = {
   }
 }
 
+const oneHourMillis = 60*60*1000
+
 // The Client class is a convenience wrapper around the google API that allows for sharing of some
 // of the boilerplate between different operations.
 class Client {
@@ -124,10 +126,21 @@ class Client {
   // Iterate over all the clusters in the zone and delete any expired clusters.
   async expireClusters(lifespanOverride) {
     let promises = []
+    let orphaned = []
     for (let c of await this.listClusters()) {
       promises.push(this.maybeExpireCluster(c, lifespanOverride))
+      const ageMillis = clusterAgeMillis(c)
+      const lifespanMillis = clusterLifespanMillis(c)
+      // We may not run often enough to expire short lifespan clusters, so use the max of the
+      // lifespan and one hour.
+      const threshold = Math.max(lifespanMillis, oneHourMillis)
+      if (lifespanMillis > 0 && ageMillis >= 2*threshold) {
+        // The self link is a very descriptive way to reference the cluster.
+        orphaned.push(c.selfLink)
+      }
     }
-    return Promise.allSettled(promises)
+    await Promise.allSettled(promises)
+    return orphaned
   }
 
   async listClusters() {
@@ -188,21 +201,9 @@ class Client {
       return
     }
 
-    // Lifespan is in seconds
-    let lifespan = labels[LIFESPAN_PROPERTY]
-    if (typeof lifespan === typeof undefined) {
-      console.log(`Keeping cluster ${cluster.name} because it has no provisioned-lifespan label.`)
-      return
-    }
-
-    let lifespanMillis = 0
-
+    let lifespanMillis = clusterLifespanMillis(cluster)
     if (typeof lifespanOverride !== typeof undefined) {
-      lifespanMillis = 1000*lifespanOverride
-    } else {
-      if (typeof lifespan === "string" && lifespan !== "") {
-        lifespanMillis = Number(lifespan)*1000
-      }
+      lifespanMillis = lifespanMillis(lifespanOverride)
     }
 
     if (lifespanMillis <= 0) {
@@ -210,7 +211,7 @@ class Client {
       return
     }
 
-    let ageMillis = Date.now() - Date.parse(cluster.createTime)
+    const ageMillis = clusterAgeMillis(cluster)
     if (ageMillis < lifespanMillis) {
       console.log(`Keeping ${cluster.name} because ${ageMillis/1000}s < ${lifespanMillis/1000}s.`)
       return
@@ -241,6 +242,29 @@ class Client {
     return Operation.wrap(op)
   }
 
+}
+
+function clusterAgeMillis(cluster) {
+  return Date.now() - Date.parse(cluster.createTime)
+}
+
+function clusterLifespanMillis(cluster) {
+  let labels = cluster.resourceLabels
+  return lifespanMillis(labels[LIFESPAN_PROPERTY])
+}
+
+function lifespanMillis(lifespan) {
+  if (typeof lifespan === typeof undefined) {
+    lifespan = 0
+  } else if (typeof lifespan === typeof "") {
+    if (lifespan === "") {
+      lifespan = 0
+    } else {
+      lifespan = Number(lifespan)
+    }
+  }
+
+  return lifespan * 1000
 }
 
 // The Operation object is used to report the status of a long running procedures.

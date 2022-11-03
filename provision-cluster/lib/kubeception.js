@@ -34,6 +34,7 @@ class Client {
 
   async expireClusters() {
     // Kubeception automatically expires klusters, no client side expiration is required.
+    return []
   }
 }
 

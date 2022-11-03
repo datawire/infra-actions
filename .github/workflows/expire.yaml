@@ -3,22 +3,27 @@ on:
   schedule:
     - cron: '0 * * * *'
 
+  # Run on any PR that changes this workflow.
+  pull_request:
+    paths:
+      - .github/workflows/expire.yaml
+
 jobs:
   expire_clusters:
     strategy:
       matrix:
         distribution: [GKE]
     runs-on: ubuntu-latest
-    env:
-      GOOGLE_APPLICATION_CREDENTIALS: gac.json
     steps:
       - uses: actions/checkout@v3
-      - run: |
-          cat <<'EOF' >> gac.json
-          ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
-          EOF
       # Use the provision-cluster action with the noop input to delete any expired clusters.
       - uses: ./provision-cluster
         with:
+          action: expire
           distribution: ${{ matrix.distribution }}
-          noop: true
+          kubeceptionToken: ${{ secrets.KUBECEPTION_TOKEN }}
+          gkeCredentials: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+          slackWebhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          slackChannel: "#team-infra"
+          slackRunbook: "Runbook TBD"
+          slackUsername: "${{ matrix.distribution }} Cluster Provisioner"
