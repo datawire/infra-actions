@@ -5,6 +5,11 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 )
 
+var runners = map[string]func(context.Context, string, string, bool) error{
+	runnerLabel:            createMacM1Runner,
+	ubuntuArm64RunnerLabel: createUbuntuArm64Runner,
+}
+
 func createMacM1Runner(ctx context.Context, owner string, repo string, dryRun bool) error {
 	userData, err := macRunnerUserData(ctx, owner, repo)
 	if err != nil {
