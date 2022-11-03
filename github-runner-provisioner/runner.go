@@ -30,3 +30,29 @@ func createMacM1Runner(ctx context.Context, owner string, repo string, dryRun bo
 
 	return nil
 }
+
+func createUbuntuArm64Runner(ctx context.Context, owner string, repo string, dryRun bool) error {
+	userData, err := ubuntuArm64UserData(ctx, owner, repo)
+	if err != nil {
+		return err
+	}
+
+	params := ec2.RunInstancesInput{
+		MaxCount:                          &ubuntuArm64RunnerConfig.instanceCount,
+		MinCount:                          &ubuntuArm64RunnerConfig.instanceCount,
+		DryRun:                            &dryRun,
+		ImageId:                           &ubuntuArm64RunnerConfig.imageId,
+		InstanceInitiatedShutdownBehavior: ubuntuArm64RunnerConfig.shutdownBehavior,
+		InstanceType:                      ubuntuArm64RunnerConfig.instanceType,
+		KeyName:                           &ubuntuArm64RunnerConfig.keyName,
+		Placement:                         &ubuntuArm64RunnerConfig.placement,
+		UserData:                          &userData,
+	}
+
+	_, err = ec2Client.RunInstances(ctx, &params)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
