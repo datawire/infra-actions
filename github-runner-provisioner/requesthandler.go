@@ -74,7 +74,7 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 	dryRun := len(r.Form["dry-run"]) > 0 && r.Form["dry-run"][0] == "true"
 	if err := runnerFunction(r.Context(), *workflowJobEvent.Repo.Owner.Login, *workflowJobEvent.Repo.Name, dryRun); err != nil {
 		log.Printf("Error creating %s runner for job %s [%s]: %v", jobLabel, *workflowJobEvent.WorkflowJob.Name, *workflowJobEvent.WorkflowJob.HTMLURL, err)
-		http.Error(w, fmt.Sprintf("Error creating %s runner: %v", jobLabel, err), http.StatusBadRequest)
+		http.Error(w, fmt.Sprintf("Error creating %s runner: %v", jobLabel, err), http.StatusInternalServerError)
 		return
 	}
 
