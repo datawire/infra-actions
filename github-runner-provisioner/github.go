@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"github.com/google/go-github/v48/github"
+	"golang.org/x/exp/slices"
 	"golang.org/x/oauth2"
 )
 
@@ -28,18 +29,34 @@ func getGitHubRunnerToken(ctx context.Context, owner string, repo string) (token
 func getGitHubRunners(ctx context.Context, owner string, repo string) *github.Runners {
 	client := getGitHubAPIClient(ctx)
 	opts := &github.ListOptions{}
-	runners, response, err := client.Actions.ListRunners(ctx, owner, repo, opts)
+	runners, _, err := client.Actions.ListRunners(ctx, owner, repo, opts)
 	if err != nil {
 		return nil
 	}
-	print(runners)
-	print(response)
 	return runners
 }
 
 func isRunnerAvailable(ctx context.Context, owner string, repo string, labels []string) bool {
 	runners := getGitHubRunners(ctx, owner, repo)
 
-	print(runners)
+	for i := range runners.Runners {
+		r := runners.Runners[i]
+		var matches = []bool{}
+		for j := range labels {
+			matches = append(matches, false)
+			for k := range r.Labels {
+				if labels[j] == *r.Labels[k].Name {
+					matches[j] = true
+					break
+				}
+			}
+		}
+		if !slices.Contains(matches, false) {
+			if *r.Status == "online" && *r.Busy == false {
+				return true
+			}
+		}
+	}
+
 	return false
 }
