@@ -29,7 +29,7 @@ jobs:
       #   ${{ matrix.client_os }}
       matrix:
 
-        client: [ubuntu]
+        client_os: [ubuntu]
         client_arch: [latest, arm64]
 
         client_telepresence_version: ["2.7"]
@@ -42,8 +42,8 @@ jobs:
            version: "1.22"
 
         include:
-          - client: macOS
-            arch: arm64
+          - client_os: macOS
+            client_arch: arm64
             client_telepresence_version: "2.7"
             clusters:
               distribution: Kubeception
