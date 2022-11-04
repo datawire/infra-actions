@@ -9,8 +9,6 @@ import (
 
 var ec2Client *ec2.Client
 
-const AMI_MACOS_12_6_ARM64 = "ami-01b8fcd5770ceb9c1"
-
 func init() {
 	var err error
 

@@ -30,7 +30,7 @@ jobs:
       matrix:
 
         client_os: [ubuntu]
-        client_arch: [latest]
+        client_arch: [latest, arm64]
 
         client_telepresence_version: ["2.7"]
 
