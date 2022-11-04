@@ -26,42 +26,48 @@ func getGitHubRunnerToken(ctx context.Context, owner string, repo string) (token
 	return *registrationToken.Token, nil
 }
 
-func getGitHubRunners(ctx context.Context, owner string, repo string) *github.Runners {
+func getGitHubRunners(ctx context.Context, owner string, repo string) (*github.Runners, error) {
 	client := getGitHubAPIClient(ctx)
 	opts := &github.ListOptions{}
 	runners, _, err := client.Actions.ListRunners(ctx, owner, repo, opts)
 	if err != nil {
-		return nil
+		return nil, err
 	}
-	return runners
+	return runners, nil
 }
 
 func isRunnerAvailable(ctx context.Context, owner string, repo string, labels []string) bool {
-	runners := getGitHubRunners(ctx, owner, repo)
+	runners, err := getGitHubRunners(ctx, owner, repo)
+	if err != nil {
+		return false
+	}
 
 	//check all runners registered to the repo
-	for i := range runners.Runners {
-		r := runners.Runners[i]
-		var matches = []bool{}
-
-		//check for label matches with each runner
-		for j := range labels {
-			matches = append(matches, false)
-			for k := range r.Labels {
-				if labels[j] == *r.Labels[k].Name {
-					matches[j] = true
-					break
-				}
-			}
+	for _, r := range runners.Runners {
+		//if all labels were matched, check the availability
+		if *r.Status != "online" || *r.Busy == true {
+			continue
 		}
 
-		//if all labels were matched, check the availability
-		if !slices.Contains(matches, false) {
-			if *r.Status == "online" && *r.Busy == false {
-				return true
-			}
+		//check for label matches with each runner
+		var runnerLabelNames = []string{}
+		for _, runnerLabel := range r.Labels {
+			runnerLabelNames = append(runnerLabelNames, *runnerLabel.Name)
+		}
+
+		if labelsMatch(labels, runnerLabelNames) {
+			return true
 		}
 	}
 
 	return false
+}
+
+func labelsMatch(labels []string, runnerLabelNames []string) bool {
+	for _, desiredLabel := range labels {
+		if !slices.Contains(runnerLabelNames, desiredLabel) {
+			return false
+		}
+	}
+	return true
 }
