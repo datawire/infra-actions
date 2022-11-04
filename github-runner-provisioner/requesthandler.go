@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/google/go-github/v48/github"
@@ -45,8 +46,19 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !slices.Contains(workflowJobEvent.WorkflowJob.Labels, "macOS-arm64") {
-		http.Error(w, fmt.Sprintf("Only runners of type macOS-arm64 are supported. Got %v", workflowJobEvent.WorkflowJob.Labels), http.StatusOK)
+	var runnerFunction func(context.Context, string, string, bool) error
+	var jobLabel string
+	for _, label := range workflowJobEvent.WorkflowJob.Labels {
+		if f, ok := runners[label]; ok {
+			log.Printf("Job %s requested a runner with label %s\n", workflowJobEvent.WorkflowJob.Name, label)
+			runnerFunction = f
+			jobLabel = label
+			break
+		}
+	}
+
+	if runnerFunction == nil {
+		http.Error(w, fmt.Sprintf("Workflow job didn't request a supported runner. Requested %v", workflowJobEvent.WorkflowJob.Labels), http.StatusOK)
 		return
 	}
 
@@ -61,13 +73,13 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Job %s requested a Mac M1 runner\n", *workflowJobEvent.Repo.Name)
 
 	dryRun := len(r.Form["dry-run"]) > 0 && r.Form["dry-run"][0] == "true"
-	if err := createMacM1Runner(r.Context(), *workflowJobEvent.Repo.Owner.Login, *workflowJobEvent.Repo.Name, dryRun); err != nil {
+	if err := runnerFunction(r.Context(), *workflowJobEvent.Repo.Owner.Login, *workflowJobEvent.Repo.Name, dryRun); err != nil {
 		log.Printf("Error creating Mac M1 runner for job %s [%s]: %v", *workflowJobEvent.WorkflowJob.Name, *workflowJobEvent.WorkflowJob.HTMLURL, err)
 		http.Error(w, fmt.Sprintf("Error creating Mac M1 runner: %v", err), http.StatusBadRequest)
 		return
 	}
 
-	log.Printf("Mac M1 runner has been scheduled for job %s\n", *workflowJobEvent.Repo.Name)
+	log.Printf("%s runner has been scheduled for job %s\n", jobLabel, *workflowJobEvent.Repo.Name)
 	if _, err := w.Write([]byte("OK")); err != nil {
 		log.Printf("Error sending HTTP response: %v", err)
 	}

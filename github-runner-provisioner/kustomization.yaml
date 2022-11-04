@@ -13,3 +13,4 @@ configMapGenerator:
   - main.go
   - requesthandler.go
   - runner.go
+  - ubuntuarm64.go

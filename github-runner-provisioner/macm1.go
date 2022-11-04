@@ -7,9 +7,10 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
 )
 
-const runnerLabel = "macOS-arm64"
-const runnerInstaller = "https://github.com/actions/runner/releases/download/v2.298.2/actions-runner-osx-arm64-2.298.2.tar.gz"
-const userDataTemplate = `#!/bin/bash
+const AmiMacOs12_6Arm64 = "ami-01b8fcd5770ceb9c1"
+const macM1RunnerLabel = "macOS-arm64"
+const macM1RunnerInstaller = "https://github.com/actions/runner/releases/download/v2.298.2/actions-runner-osx-arm64-2.298.2.tar.gz"
+const macM1UserDataTemplate = `#!/bin/bash
 set -x
 
 cd /Users/ec2-user
@@ -55,11 +56,13 @@ type runnerConfig struct {
 }
 
 var macM1HostResourceGroupArn = "arn:aws:resource-groups:us-east-1:914373874199:group/GitHub-Runners"
+var macM1AvailabilityZone = "us-east-1a"
 
 var macM1Config = runnerConfig{
-	imageId: AMI_MACOS_12_6_ARM64,
+	imageId: AmiMacOs12_6Arm64,
 	placement: types.Placement{
 		HostResourceGroupArn: &macM1HostResourceGroupArn,
+		AvailabilityZone:     &macM1AvailabilityZone,
 	},
 	instanceCount:    1,
 	shutdownBehavior: "terminate",
@@ -67,13 +70,13 @@ var macM1Config = runnerConfig{
 	keyName:          "m1_mac_runners",
 }
 
-func macRunnerUserData(ctx context.Context, owner string, repo string) (string, error) {
+func macM1RunnerUserData(ctx context.Context, owner string, repo string) (string, error) {
 	token, err := getGitHubRunnerToken(ctx, owner, repo)
 	if err != nil {
 		return "", err
 	}
 
-	userData := fmt.Sprintf(userDataTemplate, runnerInstaller, owner, repo, token, runnerLabel)
+	userData := fmt.Sprintf(macM1UserDataTemplate, macM1RunnerInstaller, owner, repo, token, macM1RunnerLabel)
 
 	encodedUserData := base64.StdEncoding.EncodeToString([]byte(userData))
 	return encodedUserData, nil

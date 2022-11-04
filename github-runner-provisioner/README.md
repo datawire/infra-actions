@@ -7,21 +7,33 @@ and how it works.
 
 # Testing the application
 
-Make target `test-github-provisioner` will send a request to the provisioner on Skunkworks.  
+**Note**: Before running tests, make sure you run the application with environment variable `WEBHOOK_TOKEN=FAKE_TOKEN`
 
-Target takes a `DRY_RUN` variable that makes the request run in dry-run mode. By default, target sets `DRY_RUN=true`. To override it use:
+There are several make targets that will send a request to the provisioner on Skunkworks. Target names 
+are `test-<RUNNER_TAG>`.
+
+
+For example, to run macOS-arm64 tests execute.
 
 ```shell
-make test-github-provisioner HOSTNAME=http://localhost:8080 DRY_RUN=false
+make test-macOS-arm64 HOSTNAME=http://localhost:8080 DRY_RUN=false
 ```
 
-**Note**: Be careful when sending requests to production using a HTTP client, since the `dry-run` request parameter 
-defaults to true. This is necessary because we have no way to set GitHub to send this parameter. 
+Target takes a `DRY_RUN` variable that makes the request run in dry-run mode. By default, target sets 
+`DRY_RUN=true`. To override it use:
+
+```shell
+make test-ubuntu-arm64 HOSTNAME=http://localhost:8080 DRY_RUN=false
+```
+
+**Note**: Be careful when sending requests to production using a HTTP client, since the `dry-run` 
+request parameter defaults to true. This is necessary because we have no way to set GitHub to send this 
+parameter. 
 
 To run tests against a local instance of the provisioner use the HOSTNAME parameter like this:
 
 ```shell
- make test-github-provisioner HOSTNAME=http://localhost:8080
+ make test-ubuntu-arm64 HOSTNAME=http://localhost:8080
 ```
 
 # Env Vars
