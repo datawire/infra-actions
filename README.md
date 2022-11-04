@@ -38,7 +38,7 @@ jobs:
     steps:
       # The provision-cluster action will automatically register a cleanup hook to remove the
       # cluster it provisions when the job is done.
-      - uses: ./provision-cluster
+      - uses: datawire/infra-actions/provision-cluster@v0.2.0
         with:
           distribution: ${{ matrix.clusters.distribution }}
           version: ${{ matrix.clusters.version }}
@@ -68,7 +68,7 @@ jobs:
   my_matrix_job:
     ...
     steps:
-      - uses: ./provision-cluster
+      - uses: datawire/infra-actions/provision-cluster@v0.2.0
         with:
           distribution: ${{ matrix.clusters.distribution }}
           version: ${{ matrix.clusters.version }}
@@ -89,13 +89,13 @@ jobs:
 ...
 ```
 
-## Custom GitHub action runners
+# Custom GitHub action runners
 
 There are Mac M1 and Ubuntu ARM64 runners available for GitHub actions.
 
 In the future, we may make additional runners available depending on the needs of the different teams.
 
-### Mac M1 runners
+## Mac M1 runners
 
 There are self-hosted Mac M1 (ARM64) runners that can be used in a workflow by using `runs-on: macOS-arm64`.
 
@@ -118,9 +118,9 @@ depending on how many jobs are running on them.
 
 Also, there is a limit of 10 Mac M1 runners at any point in time. Any build that requests a Mac M1 during this time will stay in a queued state and may fail.
 
-### Ubuntu ARM64 runners
+## Ubuntu ARM64 runners
 
-These self-hosted runners run on AWS and are created on-demand. It takes a few minutes for the runner to be available, and once the job finishes, it's destroyed.
+These self-hosted runners run on AWS and are created on-demand. It takes about a minute for the runner to be available, and once the job finishes, it's destroyed.
 
 To request one, use label `ubuntu-arm64`:
 
@@ -135,8 +135,6 @@ jobs:
       - uses: actions/checkout@v3
       ...
 ```
-
-
 
 # Dev loop
  See [DEVELOPING.md](docs/DEVELOPING.md)
