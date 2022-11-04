@@ -29,7 +29,7 @@ jobs:
       #   ${{ matrix.client_os }}
       matrix:
 
-        client_os: [ubuntu]
+        client: [ubuntu]
         client_arch: [latest, arm64]
 
         client_telepresence_version: ["2.7"]
@@ -40,6 +40,15 @@ jobs:
 
          - distribution: Kubeception
            version: "1.22"
+
+        include:
+          - client: macOS
+            arch: arm64
+            client_telepresence_version: "2.7"
+            clusters:
+              distribution: Kubeception
+              version: "1.22"
+
 
         cluster_telepresence_version:  ["none"]
 
@@ -89,5 +98,6 @@ jobs:
 
       - run: |
           echo Testing telepresence client version ${{ matrix.client_telepresence_version }} on ${{ matrix.client_os }} ${{ matrix.client_arch }} against server version ${{ matrix.cluster_telepresence_version }} on ${{ matrix.clusters.distribution }} cluster version ${{ matrix.clusters.version }}
+          uname -a
           kubectl version
           kubectl get pods -A
