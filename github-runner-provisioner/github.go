@@ -39,9 +39,12 @@ func getGitHubRunners(ctx context.Context, owner string, repo string) *github.Ru
 func isRunnerAvailable(ctx context.Context, owner string, repo string, labels []string) bool {
 	runners := getGitHubRunners(ctx, owner, repo)
 
+	//check all runners registered to the repo
 	for i := range runners.Runners {
 		r := runners.Runners[i]
 		var matches = []bool{}
+
+		//check for label matches with each runner
 		for j := range labels {
 			matches = append(matches, false)
 			for k := range r.Labels {
@@ -51,6 +54,8 @@ func isRunnerAvailable(ctx context.Context, owner string, repo string, labels []
 				}
 			}
 		}
+
+		//if all labels were matched, check the availability
 		if !slices.Contains(matches, false) {
 			if *r.Status == "online" && *r.Busy == false {
 				return true
