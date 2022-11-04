@@ -55,11 +55,13 @@ type runnerConfig struct {
 }
 
 var macM1HostResourceGroupArn = "arn:aws:resource-groups:us-east-1:914373874199:group/GitHub-Runners"
+var macM1AvailabilityZone = "us-east-1a"
 
 var macM1Config = runnerConfig{
 	imageId: AMI_MACOS_12_6_ARM64,
 	placement: types.Placement{
 		HostResourceGroupArn: &macM1HostResourceGroupArn,
+		AvailabilityZone:     &macM1AvailabilityZone,
 	},
 	instanceCount:    1,
 	shutdownBehavior: "terminate",
