@@ -73,7 +73,7 @@ spec:
         livenessProbe:
           failureThreshold: 3
           httpGet:
-            path: /healthz
+            path: /github-runner-provisioner/healthz
             port: 8080
             scheme: HTTP
           initialDelaySeconds: 40
@@ -83,7 +83,7 @@ spec:
         readinessProbe:
           failureThreshold: 3
           httpGet:
-            path: /healthz
+            path: /github-runner-provisioner/healthz
             port: 8080
             scheme: HTTP
           initialDelaySeconds: 40
