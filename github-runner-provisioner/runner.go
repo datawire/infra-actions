@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
+	"github.com/datawire/infra-actions/github-runner-provisioner/internal/aws"
 )
 
 var runners = map[string]func(context.Context, string, string, bool) error{
@@ -28,7 +29,7 @@ func createMacM1Runner(ctx context.Context, owner string, repo string, dryRun bo
 		UserData:                          &userData,
 	}
 
-	_, err = ec2Client.RunInstances(ctx, &params)
+	_, err = aws.Ec2Client.RunInstances(ctx, &params)
 	if err != nil {
 		return err
 	}
@@ -54,7 +55,7 @@ func createUbuntuArm64Runner(ctx context.Context, owner string, repo string, dry
 		UserData:                          &userData,
 	}
 
-	_, err = ec2Client.RunInstances(ctx, &params)
+	_, err = aws.Ec2Client.RunInstances(ctx, &params)
 	if err != nil {
 		return err
 	}
