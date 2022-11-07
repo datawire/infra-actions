@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/kelseyhightower/envconfig"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"log"
 	"net/http"
 )
@@ -19,6 +20,7 @@ func main() {
 		mux := http.NewServeMux()
 		mux.HandleFunc("/", handleProvisioningRequest)
 		mux.HandleFunc("/github-runner-provisioner/healthz", handleHealthCheckRequest)
+		mux.Handle("/metrics", promhttp.Handler())
 		return mux
 	}
 
