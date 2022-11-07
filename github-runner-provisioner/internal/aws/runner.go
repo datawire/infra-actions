@@ -5,12 +5,12 @@ import (
 	"github.com/datawire/infra-actions/github-runner-provisioner/internal/utils"
 )
 
-const labelTag = "label"
-const nameTag = "app"
+const LabelTag = "label"
+const NameTag = "app"
 const ownerTag = "owner"
 const repoTag = "repo"
 
-const appName = "github-runner-provisioner"
+const AppName = "github-runner-provisioner"
 
 func RunnerTags(owner string, repo string, runnerLabel string) []types.TagSpecification {
 	tags := []types.TagSpecification{
@@ -19,8 +19,8 @@ func RunnerTags(owner string, repo string, runnerLabel string) []types.TagSpecif
 			Tags: []types.Tag{
 				{Key: utils.StrPtr(ownerTag), Value: utils.StrPtr(owner)},
 				{Key: utils.StrPtr(repoTag), Value: utils.StrPtr(repo)},
-				{Key: utils.StrPtr(nameTag), Value: utils.StrPtr(appName)},
-				{Key: utils.StrPtr(labelTag), Value: &runnerLabel},
+				{Key: utils.StrPtr(NameTag), Value: utils.StrPtr(AppName)},
+				{Key: utils.StrPtr(LabelTag), Value: &runnerLabel},
 			},
 		},
 	}

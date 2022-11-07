@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/datawire/infra-actions/github-runner-provisioner/internal/monitoring"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"log"
@@ -23,6 +24,8 @@ func main() {
 		mux.Handle("/metrics", promhttp.Handler())
 		return mux
 	}
+
+	go monitoring.UpdateActionRunnersRuntimeMetric()
 
 	addr := ":8080"
 	fmt.Println("Started GiHub provisioner")
