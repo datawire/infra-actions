@@ -53,6 +53,7 @@ func createUbuntuArm64Runner(ctx context.Context, owner string, repo string, dry
 		KeyName:                           &ubuntuArm64RunnerConfig.keyName,
 		Placement:                         &ubuntuArm64RunnerConfig.placement,
 		UserData:                          &userData,
+		TagSpecifications:                 aws.RunnerTags(owner, repo, ubuntuArm64RunnerLabel),
 	}
 
 	_, err = aws.Ec2Client.RunInstances(ctx, &params)
