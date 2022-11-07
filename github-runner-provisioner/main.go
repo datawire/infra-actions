@@ -18,7 +18,7 @@ func main() {
 	makeHandler := func(name string) http.Handler {
 		mux := http.NewServeMux()
 		mux.HandleFunc("/", handleProvisioningRequest)
-		mux.HandleFunc("/healthz", handleHealthCheckRequest)
+		mux.HandleFunc("/github-runner-provisioner/healthz", handleHealthCheckRequest)
 		return mux
 	}
 
