@@ -21,7 +21,7 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	payload, err := github.ValidatePayload(r, []byte(config.WebhookToken))
+	payload, err := github.ValidatePayload(r, []byte(cfg.WebhookToken))
 	if err != nil {
 		http.Error(w, "Webhook token invalid", http.StatusUnauthorized)
 		return

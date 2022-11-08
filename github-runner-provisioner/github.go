@@ -2,15 +2,16 @@ package main
 
 import (
 	"context"
-	"github.com/datawire/infra-actions/github-runner-provisioner/internal/config"
 	"github.com/google/go-github/v48/github"
 	"golang.org/x/exp/slices"
 	"golang.org/x/oauth2"
 )
 
 func getGitHubAPIClient(ctx context.Context) *github.Client {
+	var cfg = NewConfig()
+
 	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: config.GithubToken},
+		&oauth2.Token{AccessToken: cfg.GithubToken},
 	)
 	tc := oauth2.NewClient(ctx, ts)
 	client := github.NewClient(tc)
