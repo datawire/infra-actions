@@ -14,7 +14,7 @@ func init() {
 
 	Ec2Client, err = newAwsClient()
 	if err != nil {
-		log.Fatalf("Error initializinf AWS client: %v", err)
+		log.Fatalf("Error initializing the AWS client: %v", err)
 	}
 }
 
