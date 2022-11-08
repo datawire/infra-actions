@@ -2,28 +2,22 @@ package aws
 
 import (
 	"context"
-	config2 "github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"log"
 )
 
-var Ec2Client *ec2.Client
+type Ec2Client struct {
+	Client AwsEc2ClientInterface
+}
 
-func init() {
+func NewEc2Client() *Ec2Client {
 	var err error
 
-	Ec2Client, err = newAwsClient()
+	cfg, err := config.LoadDefaultConfig(context.TODO())
 	if err != nil {
 		log.Fatalf("Error initializing the AWS client: %v", err)
 	}
-}
 
-func newAwsClient() (*ec2.Client, error) {
-	cfg, err := config2.LoadDefaultConfig(context.TODO())
-	if err != nil {
-		return nil, err
-	}
-
-	client := ec2.NewFromConfig(cfg)
-	return client, nil
+	return &Ec2Client{ec2.NewFromConfig(cfg)}
 }

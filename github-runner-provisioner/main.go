@@ -2,12 +2,15 @@ package main
 
 import (
 	"fmt"
+	"github.com/datawire/infra-actions/github-runner-provisioner/internal/aws"
 	"github.com/datawire/infra-actions/github-runner-provisioner/internal/monitoring"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"log"
 	"net/http"
 )
+
+var ec2Client *aws.Ec2Client
 
 func init() {
 	config = &Config{}
@@ -17,6 +20,8 @@ func init() {
 }
 
 func main() {
+	ec2Client = aws.NewEc2Client()
+
 	makeHandler := func(name string) http.Handler {
 		mux := http.NewServeMux()
 		mux.HandleFunc("/", handleProvisioningRequest)

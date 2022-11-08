@@ -21,8 +21,10 @@ var instanceFilter = []types.Filter{
 }
 
 func UpdateActionRunnersRuntimeMetric() {
+	ec2Client := aws.NewEc2Client()
+
 	for {
-		instancesDetails, err := aws.GetInstances(instanceFilter)
+		instancesDetails, err := ec2Client.GetInstances(instanceFilter)
 		if err != nil {
 			log.Printf("Error getting instance information. %v\n", err)
 			break

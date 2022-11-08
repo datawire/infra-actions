@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/datawire/infra-actions/github-runner-provisioner/internal/config"
 	"github.com/google/go-github/v48/github"
 	"golang.org/x/exp/slices"
 	"golang.org/x/oauth2"
