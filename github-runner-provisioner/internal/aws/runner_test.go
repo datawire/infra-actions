@@ -1,6 +1,7 @@
 package aws
 
 import (
+	"errors"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
 	mock_aws "github.com/datawire/infra-actions/github-runner-provisioner/internal/aws/mocks"
@@ -15,13 +16,13 @@ import (
 type fixture struct {
 	mockCtrl      *gomock.Controller
 	ec2Client     *Ec2Client
-	mockEc2Client *tests.MockAwsEc2ClientInterface
+	mockEc2Client *mock_aws.MockAwsEc2ClientInterface
 }
 
 func setup(t *testing.T) *fixture {
 	t.Helper()
 	mockCtrl := gomock.NewController(t)
-	mockEc2Client := tests.NewMockAwsEc2ClientInterface(mockCtrl)
+	mockEc2Client := mock_aws.NewMockAwsEc2ClientInterface(mockCtrl)
 
 	f := fixture{
 		mockCtrl:      mockCtrl,
@@ -200,4 +201,18 @@ func Test_InstancesAreReturnedWhenThereAreNoErrors(t *testing.T) {
 		require.NoError(t, err)
 		assert.Equal(t, expectedDetails, instanceDetails)
 	})
+}
+
+func Test_GetInstancesHandlesErrorGracefully(t *testing.T) {
+	f := setup(t)
+	defer f.mockCtrl.Finish()
+
+	f.mockEc2Client.
+		EXPECT().
+		DescribeInstances(gomock.Any(), gomock.Any(), gomock.Any()).
+		Return(nil, errors.New("Error calling AWS API")).
+		AnyTimes()
+
+	_, err := f.ec2Client.GetInstances([]types.Filter{})
+	require.Error(t, err)
 }
