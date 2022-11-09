@@ -34,3 +34,9 @@ build: download-go-modules
 go-unit-tests: download-go-modules
 	cd github-runner-provisioner; \
 	go test ./...
+
+.PHONY: update-go-mocks
+update-go-mocks:
+	cd github-runner-provisioner; \
+	go install github.com/golang/mock/mockgen@v1.6.0; \
+	mockgen --source internal/aws/iface.go -destination  internal/aws/mocks/mocks.go
