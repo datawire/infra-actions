@@ -38,7 +38,7 @@ jobs:
 The following limitations apply to Mac M1 runners:
 - It will take between 30 minutes and up to 3 hours for a runner to be available from the moment it's requested by a job.
 - There is a limit of 10 Mac M1 runners at any point in time. Any build that requests a Mac M1 during this time will 
-  stay in a queued state until aruner is available. If a job is queued for more than 24 hours, it will be marked as failed.
+  stay in a queued state until a runner is available. If a job is queued for more than 24 hours, it will be marked as failed.
 - Once a Mac M1 runner is created, it will continue to run for up to 24 hours, picking-up oe or more jobs. What the means 
   is that jobs are responsible for ensuring that runners are in a clean state before they are used.
 
