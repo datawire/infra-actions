@@ -2,15 +2,15 @@
 
 This repository hosts github actions that can be used to provision and configure kubernetes
 clusters. These are intended to facilitate building out a comprehensive [test
-matrix](.github/workflows/matrix.yaml) suitable for use in real-world large scale integration and
+matrix](../.github/workflows/matrix.yaml) suitable for use in real-world large scale integration and
 compatibility testing for both telepresence and edge-stack.
 
-The [matrix workflow](.github/workflows/matrix.yaml) illustrates an exemplary usage of these
+The [matrix workflow](../.github/workflows/matrix.yaml) illustrates an exemplary usage of these
 actions.
 
 ## Cluster Provisioning
 
-The [provision-cluster](provision-cluster/README.md) action can be used to provision different
+The [provision-cluster](../provision-cluster/README.md) action can be used to provision different
 varieties of clusters:
 
 - Kubeception (k3s based)
