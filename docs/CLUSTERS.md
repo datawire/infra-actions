@@ -1,8 +1,8 @@
 ## Cluster Setup
 
-XXX: unimplemented
+Note: This section describes how this feature would work but it's not implemented.
 
-The [setup-cluster](setup-cluster/README.md) action can be used to configure a cluster with a given
+The [setup-cluster](../setup-cluster/README.md) action can be used to configure a cluster with a given
 set of manifests required for test execution. The action will not only intelligently apply the
 manifests (dealing with any interdependencies), but also ensure that all deployments, statefulsets,
 daemonsets, etc, are fully available, ready, and passing their health checks before allowing the job
