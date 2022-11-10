@@ -11,10 +11,10 @@ Before a job can use a self-hosted runner, the following settings need to be con
  
 1. Add the `d6e-automaton` account as a repo administrator (`Repo -> Settings -> Collaborators and teams`)
 2. Add a webhook (`Repo -> Settings -> Webhooks`) with the following settings:
-   1. Payload URL: https://sw.bakerstreet.io/github-runner-provisioner/
-   2. Content type: application/x-www-form-urlencoded
+   1. Payload URL: `https://sw.bakerstreet.io/github-runner-provisioner/`
+   2. Content type: `application/x-www-form-urlencoded`
    3. Secret: Enter the value found in `/keybase/team/datawireio/secrets/github-actions/github-infra-actions`
-   4. SSL verification: Enable
+   4. SSL verification: `Enable`
    5. Which events trigger the webhook? -> Let me select individual events ->  Workflow jobs
 
 Once the webhook is configured, you can use the runners as described below.
