@@ -1,10 +1,16 @@
 ## Description
 A few sentences describing the overall goals of the pull request's commits.
 
-### Blast Radius
+## Blast Radius
 List any potential negative consequences of a bug in this change, and how do we know if something is broken.
 
-## Dependencies
+## Dependencies and documentation
+### Documentation
+- [ ] I have updated user facing documentation.
+- [ ] I have updated all Runbooks affected by this change.
+- [ ]  I updated `DEVELOPING.md` with any dev tricks I used to work on this code efficiently.
+- [ ] My changes do not have any impact on documentation.
+
 ### Monitoring
 - [ ] I have verified that any changes to alerts work as expected.
 - [ ] My changes affect monitoring rules and/or dashboards, and I made sure they didn't break.
@@ -15,11 +21,11 @@ List any potential negative consequences of a bug in this change, and how do we 
 - [ ] My changes do not impact external dependencies.
 
 ### Rosie the Robot checklists
-- [ ] My changes affect one or more Rosie checklists
-- [ ] My changes do not have any impact on Rosie's checklists
+- [ ] My changes affect one or more Rosie checklists.
+- [ ] My changes do not have any impact on Rosie's checklists.
 
 ## Testing
-- [ ] I have validated that my changes work as expected
+- [ ] I have validated that my changes work as expected.
 - [ ] My changes do not require testing.
 
 ### Testing Strategy
