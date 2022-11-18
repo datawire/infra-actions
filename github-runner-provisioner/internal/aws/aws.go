@@ -1,4 +1,4 @@
-package main
+package aws
 
 import (
 	"context"
@@ -7,14 +7,14 @@ import (
 	"log"
 )
 
-var ec2Client *ec2.Client
+var Ec2Client *ec2.Client
 
 func init() {
 	var err error
 
-	ec2Client, err = newAwsClient()
+	Ec2Client, err = newAwsClient()
 	if err != nil {
-		log.Fatalf("Error initializinf AWS client: %v", err)
+		log.Fatalf("Error initializing the AWS client: %v", err)
 	}
 }
 
