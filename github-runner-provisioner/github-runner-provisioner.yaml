@@ -62,8 +62,14 @@ spec:
         ports:
         - containerPort: 8080
         volumeMounts:
-        - name: code
+        - name: code-root
           mountPath: "/src"
+        - name: internal-aws
+          mountPath: "/src/internal/aws"
+        - name: internal-monitoring
+          mountPath: "/src/internal/monitoring"
+        - name: internal-utils
+          mountPath: "/src/internal/utils"
         env:
         - name: AWS_REGION
           value: us-east-1
@@ -91,11 +97,20 @@ spec:
           successThreshold: 1
           timeoutSeconds: 1
       volumes:
-        - name: code
+        # Provide the name of the ConfigMaps containing the files you want
+        # to add to the container
+        - name: code-root
           configMap:
-            # Provide the name of the ConfigMap containing the files you want
-            # to add to the container
-            name: code
+            name: code-root
+        - name: internal-aws
+          configMap:
+            name: internal-aws
+        - name: internal-monitoring
+          configMap:
+            name: internal-monitoring
+        - name: internal-utils
+          configMap:
+            name: internal-utils
         - name: github-runner-provisioner-aws-config
           secret:
             secretName: github-runner-provisioner-aws-config
