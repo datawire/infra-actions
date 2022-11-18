@@ -60,7 +60,7 @@ func GetInstances(filter []types.Filter) ([]*InstanceDetails, error) {
 	return instancesDetails, nil
 }
 
-func getActionRunnerLabel(instance types.Instance) (string, interface{}) {
+func getActionRunnerLabel(instance types.Instance) (string, error) {
 	for _, tag := range instance.Tags {
 		if *tag.Key == LabelTag {
 			return *tag.Value, nil
