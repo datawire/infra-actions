@@ -77,22 +77,22 @@ spec:
           - secretRef:
               name: github-runner-provisioner-secrets
         livenessProbe:
-          failureThreshold: 3
+          failureThreshold: 5
           httpGet:
             path: /github-runner-provisioner/healthz
             port: 8080
             scheme: HTTP
-          initialDelaySeconds: 40
+          initialDelaySeconds: 60
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 1
         readinessProbe:
-          failureThreshold: 3
+          failureThreshold: 5
           httpGet:
             path: /github-runner-provisioner/healthz
             port: 8080
             scheme: HTTP
-          initialDelaySeconds: 40
+          initialDelaySeconds: 60
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 1
