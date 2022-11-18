@@ -2,15 +2,26 @@ resources:
 - github-runner-provisioner.yaml
 
 configMapGenerator:
-- name: code
-  files:
-  - go.mod
-  - go.sum
-  - aws.go
-  - config.go
-  - github.go
-  - macm1.go
-  - main.go
-  - requesthandler.go
-  - runner.go
-  - ubuntuarm64.go
+  - name: code-root
+    files:
+      - go.mod
+      - go.sum
+      - config.go
+      - github.go
+      - macm1.go
+      - main.go
+      - requesthandler.go
+      - runner.go
+      - ubuntuarm64.go
+  - name: internal-aws
+    files:
+      - internal/aws/aws.go
+      - internal/aws/ec2.go
+      - internal/aws/runner.go
+  - name: internal-monitoring
+    files:
+      - internal/monitoring/prometheus.go
+      - internal/monitoring/runner.go
+  - name: internal-utils
+    files:
+      - internal/utils/string.go

@@ -1,0 +1,34 @@
+name: "Test action runner provisioner deployment"
+
+on:
+  pull_request:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      KUBECONFIG: /tmp/kubeconfig.yaml
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./provision-cluster
+        with:
+          distribution: kubeception
+          version: 1.22
+          kubeconfig: ${{ env.KUBECONFIG }}
+          kubeceptionToken: ${{ secrets.KUBECEPTION_TOKEN }}
+          gkeCredentials: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+      - name: Install Edge stack
+        run: |
+          set -ex
+          kubectl create namespace ambassador
+          kubectl apply -f https://app.getambassador.io/yaml/edge-stack/3.3.0/aes-crds.yaml
+          kubectl apply -f https://app.getambassador.io/yaml/edge-stack/3.3.0/aes.yaml
+          kubectl -n ambassador wait --for condition=available --timeout=5m deploy edge-stack
+      - name: Deploy GitHub action runner provisioner
+        run: |
+          set -ex
+          cd github-runner-provisioner
+          kubectl create secret generic github-runner-provisioner-secrets --from-literal=AWS_ACCESS_KEY_ID=AWS_ACCESS_KEY_ID --from-literal=AWS_SECRET_ACCESS_KEY=AWS_SECRET_ACCESS_KEY --from-literal=GITHUB_TOKEN=GITHUB_TOKEN --from-literal=WEBHOOK_TOKEN=WEBHOOK_TOKEN
+          kubectl apply -k . --wait
+          kubectl wait --for condition=available --timeout=2m deploy github-runner-provisioner
+          kubectl logs -l app=github-runner-provisioner
