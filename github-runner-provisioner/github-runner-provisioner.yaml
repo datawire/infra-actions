@@ -155,3 +155,22 @@ spec:
   selector:
     matchLabels:
       app: github-runner-provisioner
+
+---
+
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: github-runner-provisioner
+  labels:
+    app: prometheus
+spec:
+  namespaceSelector:
+    matchNames:
+      - infra
+  selector:
+    matchLabels:
+      app: github-runner-provisioner
+  endpoints:
+    - targetPort: 8080
+      path: /metrics
