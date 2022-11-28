@@ -125,3 +125,17 @@ spec:
         - name: github-runner-provisioner-aws-config
           secret:
             secretName: github-runner-provisioner-aws-config
+
+---
+
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: github-runner-provisioner
+  labels:
+    app: github-runner-provisioner
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: github-runner-provisioner
