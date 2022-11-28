@@ -53,6 +53,18 @@ spec:
       labels:
         app: github-runner-provisioner
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - github-runner-provisioner
+                topologyKey: kubernetes.io/hostname
       containers:
       - name: github-runner-provisioner
         image: golang:1.18.7
