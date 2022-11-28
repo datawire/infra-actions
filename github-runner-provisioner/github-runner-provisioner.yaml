@@ -60,7 +60,8 @@ spec:
         command: ["go", "run", "."]
         workingDir: "/src"
         ports:
-        - containerPort: 8080
+        - name: http
+          containerPort: 8080
         volumeMounts:
         - name: code-root
           mountPath: "/src"
@@ -76,24 +77,28 @@ spec:
         envFrom:
           - secretRef:
               name: github-runner-provisioner-secrets
-        livenessProbe:
-          failureThreshold: 5
+        startupProbe:
           httpGet:
             path: /github-runner-provisioner/healthz
-            port: 8080
-            scheme: HTTP
-          initialDelaySeconds: 60
-          periodSeconds: 10
+            port: http
+          failureThreshold: 36
+          periodSeconds: 5
+        livenessProbe:
+          failureThreshold: 1
+          httpGet:
+            path: /github-runner-provisioner/healthz
+            port: http
+          initialDelaySeconds: 0
+          periodSeconds: 5
           successThreshold: 1
           timeoutSeconds: 1
         readinessProbe:
-          failureThreshold: 5
+          failureThreshold: 1
           httpGet:
             path: /github-runner-provisioner/healthz
-            port: 8080
-            scheme: HTTP
-          initialDelaySeconds: 60
-          periodSeconds: 10
+            port: http
+          initialDelaySeconds: 0
+          periodSeconds: 5
           successThreshold: 1
           timeoutSeconds: 1
         resources:
