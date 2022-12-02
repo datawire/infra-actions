@@ -34,6 +34,13 @@ inputs:
   gkeConfig:
     description: "A JSON string containing additional configuration for the given GKE cluster."
     required: false
+outputs:
+  clusterName:
+    description: "Name of the cluster."
+  projectId:
+    description: "For GKE, the project ID."
+  location:
+    description: "For GKE, the cluster location (region or zone)."
 runs:
   using: node16
   main: create.js
