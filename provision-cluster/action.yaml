@@ -14,16 +14,16 @@ inputs:
     description: "Path to the resulting kubeconfig file."
     required: true
   lifespan:
-    descrption: "Lifespan of cluster in seconds."
+    description: "Lifespan of cluster in seconds."
     required: false
   slackWebhook:
     description: "Webhook to use to publish slack info."
     required: false
   slackChannel:
-    descriptoin: "Channel to use for slack info. Required if slackWebhook is supplied."
+    description: "Channel to use for slack info. Required if slackWebhook is supplied."
     required: false
   slackRunbook:
-    descriptoin: "Runbook to use for slack alerts. Required if slackWebhook is supplied."
+    description: "Runbook to use for slack alerts. Required if slackWebhook is supplied."
     required: false
   kubeceptionToken:
     description: "Kubeception token used to create Klusters. Optional if Klusters are not required"
