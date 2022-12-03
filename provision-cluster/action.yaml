@@ -1,0 +1,68 @@
+name: "Provision Cluster"
+description: "Provision a Cluster"
+inputs:
+  distribution:
+    description: "One of GKE, AKS, EKS, OpenShift, or Kubeception"
+    required: true
+  action:
+    description: "If set to expire then no cluster will be provisioned, but the action will still delete any expired clusters. Use this in a schedueled workflow to garbage collect orphaned clusters."
+    required: false
+  version:
+    description: "The version of the cluster to create."
+    required: true
+  kubeconfig:
+    description: "Path to the resulting kubeconfig file."
+    required: true
+  lifespan:
+    description: "Lifespan of cluster in seconds."
+    required: false
+  slackWebhook:
+    description: "Webhook to use to publish slack info."
+    required: false
+  slackChannel:
+    description: "Channel to use for slack info. Required if slackWebhook is supplied."
+    required: false
+  slackRunbook:
+    description: "Runbook to use for slack alerts. Required if slackWebhook is supplied."
+    required: false
+  kubeceptionToken:
+    description: "Kubeception token used to create Klusters. Optional if Klusters are not required"
+    required: false
+  gkeCredentials:
+    description: "GKE credentials used to create GKE clusters. Optional if GKE clusters are not required"
+    required: false
+  gkeConfig:
+    description: "A JSON string containing additional configuration for the given GKE cluster."
+    required: false
+  kubeceptionProfile:
+    description: "The profile to use for kubeception clusters."
+    required: false
+    default: "default"
+outputs:
+  clusterName:
+    description: "Name of the cluster."
+    value: ${{ steps.provision-cluster.outputs.clusterName }}
+  projectId:
+    description: "For GKE, the project ID."
+    value: ${{ steps.provision-cluster.outputs.projectId }}
+  location:
+    description: "For GKE, the cluster location (region or zone)."
+    value: ${{ steps.provision-cluster.outputs.location }}
+runs:
+  using: composite
+  steps:
+    - id: provision-cluster
+      uses: ./.github/actions/provision-cluster # TODO: Replace reference
+      with:
+        distribution: ${{ inputs.distribution }}
+        action: ${{ inputs.action }}
+        version: ${{ inputs.version }}
+        kubeconfig: ${{ inputs.kubeconfig }}
+        lifespan: ${{ inputs.lifespan }}
+        slackWebhook: ${{ inputs.slackWebhook }}
+        slackChannel: ${{ inputs.slackChannel }}
+        slackRunbook: ${{ inputs.slackRunbook }}
+        kubeceptionToken: ${{ inputs.kubeceptionToken }}
+        gkeCredentials: ${{ inputs.gkeCredentials }}
+        gkeConfig: ${{ inputs.gkeConfig }}
+        kubeceptionProfile: ${{ inputs.kubeceptionProfile }}
