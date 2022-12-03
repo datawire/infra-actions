@@ -19,19 +19,23 @@ jobs:
            version: "1.22"
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
       - name: Kubectl tool installer
         uses: Azure/setup-kubectl@v3
-
       # The provision-cluster action will automatically register a cleanup hook to remove the
       # cluster it provisions when the job is done.
-      - uses: datawire/infra-actions/provision-cluster@v0.2.1
+      # todo: update once changes are merged
+      - id: provision
+        uses: datawire/infra-actions/provision-cluster@v0.2.1
         with:
           distribution: ${{ matrix.clusters.distribution }}
           version: ${{ matrix.clusters.version }}
-          kubeconfig: kubeconfig.yaml
+          kubeconfig: ${{ runner.temp}}/kubeconfig.yaml
           kubeceptionToken: ${{ secrets.KUBECEPTION_TOKEN }}
           gkeCredentials: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
-
-      - run: |
+      - name: "Get kubeconfig and cluster information"
+        run: |
+          set -e
+          kubectl config view
           kubectl version
           kubectl get pods -A
