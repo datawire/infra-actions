@@ -24,6 +24,10 @@ async function create() {
   let cluster = await provider.allocateCluster(version, lifespan)
   core.saveState(registry.CLUSTER_NAME, cluster.name)
 
+  core.setOutput("clusterName", cluster?.name);
+  core.setOutput("projectId", cluster?.project);
+  core.setOutput("location", cluster?.zone);
+
   core.notice(`Creating ${distribution} cluster ${cluster.name} ...`)
   let kubeconfig = await provider.makeKubeconfig(cluster)
   core.notice(`Cluster created: ${cluster.name}!`)

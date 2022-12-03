@@ -50,3 +50,9 @@ jobs:
       - run: KUBECONFIG=kubeconifig.yaml make tests
 ...
 ```
+
+Action returns the following outputs:
+
+`clusterName`: Name of the cluster.
+`projectId`: For GKE, the project ID. Undefined for other cluster providers.
+`location`: For GKE, the cluster location (region or zone). Undefined for other cluster providers.
