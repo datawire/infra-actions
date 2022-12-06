@@ -6,7 +6,7 @@ const common = require('./common_test.js')
 const mock = require('./mock.js')
 const MOCK = mock.MOCK
 const cluster = mock.cluster
-const URL = require('node:url').URL
+const URL = require('url').URL
 
 test('kubeception profile', async ()=>{
   let inputs = {
