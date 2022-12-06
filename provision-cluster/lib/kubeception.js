@@ -59,9 +59,13 @@ class Client {
       throw Error(`kubeceptionToken is missing. Make sure that input parameter kubeceptionToken was provided`)
     }
 
+    let kubeceptionProfile = core.getInput('kubeceptionProfile')
+    if (typeof kubeceptionProfile !== typeof "" || kubeceptionProfile.trim() === "") {
+      kubeceptionProfile = "default"
+    }
 
     return utils.fibonacciRetry(async ()=>{
-      const response = await this.client.put(`https://sw.bakerstreet.io/kubeception/api/klusters/${name}?version=${version}&timeoutSecs=${lifespan}`)
+      const response = await this.client.put(`https://sw.bakerstreet.io/kubeception/api/klusters/${name}?version=${version}&profile=${kubeceptionProfile}&timeoutSecs=${lifespan}`)
       if (!response || !response.message) {
         throw Error("Unknown error getting response")
       }

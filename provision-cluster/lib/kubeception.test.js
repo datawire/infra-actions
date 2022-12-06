@@ -10,13 +10,17 @@ const URL = require('node:url').URL
 
 test('kubeception profile', async ()=>{
   let inputs = {
-    kubeceptionToken: 'mock-kube-token'
+    kubeceptionToken: 'mock-kube-token',
+    kubeceptionProfile: 'mock-profile'
   }
 
   let count = 0;
 
   class MockHttpClient {
     async put(url) {
+      let parsed = new URL(url)
+      expect(parsed.searchParams.get('profile')).toBe(inputs.kubeceptionProfile)
+
       let status = 200
       if (count < 2) {
         status = 425
