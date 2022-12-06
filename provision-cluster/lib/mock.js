@@ -69,5 +69,6 @@ function Client() {
 module.exports = {
   MOCK,
   Client,
-  MockGKE
+  MockGKE,
+  cluster
 }
