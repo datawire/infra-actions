@@ -8,7 +8,7 @@ const clusterZone = 'us-central1-b'
 
 const distributions = {
   "gke": new gke.Client(clusterZone),
-  "kubeception": new kubeception.Client()
+  "kubeception": new kubeception.Client(kubeception.getHttpClient())
 }
 
 function getProvider(distribution) {
