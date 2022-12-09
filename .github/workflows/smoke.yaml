@@ -17,6 +17,7 @@ jobs:
 
          - distribution: Kubeception
            version: "1.22"
+           profile: small
     runs-on: ubuntu-latest
     steps:
       - name: Kubectl tool installer
@@ -24,12 +25,13 @@ jobs:
 
       # The provision-cluster action will automatically register a cleanup hook to remove the
       # cluster it provisions when the job is done.
-      - uses: datawire/infra-actions/provision-cluster@v0.2.1
+      - uses: datawire/infra-actions/provision-cluster@v0.2.2
         with:
           distribution: ${{ matrix.clusters.distribution }}
           version: ${{ matrix.clusters.version }}
           kubeconfig: kubeconfig.yaml
           kubeceptionToken: ${{ secrets.KUBECEPTION_TOKEN }}
+          kubeceptionProfile: ${{ matrix.clusters.profile }}
           gkeCredentials: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
 
       - run: |
