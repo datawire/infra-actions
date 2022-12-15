@@ -14,6 +14,23 @@ jobs:
         clusters:
          - distribution: GKE
            version: "1.23"
+           gcloudCompatible: "true"
+           useAuthProvider: "true"
+
+         - distribution: GKE
+           version: "1.23"
+           gcloudCompatible: "true"
+           useAuthProvider: "false"
+
+         - distribution: GKE
+           version: "1.23"
+           gcloudCompatible: "false"
+           useAuthProvider: "true"
+
+         - distribution: GKE
+           version: "1.23"
+           gcloudCompatible: "false"
+           useAuthProvider: "false"
 
          - distribution: Kubeception
            version: "1.22"
@@ -35,6 +52,8 @@ jobs:
           kubeconfig: ${{ runner.temp}}/kubeconfig.yaml
           kubeceptionToken: ${{ secrets.KUBECEPTION_TOKEN }}
           gkeCredentials: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+          gcloudCompatible: ${{ matrix.clusters.gcloudCompatible }}
+          useAuthProvider: ${{ matrix.clusters.useAuthProvider }}
       - name: "Get kubeconfig and cluster information"
         run: |
           set -e
