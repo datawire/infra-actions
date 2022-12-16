@@ -34,7 +34,7 @@ jobs:
       # cluster it provisions when the job is done.
       # todo: update once changes are merged
       - id: provision
-        uses: datawire/infra-actions/provision-cluster@v0.2.1
+        uses: datawire/infra-actions/provision-cluster@v0.2.4
         with:
           distribution: ${{ matrix.clusters.distribution }}
           version: ${{ matrix.clusters.version }}
