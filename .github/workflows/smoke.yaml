@@ -10,6 +10,7 @@ on:
 jobs:
   release_smoke:
     strategy:
+      fail-fast: false
       matrix:
         clusters:
          - distribution: GKE
