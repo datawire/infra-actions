@@ -1,10 +1,6 @@
 name: "GKE Kubeconfig"
 description: "Generate different Kubeconfig formats compatible with GKE."
 inputs:
-  gcloudCompatible:
-    description: "Return gcloud-generated credentials"
-    required: false
-    default: "true"
   useAuthProvider:
     description: "If true, use an authentication provider to authenticate to GKE"
     required: false
@@ -26,29 +22,10 @@ runs:
       with:
         credentials_json: ${{ inputs.gkeCredentials }}
         create_credentials_file: true
-    # The following section gets the credentials in two ways. You can onlly use ons of them.
-
-    # - Using the GiHub action plugin
     - name: Get cluster credentials using GitHub action
       uses: google-github-actions/get-gke-credentials@v1
-      if: ${{ inputs.gcloudCompatible != 'true' }}
       with:
         project_id: ${{ env.GOOGLE_CLOUD_PROJECT }}
         location: ${{ inputs.location }}
         cluster_name: ${{ inputs.clusterName }}
         use_auth_provider: ${{ inputs.useAuthProvider }}
-
-    # - Using the Google Cloud CLI
-    - name: Set up Cloud SDK
-      if: ${{ inputs.gcloudCompatible == 'true' }}
-      uses: google-github-actions/setup-gcloud@v1
-    - name: Get cluster credentials
-      env:
-        USE_GKE_GCLOUD_AUTH_PLUGIN: ${{ inputs.useAuthProvider }}
-      if: ${{ inputs.gcloudCompatible == 'true'}}
-      shell: sh
-      run: |
-        set -ex
-        gcloud info
-        gcloud components install gke-gcloud-auth-plugin
-        gcloud container clusters get-credentials '${{ inputs.clusterName }}' --project "${GOOGLE_CLOUD_PROJECT}" --zone  '${{ inputs.location }}'
