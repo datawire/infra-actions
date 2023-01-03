@@ -17,6 +17,7 @@ jobs:
           kubeconfig: ${{ env.KUBECONFIG }}
           kubeceptionToken: ${{ secrets.KUBECEPTION_TOKEN }}
           gkeCredentials: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+          kubeceptionProfile: medium
       - name: Install Edge stack
         run: |
           set -ex
