@@ -55,8 +55,16 @@ outputs:
 runs:
   using: composite
   steps:
+    - name: Checkout action code
+      uses: actions/checkout@v3
+      env:
+        REPO: ${{ github.action_repository }}
+        REF: ${{ github.action_ref }}
+      with:
+        repository: ${{ env.REPO }}
+        ref: ${{ env.REF }}
     - id: provision-cluster
-      uses: ./.github/actions/provision-cluster # TODO: Replace reference
+      uses: ./.github/actions/provision-cluster
       with:
         distribution: ${{ inputs.distribution }}
         action: ${{ inputs.action }}
