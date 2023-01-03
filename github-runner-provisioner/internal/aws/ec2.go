@@ -16,7 +16,7 @@ type InstanceDetails struct {
 	ActionRunnerLabel *string
 }
 
-func GetInstances(filter []types.Filter) ([]*InstanceDetails, error) {
+func (c *Ec2Client) GetInstances(filter []types.Filter) ([]*InstanceDetails, error) {
 	var nextToken *string
 	instancesDetails := []*InstanceDetails{}
 
@@ -26,7 +26,7 @@ func GetInstances(filter []types.Filter) ([]*InstanceDetails, error) {
 			NextToken: nextToken,
 		}
 
-		describeInstancesOutput, err := Ec2Client.DescribeInstances(context.Background(), &params)
+		describeInstancesOutput, err := c.Client.DescribeInstances(context.Background(), &params)
 		if err != nil {
 			err = fmt.Errorf("error getting EC2 instance information. %v", err)
 			return nil, err

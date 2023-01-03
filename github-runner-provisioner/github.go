@@ -8,8 +8,10 @@ import (
 )
 
 func getGitHubAPIClient(ctx context.Context) *github.Client {
+	var cfg = NewConfig()
+
 	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: config.GithubToken},
+		&oauth2.Token{AccessToken: cfg.GithubToken},
 	)
 	tc := oauth2.NewClient(ctx, ts)
 	client := github.NewClient(tc)

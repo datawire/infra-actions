@@ -30,7 +30,7 @@ func createMacM1Runner(ctx context.Context, owner string, repo string, dryRun bo
 		TagSpecifications:                 aws.RunnerTags(owner, repo, macM1RunnerLabel),
 	}
 
-	_, err = aws.Ec2Client.RunInstances(ctx, &params)
+	_, err = ec2Client.Client.RunInstances(ctx, &params)
 	if err != nil {
 		return err
 	}
@@ -57,7 +57,7 @@ func createUbuntuArm64Runner(ctx context.Context, owner string, repo string, dry
 		TagSpecifications:                 aws.RunnerTags(owner, repo, ubuntuArm64RunnerLabel),
 	}
 
-	_, err = aws.Ec2Client.RunInstances(ctx, &params)
+	_, err = ec2Client.Client.RunInstances(ctx, &params)
 	if err != nil {
 		return err
 	}

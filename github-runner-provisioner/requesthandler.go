@@ -21,7 +21,7 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	payload, err := github.ValidatePayload(r, []byte(config.WebhookToken))
+	payload, err := github.ValidatePayload(r, []byte(cfg.WebhookToken))
 	if err != nil {
 		http.Error(w, "Webhook token invalid", http.StatusUnauthorized)
 		return
@@ -49,7 +49,7 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 	var jobLabel string
 	for _, label := range workflowJobEvent.WorkflowJob.Labels {
 		if f, ok := runners[label]; ok {
-			log.Printf("Job %s requested a runner with label %s\n", workflowJobEvent.WorkflowJob.Name, label)
+			log.Printf("Job %s requested a runner with label %s\n", *workflowJobEvent.WorkflowJob.Name, label)
 			runnerFunction = f
 			jobLabel = label
 			break

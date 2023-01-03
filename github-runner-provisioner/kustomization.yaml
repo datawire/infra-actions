@@ -17,6 +17,7 @@ configMapGenerator:
     files:
       - internal/aws/aws.go
       - internal/aws/ec2.go
+      - internal/aws/iface.go
       - internal/aws/runner.go
   - name: internal-monitoring
     files:
@@ -25,3 +26,4 @@ configMapGenerator:
   - name: internal-utils
     files:
       - internal/utils/string.go
+      - internal/utils/time.go

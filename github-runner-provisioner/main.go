@@ -2,21 +2,20 @@ package main
 
 import (
 	"fmt"
+	"github.com/datawire/infra-actions/github-runner-provisioner/internal/aws"
 	"github.com/datawire/infra-actions/github-runner-provisioner/internal/monitoring"
-	"github.com/kelseyhightower/envconfig"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"log"
 	"net/http"
 )
 
-func init() {
-	config = &Config{}
-	if err := envconfig.Process("", config); err != nil {
-		log.Fatalf("Error loading environment configuration: %v", err)
-	}
-}
+var ec2Client *aws.Ec2Client
+var cfg = NewConfig()
 
 func main() {
+	ec2Client = aws.NewEc2Client()
+	cfg = NewConfig()
+
 	makeHandler := func(name string) http.Handler {
 		mux := http.NewServeMux()
 		mux.HandleFunc("/", handleProvisioningRequest)

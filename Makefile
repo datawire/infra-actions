@@ -18,3 +18,25 @@ test-macOS-arm64:
 .PHONY: test-github-provisioner
 test-github-provisioner:
 	curl -v $(HOSTNAME)/github-runner-provisioner/?dry-run=$(DRY_RUN) -d "payload=$$(cat github-runner-provisioner/test/$(RUNNER_TAG)_payload.json)" -H 'X-Hub-Signature-256: sha1=$(SHA1)'
+
+.PHONY: download-go-modules
+download-go-modules:
+	cd github-runner-provisioner; \
+    go mod download
+
+.PHONY: build
+build: download-go-modules
+	cd github-runner-provisioner; \
+    go mod download; \
+	go build .
+
+.PHONY: go-unit-tests
+go-unit-tests: download-go-modules
+	cd github-runner-provisioner; \
+	go test ./...
+
+.PHONY: update-go-mocks
+update-go-mocks:
+	cd github-runner-provisioner; \
+	go install github.com/golang/mock/mockgen@v1.6.0; \
+	mockgen --source internal/aws/iface.go -destination  internal/aws/mocks/mocks.go
