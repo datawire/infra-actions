@@ -30,7 +30,11 @@ jobs:
       matrix:
         clusters:
          - distribution: GKE
-           version: "1.21"
+           version: "1.23"
+           useAuthProvider: "false"
+         - distribution: GKE
+           version: "1.23"
+           useAuthProvider: "true"
          - distribution: AKS
            version: "1.22"
          - distribution: Kubeception
@@ -47,12 +51,22 @@ jobs:
 
           kubeceptionToken: ${{ secrets.KUBECEPTION_TOKEN }}
           gkeCredentials: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
-      - run: KUBECONFIG=kubeconifig.yaml make tests
+
+          useAuthProvider: ${{ matrix.clusters.useAuthProvider }}
+      - run: make tests
 ...
 ```
 
-Action returns the following outputs:
+The following inputs apply only to GKE clusters:
+
+`useAuthProvider`: If set to "true", Authentication is done using an authentication provider, like the 
+[gke-gcloud-auth-plugin](https://cloud.google.com/blog/products/containers-kubernetes/kubectl-auth-changes-in-gke).
+
+
+The action returns the following outputs:
 
 `clusterName`: Name of the cluster.
+
 `projectId`: For GKE, the project ID. Undefined for other cluster providers.
+
 `location`: For GKE, the cluster location (region or zone). Undefined for other cluster providers.
