@@ -30,10 +30,10 @@ jobs:
       matrix:
         clusters:
          - distribution: GKE
-           version: "1.21"
+           version: "1.23"
            useAuthProvider: "false"
          - distribution: GKE
-           version: "1.21"
+           version: "1.23"
            useAuthProvider: "true"
          - distribution: AKS
            version: "1.22"
