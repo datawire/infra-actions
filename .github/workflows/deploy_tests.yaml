@@ -25,6 +25,10 @@ jobs:
           kubectl apply -f https://app.getambassador.io/yaml/edge-stack/3.3.0/aes-crds.yaml
           kubectl apply -f https://app.getambassador.io/yaml/edge-stack/3.3.0/aes.yaml
           kubectl -n ambassador wait --for condition=available --timeout=5m deploy edge-stack
+      - name: Install Prometheus Operator
+        run: |
+          set -ex
+          kubectl create -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/main/bundle.yaml
       - name: Deploy GitHub action runner provisioner
         run: |
           set -ex

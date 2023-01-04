@@ -5,6 +5,8 @@ kind: Mapping
 metadata:
   annotations: {}
   name: github-runner-provisioner
+  labels:
+    app: github-runner-provisioner
 spec:
   host: sw.bakerstreet.io
   prefix: /github-runner-provisioner/
@@ -26,6 +28,8 @@ metadata:
     a8r.io/runbook: ""
     a8r.io/uptime: ""
   name: github-runner-provisioner
+  labels:
+    app: github-runner-provisioner
 spec:
   type: ClusterIP
   selector:
@@ -151,3 +155,22 @@ spec:
   selector:
     matchLabels:
       app: github-runner-provisioner
+
+---
+
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: github-runner-provisioner
+  labels:
+    app: prometheus
+spec:
+  namespaceSelector:
+    matchNames:
+      - infra
+  selector:
+    matchLabels:
+      app: github-runner-provisioner
+  endpoints:
+    - targetPort: 8080
+      path: /metrics
