@@ -1,6 +1,10 @@
 resources:
 - github-runner-provisioner.yaml
 
+generatorOptions:
+  annotations:
+    argocd.argoproj.io/compare-options: IgnoreExtraneous
+
 configMapGenerator:
   - name: code-root
     files:
