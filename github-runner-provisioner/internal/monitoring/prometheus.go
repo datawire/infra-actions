@@ -39,7 +39,7 @@ var ActionRunnerRuntime = promauto.NewGaugeVec(prometheus.GaugeOpts{
 	Name:      "runtime",
 	Help:      "How long has an action runner been up."}, []string{"label", "instance_id"})
 
-var RunnerErrors = promauto.NewCounterVec(prometheus.CounterOpts{
+var RunnerProvisioningErrors = promauto.NewCounterVec(prometheus.CounterOpts{
 	Subsystem: "action_runner",
-	Name:      "errors",
+	Name:      "provisioning_errors",
 	Help:      "Errors managing runners on AWS."}, []string{"error", "runner_label"})
