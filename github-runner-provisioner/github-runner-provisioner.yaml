@@ -174,3 +174,23 @@ spec:
   endpoints:
     - targetPort: 8080
       path: /metrics
+
+---
+
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: github-runner-provisioner
+  labels:
+    app: prometheus
+spec:
+  groups:
+    - name: github-runner-provisioner
+      rules:
+        - alert: GitHub runner provisioner error
+          expr: sum(rate(action_runner_provisioning_errors{error=~"availability_check_error|runner_creation_error"}[1m])) > 0
+          labels:
+            severity: warning
+          annotations:
+            summary: There was an error provisioning a GitHub runner.
+            link: https://www.notion.so/datawire/Runbook-Infra-Actions-4ce5640bde494304a039779727be2c0d
