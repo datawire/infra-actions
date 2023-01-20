@@ -14,20 +14,29 @@ import (
 
 func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 	if !strings.HasPrefix(r.URL.String(), "/github-runner-provisioner") {
-		http.Error(w, fmt.Sprintf("URL %s is invalid", r.URL.String()), http.StatusBadRequest)
+		message := fmt.Sprintf("URL %s is invalid", r.URL.String())
+		http.Error(w, message, http.StatusBadRequest)
+		log.Printf(message)
+
 		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorBadRequest.String()}).Inc()
 		return
 	}
 
 	if r.Method != http.MethodPost {
-		http.Error(w, "Only the POST method supported", http.StatusBadRequest)
+		message := "Only the POST method supported"
+		http.Error(w, message, http.StatusBadRequest)
+		log.Printf(message)
+
 		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorBadRequest.String()}).Inc()
 		return
 	}
 
 	payload, err := github.ValidatePayload(r, []byte(cfg.WebhookToken))
 	if err != nil {
-		http.Error(w, "Webhook token invalid", http.StatusUnauthorized)
+		message := "Webhook token invalid"
+		http.Error(w, message, http.StatusUnauthorized)
+		log.Printf(message)
+
 		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorInvalidAuthentication.String()}).Inc()
 		return
 	}
@@ -35,21 +44,28 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 	workflowJobEvent := github.WorkflowJobEvent{}
 	err = json.Unmarshal(payload, &workflowJobEvent)
 	if err != nil {
-		http.Error(w, fmt.Sprintf("Request is not a workflow job event: %v", err), http.StatusBadRequest)
+		message := fmt.Sprintf("Request is not a workflow job event: %v", err)
+		http.Error(w, message, http.StatusBadRequest)
+		log.Printf(message)
+
 		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorInvalidPayload.String()}).Inc()
 		return
 	}
 
 	if workflowJobEvent.Action == nil {
-		http.Error(w, "Workflow action is unknown", http.StatusBadRequest)
+		message := "Workflow action is unknown"
+		http.Error(w, message, http.StatusBadRequest)
+		log.Printf(message)
+
 		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorUnknownAction.String()}).Inc()
 		return
 	}
 
 	if *workflowJobEvent.Action != "queued" {
-		log.Printf("Ignoring GitHub event with action %s.", *workflowJobEvent.Action)
-		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorUnknownAction.String()}).Inc()
+		log.Printf("Ignoring GitHub event with action %s for repository %s", *workflowJobEvent.Action, *workflowJobEvent.Repo.Name)
 		http.Error(w, "OK", http.StatusOK)
+
+		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorUnknownAction.String()}).Inc()
 		return
 	}
 
@@ -65,7 +81,10 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if runnerFunction == nil {
-		http.Error(w, fmt.Sprintf("Workflow job didn't request a supported runner. Requested %v", workflowJobEvent.WorkflowJob.Labels), http.StatusOK)
+		message := fmt.Sprintf("Workflow job didn't request a supported runner. Requested %v", workflowJobEvent.WorkflowJob.Labels)
+		http.Error(w, message, http.StatusOK)
+		log.Printf(message)
+
 		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorUnknownRunnerLabel.String()}).Inc()
 		return
 	}
@@ -82,8 +101,10 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 
 	dryRun := len(r.Form["dry-run"]) > 0 && r.Form["dry-run"][0] == "true"
 	if err := runnerFunction(r.Context(), *workflowJobEvent.Repo.Owner.Login, *workflowJobEvent.Repo.Name, dryRun); err != nil {
-		log.Printf("Error creating %s runner for job %s [%s]: %v", jobLabel, *workflowJobEvent.WorkflowJob.Name, *workflowJobEvent.WorkflowJob.HTMLURL, err)
-		http.Error(w, fmt.Sprintf("Error creating %s runner: %v", jobLabel, err), http.StatusInternalServerError)
+		message := fmt.Sprintf("Error creating %s runner for job %s [%s]: %v", jobLabel, *workflowJobEvent.WorkflowJob.Name, *workflowJobEvent.WorkflowJob.HTMLURL, err)
+		http.Error(w, message, http.StatusInternalServerError)
+		log.Printf(message)
+
 		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorRunnerCreation.String(), "runner_label": jobLabel}).Inc()
 		return
 	}
