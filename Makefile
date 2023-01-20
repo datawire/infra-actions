@@ -11,7 +11,7 @@ test-ubuntu-arm64:
 .PHONY: test-macOS-arm64
 test-macOS-arm64:
 	# SHA can be calculated like this:
-	#echo -n "payload=$(cat github-runner-provisioner/test/macos-arm64_payload.json)" | openssl dgst -sha1 -hmac FAKE_TOKEN
+	#echo -n "payload=$(cat github-runner-provisioner/test/macOS-arm64_payload.json)" | openssl dgst -sha1 -hmac FAKE_TOKEN
 
 	make test-github-provisioner SHA1=e504cfa93721fbea2a394d4de9c9be7d5270fc19 RUNNER_TAG=macOS-arm64
 

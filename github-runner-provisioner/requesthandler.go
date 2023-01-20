@@ -63,7 +63,7 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 
 	if *workflowJobEvent.Action != "queued" {
 		log.Printf("Ignoring GitHub event with action %s for repository %s", *workflowJobEvent.Action, *workflowJobEvent.Repo.Name)
-		http.Error(w, "OK", http.StatusOK)
+		http.Error(w, http.StatusText(http.StatusOK), http.StatusOK)
 
 		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorUnknownAction.String(), "runner_label": ""}).Inc()
 		return
@@ -85,18 +85,27 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, message, http.StatusOK)
 		log.Printf(message)
 
-		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorUnknownRunnerLabel.String(), "runner_label": ""}).Inc()
+		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorUnknownRunnerLabel.String(), "runner_label": jobLabel}).Inc()
 		return
 	}
 
 	log.Printf("Job in %s repo requested a %s runner\n", *workflowJobEvent.Repo.Name, jobLabel)
 
 	runnerLabels := []string{0: jobLabel}
-	if isRunnerAvailable(r.Context(), *workflowJobEvent.Repo.Owner.Login, *workflowJobEvent.Repo.Name, runnerLabels) {
-		log.Printf("%s runner already available. No action scaling action required.", jobLabel)
-		if _, err := w.Write([]byte("OK")); err != nil {
-			log.Printf("Error sending HTTP response: %v", err)
-		}
+	isAvailable, err := isRunnerAvailable(r.Context(), *workflowJobEvent.Repo.Owner.Login, *workflowJobEvent.Repo.Name, runnerLabels)
+	if err != nil {
+		message := fmt.Sprintf("Error checking if runner is available: %v", err)
+		http.Error(w, message, http.StatusInternalServerError)
+		log.Printf(message)
+
+		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorCheckingAvailableRunners.String(), "runner_label": jobLabel}).Inc()
+		return
+	}
+
+	if isAvailable {
+		log.Printf("%s runner already available. No scaling action required.", jobLabel)
+		http.Error(w, http.StatusText(http.StatusOK), http.StatusOK)
+		return
 	}
 
 	dryRun := len(r.Form["dry-run"]) > 0 && r.Form["dry-run"][0] == "true"
@@ -110,9 +119,7 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Printf("%s runner has been scheduled for job %s\n", jobLabel, *workflowJobEvent.Repo.Name)
-	if _, err := w.Write([]byte("OK")); err != nil {
-		log.Printf("Error sending HTTP response: %v", err)
-	}
+	http.Error(w, http.StatusText(http.StatusOK), http.StatusOK)
 }
 
 func handleHealthCheckRequest(w http.ResponseWriter, _ *http.Request) {

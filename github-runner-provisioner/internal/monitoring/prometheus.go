@@ -14,6 +14,7 @@ const (
 	ErrorUnknownAction
 	ErrorUnknownRunnerLabel
 	ErrorRunnerCreation
+	ErrorCheckingAvailableRunners
 )
 
 func (s ProvisioningError) String() string {
@@ -30,6 +31,8 @@ func (s ProvisioningError) String() string {
 		return "unknown_runner_label"
 	case ErrorRunnerCreation:
 		return "runner_creation_error"
+	case ErrorCheckingAvailableRunners:
+		return "availability_check_error"
 	}
 	return "unknown_error"
 }
