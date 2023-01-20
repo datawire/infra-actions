@@ -63,7 +63,7 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 
 	if *workflowJobEvent.Action != "queued" {
 		log.Printf("Ignoring GitHub event with action %s for repository %s", *workflowJobEvent.Action, *workflowJobEvent.Repo.Name)
-		http.Error(w, "OK", http.StatusOK)
+		http.Error(w, http.StatusText(http.StatusOK), http.StatusOK)
 
 		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorUnknownAction.String(), "runner_label": ""}).Inc()
 		return
@@ -104,10 +104,7 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 
 	if isAvailable {
 		log.Printf("%s runner already available. No scaling action required.", jobLabel)
-		if _, err := w.Write([]byte("OK")); err != nil {
-			log.Printf("Error sending HTTP response: %v", err)
-		}
-
+		http.Error(w, http.StatusText(http.StatusOK), http.StatusOK)
 		return
 	}
 
@@ -122,9 +119,7 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Printf("%s runner has been scheduled for job %s\n", jobLabel, *workflowJobEvent.Repo.Name)
-	if _, err := w.Write([]byte("OK")); err != nil {
-		log.Printf("Error sending HTTP response: %v", err)
-	}
+	http.Error(w, http.StatusText(http.StatusOK), http.StatusOK)
 }
 
 func handleHealthCheckRequest(w http.ResponseWriter, _ *http.Request) {
