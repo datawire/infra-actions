@@ -103,7 +103,7 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if isAvailable {
-		log.Printf("%s runner already available. No action scaling action required.", jobLabel)
+		log.Printf("%s runner already available. No scaling action required.", jobLabel)
 		if _, err := w.Write([]byte("OK")); err != nil {
 			log.Printf("Error sending HTTP response: %v", err)
 		}
