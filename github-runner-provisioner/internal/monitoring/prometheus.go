@@ -45,14 +45,14 @@ var ActionRunnerRuntime = promauto.NewGaugeVec(prometheus.GaugeOpts{
 var RunnerProvisioningErrors = promauto.NewCounterVec(prometheus.CounterOpts{
 	Subsystem: "action_runner",
 	Name:      "provisioning_errors",
-	Help:      "Errors managing runners on AWS."}, []string{"error", "runner_label"})
+	Help:      "Errors managing runners on AWS."}, []string{"error", "runner_label", "repo"})
 
 func init() {
-	RunnerProvisioningErrors.With(prometheus.Labels{"error": ErrorBadRequest.String(), "runner_label": ""})
-	RunnerProvisioningErrors.With(prometheus.Labels{"error": ErrorInvalidAuthentication.String(), "runner_label": ""})
-	RunnerProvisioningErrors.With(prometheus.Labels{"error": ErrorInvalidPayload.String(), "runner_label": ""})
-	RunnerProvisioningErrors.With(prometheus.Labels{"error": ErrorUnknownAction.String(), "runner_label": ""})
-	RunnerProvisioningErrors.With(prometheus.Labels{"error": ErrorUnknownRunnerLabel.String(), "runner_label": ""})
-	RunnerProvisioningErrors.With(prometheus.Labels{"error": ErrorRunnerCreation.String(), "runner_label": ""})
-	RunnerProvisioningErrors.With(prometheus.Labels{"error": ErrorCheckingAvailableRunners.String(), "runner_label": ""})
+	RunnerProvisioningErrors.With(prometheus.Labels{"error": ErrorBadRequest.String(), "runner_label": "", "repo": ""})
+	RunnerProvisioningErrors.With(prometheus.Labels{"error": ErrorInvalidAuthentication.String(), "runner_label": "", "repo": ""})
+	RunnerProvisioningErrors.With(prometheus.Labels{"error": ErrorInvalidPayload.String(), "runner_label": "", "repo": ""})
+	RunnerProvisioningErrors.With(prometheus.Labels{"error": ErrorUnknownAction.String(), "runner_label": "", "repo": ""})
+	RunnerProvisioningErrors.With(prometheus.Labels{"error": ErrorUnknownRunnerLabel.String(), "runner_label": "", "repo": ""})
+	RunnerProvisioningErrors.With(prometheus.Labels{"error": ErrorRunnerCreation.String(), "runner_label": "", "repo": ""})
+	RunnerProvisioningErrors.With(prometheus.Labels{"error": ErrorCheckingAvailableRunners.String(), "runner_label": "", "repo": ""})
 }
