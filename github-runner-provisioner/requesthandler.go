@@ -85,7 +85,7 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, message, http.StatusOK)
 		log.Printf(message)
 
-		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorUnknownRunnerLabel.String(), "runner_label": ""}).Inc()
+		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorUnknownRunnerLabel.String(), "runner_label": jobLabel}).Inc()
 		return
 	}
 
