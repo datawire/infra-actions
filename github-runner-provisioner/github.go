@@ -38,10 +38,10 @@ func getGitHubRunners(ctx context.Context, owner string, repo string) (*github.R
 	return runners, nil
 }
 
-func isRunnerAvailable(ctx context.Context, owner string, repo string, labels []string) bool {
+func isRunnerAvailable(ctx context.Context, owner string, repo string, labels []string) (bool, error) {
 	runners, err := getGitHubRunners(ctx, owner, repo)
 	if err != nil {
-		return false
+		return false, err
 	}
 
 	//check all runners registered to the repo
@@ -58,11 +58,11 @@ func isRunnerAvailable(ctx context.Context, owner string, repo string, labels []
 		}
 
 		if labelsMatch(labels, runnerLabelNames) {
-			return true
+			return true, nil
 		}
 	}
 
-	return false
+	return false, nil
 }
 
 func labelsMatch(labels []string, runnerLabelNames []string) bool {
