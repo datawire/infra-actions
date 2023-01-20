@@ -18,7 +18,7 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, message, http.StatusBadRequest)
 		log.Printf(message)
 
-		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorBadRequest.String()}).Inc()
+		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorBadRequest.String(), "runner_label": ""}).Inc()
 		return
 	}
 
@@ -27,7 +27,7 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, message, http.StatusBadRequest)
 		log.Printf(message)
 
-		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorBadRequest.String()}).Inc()
+		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorBadRequest.String(), "runner_label": ""}).Inc()
 		return
 	}
 
@@ -37,7 +37,7 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, message, http.StatusUnauthorized)
 		log.Printf(message)
 
-		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorInvalidAuthentication.String()}).Inc()
+		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorInvalidAuthentication.String(), "runner_label": ""}).Inc()
 		return
 	}
 
@@ -48,7 +48,7 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, message, http.StatusBadRequest)
 		log.Printf(message)
 
-		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorInvalidPayload.String()}).Inc()
+		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorInvalidPayload.String(), "runner_label": ""}).Inc()
 		return
 	}
 
@@ -57,7 +57,7 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, message, http.StatusBadRequest)
 		log.Printf(message)
 
-		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorUnknownAction.String()}).Inc()
+		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorUnknownAction.String(), "runner_label": ""}).Inc()
 		return
 	}
 
@@ -65,7 +65,7 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Ignoring GitHub event with action %s for repository %s", *workflowJobEvent.Action, *workflowJobEvent.Repo.Name)
 		http.Error(w, "OK", http.StatusOK)
 
-		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorUnknownAction.String()}).Inc()
+		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorUnknownAction.String(), "runner_label": ""}).Inc()
 		return
 	}
 
@@ -85,7 +85,7 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, message, http.StatusOK)
 		log.Printf(message)
 
-		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorUnknownRunnerLabel.String()}).Inc()
+		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorUnknownRunnerLabel.String(), "runner_label": ""}).Inc()
 		return
 	}
 
