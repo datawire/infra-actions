@@ -107,6 +107,8 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 		if _, err := w.Write([]byte("OK")); err != nil {
 			log.Printf("Error sending HTTP response: %v", err)
 		}
+
+		return
 	}
 
 	dryRun := len(r.Form["dry-run"]) > 0 && r.Form["dry-run"][0] == "true"
