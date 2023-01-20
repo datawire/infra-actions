@@ -187,10 +187,17 @@ spec:
   groups:
     - name: github-runner-provisioner
       rules:
-        - alert: GitHub runner provisioner error
-          expr: sum(rate(action_runner_provisioning_errors{error=~"availability_check_error|runner_creation_error"}[1m])) > 0
+        - alert: "GitHub runner provisioner"
+          expr: sum by(repo, runner_label) (increase(action_runner_provisioning_errors{error="availability_check_error"}[2m])) > 0
           labels:
             severity: warning
           annotations:
-            summary: There was an error provisioning a GitHub runner.
-            link: https://www.notion.so/datawire/Runbook-Infra-Actions-4ce5640bde494304a039779727be2c0d
+            summary: 'Error verifying if there are runners with label ''{{ $labels.runner_label }}''. This can affect builds in the ''{{ $labels.repo }}'' repository.'
+            link: 'https://www.notion.so/datawire/Runbook-Infra-Actions-4ce5640bde494304a039779727be2c0d'
+        - alert: "GitHub runner provisioner"
+          expr: sum by(repo, runner_label) (increase(action_runner_provisioning_errors{error="runner_creation_error"}[2m])) > 0
+          labels:
+            severity: warning
+          annotations:
+            summary: "Error provisioning a GitHub runner with label {{ $labels.runner_label }}. This can affect builds in the '{{ $labels.repo }}' repository."
+            link: 'https://www.notion.so/datawire/Runbook-Infra-Actions-4ce5640bde494304a039779727be2c0d'
