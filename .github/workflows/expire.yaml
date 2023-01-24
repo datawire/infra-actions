@@ -26,4 +26,3 @@ jobs:
           slackWebhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           slackChannel: "#team-infra"
           slackRunbook: "Runbook TBD"
-          slackUsername: "${{ matrix.distribution }} Cluster Provisioner"
