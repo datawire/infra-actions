@@ -80,7 +80,7 @@ runs:
         kubeceptionProfile: ${{ inputs.kubeceptionProfile }}
     - name: "Get GKE kubeconfig"
       uses: ./.github/actions/gke-kubeconfig
-      if: ${{ inputs.distribution == 'GKE' }}
+      if: ${{ inputs.distribution == 'GKE' && inputs.action != 'expire' }}
       with:
         useAuthProvider: ${{ inputs.useAuthProvider }}
         gkeCredentials: ${{ inputs.gkeCredentials }}
@@ -89,4 +89,4 @@ runs:
     - name: "Copy generated Kubeconfig for GKE clusters to ${{ inputs.kubeconfig }}"
       run: cp "${KUBECONFIG}" '${{ inputs.kubeconfig }}'
       shell: sh
-      if: ${{ inputs.distribution == 'GKE' }}
+      if: ${{ inputs.distribution == 'GKE' && inputs.action != 'expire' }}
