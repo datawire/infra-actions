@@ -63,6 +63,7 @@ runs:
       with:
         repository: ${{ env.REPO }}
         ref: ${{ env.REF }}
+        path: infra-actions
     - id: provision-cluster
       uses: ./.github/actions/provision-cluster
       with:
