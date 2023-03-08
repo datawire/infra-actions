@@ -66,7 +66,8 @@ class Client {
   // Create a new cluster with a unique name, wait for it to be fully provisioned, and then fetch
   // and return the resulting cluster object.
   async allocateCluster(version, lifespan) {
-    const config = core.getInput('gkeConfig') || {}
+    const rawConfig = core.getInput('gkeConfig') || '{}'
+    const config = JSON.parse(rawConfig)
     let cluster = {...gkeDefaults, ...config}
 
     const name = `test-${utils.uid()}`

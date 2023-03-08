@@ -41,6 +41,10 @@ jobs:
          - distribution: Kubeception
            version: "1.22"
 
+         - distribution: GKE
+           version: "1.23"
+           config: '{ "initialNodeCount" : 2 }'
+
         cluster_telepresence_version:  ["none"]
 
 ## Below is a larger matrix intended to illustrate how more permutations would be expressed. The
@@ -88,8 +92,20 @@ jobs:
           kubeconfig: kubeconfig.yaml
           kubeceptionToken: ${{ secrets.KUBECEPTION_TOKEN }}
           gkeCredentials: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+          gkeConfig: ${{ matrix.clusters.config }}
 
       - run: |
           echo Testing telepresence client version ${{ matrix.client_telepresence_version }} on ${{ matrix.client_os }} ${{ matrix.client_arch }} against server version ${{ matrix.cluster_telepresence_version }} on ${{ matrix.clusters.distribution }} cluster version ${{ matrix.clusters.version }}
           kubectl version
           kubectl get pods -A
+
+      - name: "validate gke config"
+        if: ${{ startsWith(matrix.clusters.config, '{') }}
+        run: |
+          nodecount=$(kubectl get nodes --no-headers | wc -l | bc)
+          if [[ $nodecount == 2 ]]; then
+            echo "Gke config was used!"
+          else
+            echo "Gke config was not used"
+            exit 1
+          fi
