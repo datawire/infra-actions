@@ -65,7 +65,7 @@ runs:
         ref: ${{ env.REF }}
         path: infra-actions
     - id: provision-cluster
-      uses: ./.github/actions/provision-cluster
+      uses: ./infra-actions/.github/actions/provision-cluster
       with:
         distribution: ${{ inputs.distribution }}
         action: ${{ inputs.action }}
@@ -80,7 +80,7 @@ runs:
         gkeConfig: ${{ inputs.gkeConfig }}
         kubeceptionProfile: ${{ inputs.kubeceptionProfile }}
     - name: "Get GKE kubeconfig"
-      uses: ./.github/actions/gke-kubeconfig
+      uses: ./infra-actions/.github/actions/gke-kubeconfig
       if: ${{ inputs.distribution == 'GKE' && inputs.action != 'expire' }}
       with:
         useAuthProvider: ${{ inputs.useAuthProvider }}
