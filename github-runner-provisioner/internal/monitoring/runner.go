@@ -26,7 +26,7 @@ func UpdateActionRunnersRuntimeMetric() {
 	for {
 		instancesDetails, err := ec2Client.GetInstances(instanceFilter)
 		if err != nil {
-			log.Printf("Error getting instance information. %v\n", err)
+			log.Errorf("Error getting instance information. %v\n", err)
 			break
 		}
 
