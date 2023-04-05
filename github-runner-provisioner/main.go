@@ -33,7 +33,7 @@ func main() {
 	go monitoring.UpdateActionRunnersRuntimeMetric()
 
 	addr := ":8080"
-	log.Infof("Started GitHub provisioner")
+	log.Infof("Started GitHub provisioner. Listening on %s", addr)
 	if err := http.ListenAndServe(addr, makeHandler("main")); err != nil {
 		log.Error(err)
 	}
