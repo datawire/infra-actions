@@ -36,7 +36,7 @@ func (c *Ec2Client) GetInstances(filter []types.Filter) ([]*InstanceDetails, err
 			for _, instance := range reservation.Instances {
 				label, err := getActionRunnerLabel(instance)
 				if err != nil {
-					log.Errorf("Error getting runner tag for instance %s: %v\n", *instance.InstanceId, err)
+					log.Warningf("Error getting runner tag for instance %s: %v\n", *instance.InstanceId, err)
 					continue
 				}
 
