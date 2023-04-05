@@ -5,7 +5,7 @@ import (
 	"github.com/datawire/infra-actions/github-runner-provisioner/internal/aws"
 	"github.com/datawire/infra-actions/github-runner-provisioner/internal/utils"
 	"github.com/prometheus/client_golang/prometheus"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"time"
 )
 

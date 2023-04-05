@@ -7,7 +7,7 @@ import (
 	"github.com/datawire/infra-actions/github-runner-provisioner/internal/monitoring"
 	"github.com/google/go-github/v48/github"
 	"github.com/prometheus/client_golang/prometheus"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 	"strings"
 )
