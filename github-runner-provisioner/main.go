@@ -10,7 +10,13 @@ import (
 )
 
 func init() {
-	log.SetFormatter(&log.JSONFormatter{})
+	log.SetFormatter(&log.JSONFormatter{
+		FieldMap: log.FieldMap{
+			log.FieldKeyLevel: "severity",
+			log.FieldKeyTime:  "timestamp",
+			log.FieldKeyMsg:   "message",
+		},
+	})
 	log.SetOutput(os.Stdout)
 	log.SetLevel(log.InfoLevel)
 }
