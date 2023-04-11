@@ -5,7 +5,7 @@ import (
 	"github.com/datawire/infra-actions/github-runner-provisioner/internal/aws"
 	"github.com/datawire/infra-actions/github-runner-provisioner/internal/utils"
 	"github.com/prometheus/client_golang/prometheus"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"time"
 )
 
@@ -26,7 +26,7 @@ func UpdateActionRunnersRuntimeMetric() {
 	for {
 		instancesDetails, err := ec2Client.GetInstances(instanceFilter)
 		if err != nil {
-			log.Printf("Error getting instance information. %v\n", err)
+			log.Errorf("Error getting instance information. %v\n", err)
 			break
 		}
 

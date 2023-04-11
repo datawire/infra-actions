@@ -6,7 +6,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
 	"github.com/datawire/infra-actions/github-runner-provisioner/internal/utils"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"time"
 )
 
@@ -36,7 +36,7 @@ func (c *Ec2Client) GetInstances(filter []types.Filter) ([]*InstanceDetails, err
 			for _, instance := range reservation.Instances {
 				label, err := getActionRunnerLabel(instance)
 				if err != nil {
-					log.Printf("Error getting runner tag for instance %s: %v\n", *instance.InstanceId, err)
+					log.Warningf("Error getting runner tag for instance %s: %v\n", *instance.InstanceId, err)
 					continue
 				}
 

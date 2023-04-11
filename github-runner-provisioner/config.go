@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/kelseyhightower/envconfig"
-	"log"
+	log "github.com/sirupsen/logrus"
 )
 
 type Config struct {

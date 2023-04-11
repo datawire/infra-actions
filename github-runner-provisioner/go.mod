@@ -9,7 +9,8 @@ require (
 	github.com/google/go-github/v48 v48.0.0
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/prometheus/client_golang v1.14.0
-	github.com/stretchr/testify v1.4.0
+	github.com/sirupsen/logrus v1.6.0
+	github.com/stretchr/testify v1.7.0
 	golang.org/x/exp v0.0.0-20221026153819-32f3d567a233
 	golang.org/x/oauth2 v0.1.0
 )
@@ -32,6 +33,7 @@ require (
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
+	github.com/konsorten/go-windows-terminal-sequences v1.0.3 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prometheus/client_model v0.3.0 // indirect
@@ -42,5 +44,5 @@ require (
 	golang.org/x/sys v0.1.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
-	gopkg.in/yaml.v2 v2.4.0 // indirect
+	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c // indirect
 )
