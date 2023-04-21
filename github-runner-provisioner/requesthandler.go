@@ -67,7 +67,7 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, message, http.StatusBadRequest)
 		log.WithFields(setupLogFields(r, http.StatusBadRequest, requestTime)).Warningf(message)
 
-		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"warning": monitoring.ErrorInvalidPayload.String(), "runner_label": "", "repo": ""}).Inc()
+		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorInvalidPayload.String(), "runner_label": "", "repo": ""}).Inc()
 		return
 	}
 
@@ -85,7 +85,7 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(http.StatusOK), http.StatusOK)
 		log.WithFields(setupLogFields(r, http.StatusOK, requestTime)).Infof("Ignoring GitHub event with action %s for repository %s", *workflowJobEvent.Action, *workflowJobEvent.Repo.Name)
 
-		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"info": monitoring.ErrorUnknownAction.String(),
+		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorUnknownAction.String(),
 			"runner_label": "", "repo": *workflowJobEvent.Repo.Name}).Inc()
 		return
 	}
@@ -106,7 +106,7 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, message, http.StatusOK)
 		log.WithFields(setupLogFields(r, http.StatusOK, requestTime)).Infof(message)
 
-		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"info": monitoring.ErrorUnknownRunnerLabel.String(),
+		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorUnknownRunnerLabel.String(),
 			"runner_label": jobLabel, "repo": *workflowJobEvent.Repo.Name}).Inc()
 		return
 	}
