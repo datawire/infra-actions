@@ -65,7 +65,7 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		message := fmt.Sprintf("Request is not a workflow job event: %v", err)
 		http.Error(w, message, http.StatusBadRequest)
-		log.WithFields(setupLogFields(r, http.StatusBadRequest, requestTime)).Errorf(message)
+		log.WithFields(setupLogFields(r, http.StatusBadRequest, requestTime)).Warningf(message)
 
 		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorInvalidPayload.String(), "runner_label": "", "repo": ""}).Inc()
 		return
@@ -83,7 +83,7 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 
 	if *workflowJobEvent.Action != "queued" {
 		http.Error(w, http.StatusText(http.StatusOK), http.StatusOK)
-		log.WithFields(setupLogFields(r, http.StatusOK, requestTime)).Warningf("Ignoring GitHub event with action %s for repository %s", *workflowJobEvent.Action, *workflowJobEvent.Repo.Name)
+		log.WithFields(setupLogFields(r, http.StatusOK, requestTime)).Infof("Ignoring GitHub event with action %s for repository %s", *workflowJobEvent.Action, *workflowJobEvent.Repo.Name)
 
 		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorUnknownAction.String(),
 			"runner_label": "", "repo": *workflowJobEvent.Repo.Name}).Inc()
@@ -104,7 +104,7 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 	if runnerFunction == nil {
 		message := fmt.Sprintf("Workflow job didn't request a supported runner. Requested %v", workflowJobEvent.WorkflowJob.Labels)
 		http.Error(w, message, http.StatusOK)
-		log.WithFields(setupLogFields(r, http.StatusOK, requestTime)).Errorf(message)
+		log.WithFields(setupLogFields(r, http.StatusOK, requestTime)).Infof(message)
 
 		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorUnknownRunnerLabel.String(),
 			"runner_label": jobLabel, "repo": *workflowJobEvent.Repo.Name}).Inc()
