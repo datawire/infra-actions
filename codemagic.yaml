@@ -1,5 +1,17 @@
 workflows:
-  hello-world:
-    name: Hello world workflow
+  github-runner:
+    name: GitHub Actions Runner
+    instance_type: mac_mini_m1
     scripts:
       - echo "Hello World!"
+      - |
+        curl -o actions-runner-osx-arm64-2.305.0.tar.gz 
+        -L https://github.com/actions/runner/releases/download/v2.305.0/actions-runner-osx-arm64-2.305.0.tar.gz
+      - tar xzf ./actions-runner-osx-arm64-2.305.0.tar.gz
+      - |
+        ./config.sh 
+        --url https://github.com/$GITHUB_REPO_OWNER/$GITHUB_REPO_NAME 
+        --token $GITHUB_RUNNER_TOKEN 
+        --labels $GITHUB_RUNNER_LABELS 
+        --unattended --ephemeral --disableupdate
+      - ./run.sh
