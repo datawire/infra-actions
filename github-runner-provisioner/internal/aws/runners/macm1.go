@@ -1,14 +1,14 @@
-package main
+package aws_runners
 
 import (
-	"context"
 	"encoding/base64"
 	"fmt"
+	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
+	"github.com/datawire/infra-actions/github-runner-provisioner/internal/aws"
 )
 
 const AmiMacOs12_6Arm64 = "ami-01b8fcd5770ceb9c1"
-const macM1RunnerLabel = "macOS-arm64"
 const macM1RunnerInstaller = "https://github.com/actions/runner/releases/download/v2.298.2/actions-runner-osx-arm64-2.298.2.tar.gz"
 const macM1UserDataTemplate = `#!/bin/bash
 set -x
@@ -45,20 +45,10 @@ sudo su ec2-user - ./run_agent.sh 2>&1 | tee /var/log/github-agent.log
 shutdown -h now
 `
 
-type runnerConfig struct {
-	imageId              string
-	hostResourceGroupArn string
-	placement            types.Placement
-	instanceCount        int32
-	shutdownBehavior     types.ShutdownBehavior
-	instanceType         types.InstanceType
-	keyName              string
-}
-
 var macM1HostResourceGroupArn = "arn:aws:resource-groups:us-east-1:914373874199:group/GitHub-Runners"
 var macM1AvailabilityZone = "us-east-1a"
 
-var macM1Config = runnerConfig{
+var macM1RunnerConfig = runnerConfig{
 	imageId: AmiMacOs12_6Arm64,
 	placement: types.Placement{
 		HostResourceGroupArn: &macM1HostResourceGroupArn,
@@ -70,14 +60,31 @@ var macM1Config = runnerConfig{
 	keyName:          "m1_mac_runners",
 }
 
-func macM1RunnerUserData(ctx context.Context, owner string, repo string) (string, error) {
-	token, err := getGitHubRunnerToken(ctx, owner, repo)
-	if err != nil {
-		return "", err
-	}
-
-	userData := fmt.Sprintf(macM1UserDataTemplate, macM1RunnerInstaller, owner, repo, token, macM1RunnerLabel)
+func macM1RunnerUserData(owner string, repo string, token string, label string) (string, error) {
+	userData := fmt.Sprintf(macM1UserDataTemplate, macM1RunnerInstaller, owner, repo, token, label)
 
 	encodedUserData := base64.StdEncoding.EncodeToString([]byte(userData))
 	return encodedUserData, nil
+}
+
+func MacM1RunInstancesInput(owner string, repo string, token string, label string, dryRun bool) (ec2.RunInstancesInput, error) {
+	userData, err := macM1RunnerUserData(owner, repo, token, label)
+	if err != nil {
+		return ec2.RunInstancesInput{}, err
+	}
+
+	params := ec2.RunInstancesInput{
+		MaxCount:                          &macM1RunnerConfig.instanceCount,
+		MinCount:                          &macM1RunnerConfig.instanceCount,
+		DryRun:                            &dryRun,
+		ImageId:                           &macM1RunnerConfig.imageId,
+		InstanceInitiatedShutdownBehavior: macM1RunnerConfig.shutdownBehavior,
+		InstanceType:                      macM1RunnerConfig.instanceType,
+		KeyName:                           &macM1RunnerConfig.keyName,
+		Placement:                         &macM1RunnerConfig.placement,
+		UserData:                          &userData,
+		TagSpecifications:                 aws.RunnerTags(owner, repo, label),
+	}
+
+	return params, nil
 }
