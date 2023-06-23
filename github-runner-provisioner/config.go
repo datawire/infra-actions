@@ -6,8 +6,9 @@ import (
 )
 
 type Config struct {
-	GithubToken  string `required:"true" envconfig:"GITHUB_TOKEN"`
-	WebhookToken string `required:"true" envconfig:"WEBHOOK_TOKEN"`
+	GithubToken    string `required:"true" envconfig:"GITHUB_TOKEN"`
+	WebhookToken   string `required:"true" envconfig:"WEBHOOK_TOKEN"`
+	CodeMagicToken string `required:"true" envconfig:"CODEMAGIC_TOKEN"`
 }
 
 func NewConfig() *Config {

@@ -4,30 +4,33 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	log "github.com/sirupsen/logrus"
 	"io"
 	"net/http"
 )
 
 type codemagicWorkflow struct {
-	WorkflowID  string            `json:"workflowId"`
-	AppId       string            `json:"app_id"`
-	Branch      string            `json:"branch"`
-	Environment map[string]string `json:"environment"`
+	WorkflowID  string                       `json:"workflowId"`
+	AppId       string                       `json:"appId"`
+	Branch      string                       `json:"branch"`
+	Environment map[string]map[string]string `json:"environment"`
 }
 
-func CreateMacM1Runner(ctx context.Context, owner string, repo string, token string, labels string, dryRun bool) error {
+func CreateMacM1Runner(ctx context.Context, owner string, repo string, token string, labels string, dryRun bool, codeMagicToken string) error {
 	client := &http.Client{}
 
 	data := codemagicWorkflow{
 		WorkflowID: "github-runner",
 		AppId:      "649493225428a76bc935a44b",
 		Branch:     "main",
-		Environment: map[string]string{
-			"GITHUB_REPO_OWNER":    owner,
-			"GITHUB_REPO_NAME":     repo,
-			"GITHUB_RUNNER_TOKEN":  token,
-			"GITHUB_RUNNER_LABELS": labels,
+		Environment: map[string]map[string]string{
+			"variables": {
+				"GITHUB_REPO_OWNER":    owner,
+				"GITHUB_REPO_NAME":     repo,
+				"GITHUB_RUNNER_TOKEN":  token,
+				"GITHUB_RUNNER_LABELS": labels,
+			},
 		},
 	}
 	jsonData, err := json.Marshal(data)
@@ -42,7 +45,7 @@ func CreateMacM1Runner(ctx context.Context, owner string, repo string, token str
 	}
 
 	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("x-auth-token", token)
+	req.Header.Add("x-auth-token", codeMagicToken)
 
 	if dryRun {
 		return nil
@@ -59,6 +62,11 @@ func CreateMacM1Runner(ctx context.Context, owner string, repo string, token str
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		log.Error("Error creating runner for ", owner, '/', repo, " Codemagic response: ", string(body))
+		return errors.New("Failed to start CodeMagic build")
 	}
 
 	log.Info("Codemagic response: ", string(body))

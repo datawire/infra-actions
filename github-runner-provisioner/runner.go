@@ -20,7 +20,7 @@ func createMacM1Runner(ctx context.Context, owner string, repo string, dryRun bo
 		return err
 	}
 
-	err = codemagic.CreateMacM1Runner(ctx, owner, repo, token, macM1RunnerLabel, dryRun)
+	err = codemagic.CreateMacM1Runner(ctx, owner, repo, token, macM1RunnerLabel, dryRun, cfg.CodeMagicToken)
 	if err != nil {
 		return err
 	}
