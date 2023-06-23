@@ -5,7 +5,7 @@ import (
 	"github.com/datawire/infra-actions/github-runner-provisioner/internal/aws"
 )
 
-const macM1RunnerLabel = "macos-arm64"
+const macM1RunnerLabel = "macOS-arm64"
 const ubuntuArm64RunnerLabel = "ubuntu-arm64"
 
 var runners = map[string]func(context.Context, string, string, bool) error{

@@ -10,6 +10,8 @@ import (
 	"time"
 )
 
+const LabelTag = "label"
+
 type InstanceDetails struct {
 	LaunchTime        *time.Time
 	InstanceId        *string

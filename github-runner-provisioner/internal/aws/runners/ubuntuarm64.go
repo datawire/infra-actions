@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
-	"github.com/datawire/infra-actions/github-runner-provisioner/internal/aws"
 )
 
 const AmiUbuntuArm64 = "ami-0f69dd1d0d03ad669"
@@ -73,7 +72,7 @@ func UbuntuArm64RunInstancesInput(owner string, repo string, token string, label
 		KeyName:                           &ubuntuArm64RunnerConfig.keyName,
 		Placement:                         &ubuntuArm64RunnerConfig.placement,
 		UserData:                          &userData,
-		TagSpecifications:                 aws.RunnerTags(owner, repo, label),
+		TagSpecifications:                 runnerTags(owner, repo, label),
 	}
 
 	return params, nil

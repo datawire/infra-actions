@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
-	"github.com/datawire/infra-actions/github-runner-provisioner/internal/aws"
 )
 
 const AmiMacOs12_6Arm64 = "ami-01b8fcd5770ceb9c1"
@@ -83,7 +82,7 @@ func MacM1RunInstancesInput(owner string, repo string, token string, label strin
 		KeyName:                           &macM1RunnerConfig.keyName,
 		Placement:                         &macM1RunnerConfig.placement,
 		UserData:                          &userData,
-		TagSpecifications:                 aws.RunnerTags(owner, repo, label),
+		TagSpecifications:                 runnerTags(owner, repo, label),
 	}
 
 	return params, nil
