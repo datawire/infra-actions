@@ -1,6 +1,6 @@
 name: "Hello MacM1"
 
-on: [push]
+on: [workflow_dispatch]
 
 jobs:
   hello:
