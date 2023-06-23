@@ -26,7 +26,7 @@ Target takes a `DRY_RUN` variable that makes the request run in dry-run mode. By
 make test-ubuntu-arm64 HOSTNAME=http://localhost:8080 DRY_RUN=false
 ```
 
-**Note**: Be careful when sending requests to production using a HTTP client, since the `dry-run` 
+**Note**: Be careful when sending requests to production using an HTTP client, since the `dry-run` 
 request parameter defaults to true. This is necessary because we have no way to set GitHub to send this 
 parameter. 
 
