@@ -131,6 +131,11 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	err = r.ParseForm()
+	if err != nil {
+		log.WithFields(setupLogFields(r, http.StatusOK, requestTime)).Error("Error parsing form")
+		return
+	}
 	dryRun := len(r.Form["dry-run"]) > 0 && r.Form["dry-run"][0] == "true"
 	if err := runnerFunction(r.Context(), *workflowJobEvent.Repo.Owner.Login, *workflowJobEvent.Repo.Name, dryRun); err != nil {
 		message := fmt.Sprintf("Error creating %s runner for job %s [%s]: %v", jobLabel, *workflowJobEvent.WorkflowJob.Name, *workflowJobEvent.WorkflowJob.HTMLURL, err)
