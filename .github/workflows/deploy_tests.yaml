@@ -33,7 +33,12 @@ jobs:
         run: |
           set -ex
           cd github-runner-provisioner
-          kubectl create secret generic github-runner-provisioner-secrets --from-literal=AWS_ACCESS_KEY_ID=AWS_ACCESS_KEY_ID --from-literal=AWS_SECRET_ACCESS_KEY=AWS_SECRET_ACCESS_KEY --from-literal=GITHUB_TOKEN=GITHUB_TOKEN --from-literal=WEBHOOK_TOKEN=WEBHOOK_TOKEN
+          kubectl create secret generic github-runner-provisioner-secrets \
+            --from-literal=AWS_ACCESS_KEY_ID=AWS_ACCESS_KEY_ID \
+            --from-literal=AWS_SECRET_ACCESS_KEY=AWS_SECRET_ACCESS_KEY \
+            --from-literal=GITHUB_TOKEN=GITHUB_TOKEN \
+            --from-literal=WEBHOOK_TOKEN=WEBHOOK_TOKEN \
+            --from-literal=CODEMAGIC_TOKEN=CODEMAGIC_TOKEN
           kubectl apply -k . --wait
           kubectl wait --for condition=available --timeout=5m deploy github-runner-provisioner
       - name: Get GitHub runner provisioner logs
