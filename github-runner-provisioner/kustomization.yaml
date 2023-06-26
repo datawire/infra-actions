@@ -12,17 +12,21 @@ configMapGenerator:
       - go.sum
       - config.go
       - github.go
-      - macm1.go
       - main.go
       - requesthandler.go
       - runner.go
-      - ubuntuarm64.go
   - name: internal-aws
     files:
       - internal/aws/aws.go
       - internal/aws/ec2.go
       - internal/aws/iface.go
       - internal/aws/runner.go
+      - internal/aws/runners/macm1.go
+      - internal/aws/runners/ubuntuarm64.go
+      - internal/aws/runners/shared.go
+  - name: internal-codemagic
+    files:
+      - internal/codemagic/runner.go
   - name: internal-monitoring
     files:
       - internal/monitoring/prometheus.go
