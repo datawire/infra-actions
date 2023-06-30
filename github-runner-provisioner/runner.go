@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/datawire/infra-actions/github-runner-provisioner/internal/aws"
 	"github.com/datawire/infra-actions/github-runner-provisioner/internal/codemagic"
+	"math/rand"
 )
 
 const macM1RunnerLabel = "macOS-arm64"
@@ -20,9 +21,17 @@ func createMacM1Runner(ctx context.Context, owner string, repo string, dryRun bo
 		return err
 	}
 
-	err = codemagic.CreateMacM1Runner(ctx, owner, repo, token, macM1RunnerLabel, dryRun, cfg.CodeMagicToken)
-	if err != nil {
-		return err
+	useCodemagic := rand.Intn(10) < 1 // 10% chance of using Codemagic
+	if useCodemagic {
+		err = codemagic.CreateMacM1Runner(ctx, owner, repo, token, macM1RunnerLabel, dryRun, cfg.CodeMagicToken)
+		if err != nil {
+			return err
+		}
+	} else {
+		err = aws.CreateEC2Runner(ctx, owner, repo, token, macM1RunnerLabel, dryRun)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
