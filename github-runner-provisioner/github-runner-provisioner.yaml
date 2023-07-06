@@ -83,6 +83,8 @@ spec:
           mountPath: "/src"
         - name: internal-aws
           mountPath: "/src/internal/aws"
+        - name: internal-aws-runners
+          mountPath: "/src/internal/aws/aws_runners"
         - name: internal-codemagic
           mountPath: "/src/internal/codemagic"
         - name: internal-monitoring
@@ -134,6 +136,9 @@ spec:
         - name: internal-aws
           configMap:
             name: internal-aws
+        - name: internal-aws-runners
+          configMap:
+            name: internal-aws-runners
         - name: internal-codemagic
           configMap:
             name: internal-codemagic

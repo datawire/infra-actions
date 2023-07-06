@@ -3,7 +3,7 @@ package aws
 import (
 	"context"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
-	"github.com/datawire/infra-actions/github-runner-provisioner/internal/aws/runners"
+	"github.com/datawire/infra-actions/github-runner-provisioner/internal/aws/aws_runners"
 )
 
 var runnerParams = map[string]func(string, string, string, string, bool) (ec2.RunInstancesInput, error){
