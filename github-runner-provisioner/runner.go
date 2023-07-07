@@ -15,7 +15,7 @@ var runners = map[string]func(context.Context, string, string, bool) error{
 }
 
 func createMacM1Runner(ctx context.Context, owner string, repo string, dryRun bool) error {
-	token, err := getGitHubRunnerToken(ctx, owner, repo)
+	token, err := getGitHubRunnerToken(ctx, owner, repo, dryRun)
 	if err != nil {
 		return err
 	}
@@ -36,7 +36,7 @@ func createMacM1Runner(ctx context.Context, owner string, repo string, dryRun bo
 }
 
 func createUbuntuArm64Runner(ctx context.Context, owner string, repo string, dryRun bool) error {
-	token, err := getGitHubRunnerToken(ctx, owner, repo)
+	token, err := getGitHubRunnerToken(ctx, owner, repo, dryRun)
 	if err != nil {
 		return err
 	}

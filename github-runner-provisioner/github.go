@@ -18,7 +18,10 @@ func getGitHubAPIClient(ctx context.Context) *github.Client {
 	return client
 }
 
-func getGitHubRunnerToken(ctx context.Context, owner string, repo string) (token string, err error) {
+func getGitHubRunnerToken(ctx context.Context, owner string, repo string, dryRun bool) (token string, err error) {
+	if dryRun {
+		return "FAKE_TOKEN", nil
+	}
 	client := getGitHubAPIClient(ctx)
 	registrationToken, _, err := client.Actions.CreateRegistrationToken(ctx, owner, repo)
 	if err != nil {
