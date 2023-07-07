@@ -1,9 +1,12 @@
 name: "GitHub Runner Provisioner: Tests, Builds, Deployments"
 on:
   pull_request:
+    paths:
+      - .github/workflows/github-runner-provisioner.yaml
+      - github-runner-provisioner
 
 jobs:
-  test:
+  go_test:
     runs-on: ubuntu-22.04
     env:
       GITHUB_TOKEN: FAKE_TOKEN
@@ -11,9 +14,50 @@ jobs:
       WEBHOOK_TOKEN: FAKE_TOKEN
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/setup-go@v4
+        with:
+          go-version: '1.18'
+      - name: Run tests
+        run: |
+          cd github-runner-provisioner
+          go test ./...
+
+  mock_traffic_test:
+    runs-on: ubuntu-22.04
+    env:
+      GITHUB_TOKEN: FAKE_TOKEN
+      CODEMAGIC_TOKEN: FAKE_TOKEN
+      WEBHOOK_TOKEN: FAKE_TOKEN
+    steps:
+      - uses: actions/checkout@v2
+      - uses: docker/setup-buildx-action@v2
+      - run: cd github-runner-provisioner
+      - name: Build for Test
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: github-runner-provisioner/dockerfile
+          platforms: linux/amd64
+          push: false
+          tags: |
+            datawiredev/github-runner-provisioner:${{ github.sha }}
+      - name: Run tests
+        run: |
+          cd github-runner-provisioner
+          docker run --name=github-runner-provisioner -p 8080:8080 \
+            -e GITHUB_TOKEN=${GITHUB_TOKEN} \
+            -e CODEMAGIC_TOKEN=${CODEMAGIC_TOKEN} \
+            -e WEBHOOK_TOKEN=${WEBHOOK_TOKEN} \
+            datawiredev/github-runner-provisioner:${{ github.sha }}
+          make test-macos-arm64
+          make test-ubuntu-arm64
+          docker stop github-runner-provisioner
+          
 
   build:
     runs-on: ubuntu-22.04
+    needs: [go_test, mock_traffic_test]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v2
       - uses: docker/setup-buildx-action@v2
@@ -34,6 +78,21 @@ jobs:
 
   deploy:
     runs-on: ubuntu-22.04
+    #needs: build
+    #github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v2
       - name: Update Kustomize
+        env:
+          INFRA_ACTIONS_SHA: ${{ github.sha }}
+        run: |
+          cd github-runner-provisioner
+          envsubst < kustomization.yaml.in > kustomization.yaml
+          git config user.email "dev@datawire.io"
+          git config user.name "d6e-automaton"
+          git add -A 
+          git status
+          cat kustomization.yaml
+          echo "Updating manifests with image version ${INFRA_ACTIONS_SHA} and pushing to branch ${branch}"
+        #  git commit -m "Deploying updated manifest to ${INFRA_ACTIONS_SHA} [skip ci]"
+        #  git push --set-upstream origin ${branch}
