@@ -31,6 +31,7 @@ func setupLogFields(r *http.Request, status int, requestTime time.Time) log.Fiel
 func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 	requestTime := time.Now()
 	log.WithFields(setupLogFields(r, 200, requestTime)).Info("Request received")
+	dryRun := len(r.Form["dry-run"]) > 0 && r.Form["dry-run"][0] == "true"
 
 	if !strings.HasPrefix(r.URL.String(), "/github-runner-provisioner") {
 		message := fmt.Sprintf("URL %s is invalid", r.URL.String())
@@ -114,21 +115,23 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 	log.Infof("Job in %s repo requested a %s runner", *workflowJobEvent.Repo.Name, jobLabel)
 
 	runnerLabels := []string{0: jobLabel}
-	isAvailable, err := isRunnerAvailable(r.Context(), *workflowJobEvent.Repo.Owner.Login, *workflowJobEvent.Repo.Name, runnerLabels)
-	if err != nil {
-		message := fmt.Sprintf("Error checking if runner is available: %v", err)
-		http.Error(w, message, http.StatusInternalServerError)
-		log.WithFields(setupLogFields(r, http.StatusInternalServerError, requestTime)).Errorf(message)
+	if !dryRun {
+		isAvailable, err := isRunnerAvailable(r.Context(), *workflowJobEvent.Repo.Owner.Login, *workflowJobEvent.Repo.Name, runnerLabels)
+		if err != nil {
+			message := fmt.Sprintf("Error checking if runner is available: %v", err)
+			http.Error(w, message, http.StatusInternalServerError)
+			log.WithFields(setupLogFields(r, http.StatusInternalServerError, requestTime)).Errorf(message)
 
-		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorCheckingAvailableRunners.String(),
-			"runner_label": jobLabel, "repo": *workflowJobEvent.Repo.Name}).Inc()
-		return
-	}
+			monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorCheckingAvailableRunners.String(),
+				"runner_label": jobLabel, "repo": *workflowJobEvent.Repo.Name}).Inc()
+			return
+		}
 
-	if isAvailable {
-		http.Error(w, http.StatusText(http.StatusOK), http.StatusOK)
-		log.WithFields(setupLogFields(r, http.StatusOK, requestTime)).Infof("%s runner already available. No scaling action required.", jobLabel)
-		return
+		if isAvailable {
+			http.Error(w, http.StatusText(http.StatusOK), http.StatusOK)
+			log.WithFields(setupLogFields(r, http.StatusOK, requestTime)).Infof("%s runner already available. No scaling action required.", jobLabel)
+			return
+		}
 	}
 
 	err = r.ParseForm()
@@ -136,7 +139,6 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 		log.WithFields(setupLogFields(r, http.StatusOK, requestTime)).Error("Error parsing form")
 		return
 	}
-	dryRun := len(r.Form["dry-run"]) > 0 && r.Form["dry-run"][0] == "true"
 	if err := runnerFunction(r.Context(), *workflowJobEvent.Repo.Owner.Login, *workflowJobEvent.Repo.Name, dryRun); err != nil {
 		message := fmt.Sprintf("Error creating %s runner for job %s [%s]: %v", jobLabel, *workflowJobEvent.WorkflowJob.Name, *workflowJobEvent.WorkflowJob.HTMLURL, err)
 		http.Error(w, message, http.StatusInternalServerError)
