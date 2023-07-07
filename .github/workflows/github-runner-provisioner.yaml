@@ -35,22 +35,24 @@ jobs:
       - name: Build for Test
         uses: docker/build-push-action@v2
         with:
-          context: .
-          file: github-runner-provisioner/dockerfile
+          context: "{{defaultContext}}:github-runner-provisioner"
+          file: dockerfile
           platforms: linux/amd64
           push: false
           tags: |
             datawiredev/github-runner-provisioner:${{ github.sha }}
+          outputs: type=docker, dest=/tmp/github-runner-provisioner.tar
       - name: Run tests
         run: |
           cd github-runner-provisioner
-          docker run --name=github-runner-provisioner -p 8080:8080 \
+          docker load --input /tmp/github-runner-provisioner.tar
+          docker run -d --name=github-runner-provisioner -p 8080:8080 \
             -e GITHUB_TOKEN=${GITHUB_TOKEN} \
             -e CODEMAGIC_TOKEN=${CODEMAGIC_TOKEN} \
             -e WEBHOOK_TOKEN=${WEBHOOK_TOKEN} \
             datawiredev/github-runner-provisioner:${{ github.sha }}
-          make test-macos-arm64
-          make test-ubuntu-arm64
+          make test-macOS-arm64 HOSTNAME=http://localhost:8080 DRY_RUN=true
+          make test-ubuntu-arm64 HOSTNAME=http://localhost:8080 DRY_RUN=true
           docker stop github-runner-provisioner
           
 
