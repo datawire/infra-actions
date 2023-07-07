@@ -46,27 +46,45 @@ jobs:
         run: |
           cd github-runner-provisioner
           docker load --input /tmp/github-runner-provisioner.tar
-          docker run -d --name=github-runner-provisioner -p 8080:8080 \
+          docker run -d --name=github-runner-provisioner-codemagic -p 8080:8080 \
             -e GITHUB_TOKEN=${GITHUB_TOKEN} \
             -e CODEMAGIC_TOKEN=${CODEMAGIC_TOKEN} \
             -e WEBHOOK_TOKEN=${WEBHOOK_TOKEN} \
             -e USE_CODEMAGIC="true" \
             datawiredev/github-runner-provisioner:${{ github.sha }}
-          make test-macOS-arm64 HOSTNAME=http://localhost:8080 DRY_RUN=true
-          docker stop github-runner-provisioner
+          response_code=$(make test-macOS-arm64 HOSTNAME=http://localhost:8080 DRY_RUN=true | tail -n 1)
+          docker stop github-runner-provisioner-codemagic
+          echo "Response code: $response_code\n\n"
+          echo "Container logs:"
+          docker logs github-runner-provisioner-codemagic 
+          if [ "$response_code" != "200" ]; then
+            echo "\nTest failed"
+            exit 1
+          fi
       - name: Test AWS
         run: |
           cd github-runner-provisioner
           docker load --input /tmp/github-runner-provisioner.tar
-          docker run -d --name=github-runner-provisioner -p 8080:8080 \
+          docker run -d --name=github-runner-provisioner-aws -p 8080:8080 \
             -e GITHUB_TOKEN=${GITHUB_TOKEN} \
             -e CODEMAGIC_TOKEN=${CODEMAGIC_TOKEN} \
             -e WEBHOOK_TOKEN=${WEBHOOK_TOKEN} \
             -e USE_CODEMAGIC="false" \
             datawiredev/github-runner-provisioner:${{ github.sha }}
-          make test-macOS-arm64 HOSTNAME=http://localhost:8080 DRY_RUN=true
-          make test-ubuntu-arm64 HOSTNAME=http://localhost:8080 DRY_RUN=true
-          docker stop github-runner-provisioner
+          failed=false
+          response_code_macOS=$(make test-macOS-arm64 HOSTNAME=http://localhost:8080 DRY_RUN=true | tail -n 1)
+          echo "Response code: $response_code_macOS\n\n"
+          failed=$failed || [ "$response_code_macOS" != "200" ]
+          response_code_ubuntu=$(make test-ubuntu-arm64 HOSTNAME=http://localhost:8080 DRY_RUN=true | tail -n 1)
+          echo "Response code: $response_code_ubuntu\n\n"
+          failed=$failed || [ "$response_code_ubuntu" != "200" ]
+          docker stop github-runner-provisioner-aws
+          echo "Container logs:"
+          docker logs github-runner-provisioner-aws 
+          if [ "$failed" = true ]; then
+            echo "\nTest failed"
+            exit 1
+          fi
           
 
   build:

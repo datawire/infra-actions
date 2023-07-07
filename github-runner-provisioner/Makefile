@@ -17,7 +17,7 @@ test-macOS-arm64:
 
 .PHONY: test-github-provisioner
 test-github-provisioner:
-	curl -v $(HOSTNAME)/github-runner-provisioner/?dry-run=$(DRY_RUN) -d "payload=$$(cat test/$(RUNNER_TAG)_payload.json)" -H 'X-Hub-Signature-256: sha1=$(SHA1)'
+	curl -v $(HOSTNAME)/github-runner-provisioner/?dry-run=$(DRY_RUN) -d "payload=$$(cat test/$(RUNNER_TAG)_payload.json)" -H 'X-Hub-Signature-256: sha1=$(SHA1)' -w "%{http_code}\n"
 
 .PHONY: download-go-modules
 download-go-modules:
