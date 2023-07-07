@@ -42,7 +42,7 @@ jobs:
           tags: |
             datawiredev/github-runner-provisioner:${{ github.sha }}
           outputs: type=docker, dest=/tmp/github-runner-provisioner.tar
-      - name: Run tests
+      - name: Test CodeMagic
         run: |
           cd github-runner-provisioner
           docker load --input /tmp/github-runner-provisioner.tar
@@ -50,6 +50,19 @@ jobs:
             -e GITHUB_TOKEN=${GITHUB_TOKEN} \
             -e CODEMAGIC_TOKEN=${CODEMAGIC_TOKEN} \
             -e WEBHOOK_TOKEN=${WEBHOOK_TOKEN} \
+            -e USE_CODEMAGIC="true" \
+            datawiredev/github-runner-provisioner:${{ github.sha }}
+          make test-macOS-arm64 HOSTNAME=http://localhost:8080 DRY_RUN=true
+          docker stop github-runner-provisioner
+      - name: Test AWS
+        run: |
+          cd github-runner-provisioner
+          docker load --input /tmp/github-runner-provisioner.tar
+          docker run -d --name=github-runner-provisioner -p 8080:8080 \
+            -e GITHUB_TOKEN=${GITHUB_TOKEN} \
+            -e CODEMAGIC_TOKEN=${CODEMAGIC_TOKEN} \
+            -e WEBHOOK_TOKEN=${WEBHOOK_TOKEN} \
+            -e USE_CODEMAGIC="false" \
             datawiredev/github-runner-provisioner:${{ github.sha }}
           make test-macOS-arm64 HOSTNAME=http://localhost:8080 DRY_RUN=true
           make test-ubuntu-arm64 HOSTNAME=http://localhost:8080 DRY_RUN=true

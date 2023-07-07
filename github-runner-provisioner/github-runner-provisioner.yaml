@@ -79,6 +79,8 @@ spec:
         env:
         - name: AWS_REGION
           value: us-east-1
+        - name: USE_CODEMAGIC
+          value: "true"
         envFrom:
           - secretRef:
               name: github-runner-provisioner-secrets
