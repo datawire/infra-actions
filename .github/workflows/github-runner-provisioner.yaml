@@ -25,7 +25,7 @@ jobs:
   mock_traffic_test:
     runs-on: ubuntu-22.04
     env:
-      GITHUB_TOKEN: FAKE_TOKEN
+      GITHUB_TOKEN: ${{ secrets.GRP_GITHUB_TOKEN }}
       CODEMAGIC_TOKEN: FAKE_TOKEN
       WEBHOOK_TOKEN: FAKE_TOKEN
     steps:
