@@ -2,7 +2,9 @@ package aws
 
 import (
 	"context"
+	"errors"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
+	"github.com/aws/smithy-go"
 	"github.com/datawire/infra-actions/github-runner-provisioner/internal/aws/aws_runners"
 )
 
@@ -21,8 +23,13 @@ func CreateEC2Runner(ctx context.Context, owner string, repo string, token strin
 
 	_, err = ec2Client.Client.RunInstances(ctx, &params)
 	if err != nil {
-		return err
+		var apiErr smithy.APIError
+		if errors.As(err, &apiErr) {
+			code := apiErr.ErrorCode()
+			if code == "DryRunOperation" && dryRun {
+				return nil
+			}
+		}
 	}
-
 	return nil
 }

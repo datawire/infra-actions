@@ -28,6 +28,8 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GRP_GITHUB_TOKEN }}
       CODEMAGIC_TOKEN: FAKE_TOKEN
       WEBHOOK_TOKEN: FAKE_TOKEN
+      AWS_ACCESS_KEY_ID: ${{ secrets.GRP_AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.GRP_AWS_SECRET_ACCESS_KEY }}
     steps:
       - uses: actions/checkout@v2
       - uses: docker/setup-buildx-action@v2
@@ -42,6 +44,10 @@ jobs:
           tags: |
             datawiredev/github-runner-provisioner:${{ github.sha }}
           outputs: type=docker, dest=/tmp/github-runner-provisioner.tar
+          cache-from: |
+            type=gha,scope=refs/heads/main
+            type=gha,scope=github-runner-provisioner-${{github.ref}}
+          cache-to: type=gha,mode=max,scope=github-runner-provisioner-${{github.ref}}
       - name: Test CodeMagic
         run: |
           cd github-runner-provisioner
@@ -52,39 +58,51 @@ jobs:
             -e WEBHOOK_TOKEN=${WEBHOOK_TOKEN} \
             -e USE_CODEMAGIC="true" \
             datawiredev/github-runner-provisioner:${{ github.sha }}
-          response_code=$(make test-macOS-arm64 HOSTNAME=http://localhost:8080 DRY_RUN=true | tail -n 1)
+          response_code=$(make -s test-macOS-arm64 HOSTNAME=http://localhost:8080 DRY_RUN=true | tail -n 1)
           docker stop github-runner-provisioner-codemagic
-          echo "Response code: $response_code\n\n"
+          echo "Response code: $response_code"
+          echo
           echo "Container logs:"
           docker logs github-runner-provisioner-codemagic 
+          echo
           if [ "$response_code" != "200" ]; then
-            echo "\nTest failed"
+            echo "Test failed"
             exit 1
           fi
+          echo "Test Successful"
+
       - name: Test AWS
         run: |
           cd github-runner-provisioner
+          
+          
+          
           docker load --input /tmp/github-runner-provisioner.tar
           docker run -d --name=github-runner-provisioner-aws -p 8080:8080 \
             -e GITHUB_TOKEN=${GITHUB_TOKEN} \
             -e CODEMAGIC_TOKEN=${CODEMAGIC_TOKEN} \
             -e WEBHOOK_TOKEN=${WEBHOOK_TOKEN} \
             -e USE_CODEMAGIC="false" \
+            -e AWS_REGION="us-east-1" \
+            -e AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
+            -e AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
+            --mount type=bind,source=/etc/ssl/certs,target=/etc/ssl/certs \
             datawiredev/github-runner-provisioner:${{ github.sha }}
-          failed=false
-          response_code_macOS=$(make test-macOS-arm64 HOSTNAME=http://localhost:8080 DRY_RUN=true | tail -n 1)
-          echo "Response code: $response_code_macOS\n\n"
-          failed=$failed || [ "$response_code_macOS" != "200" ]
-          response_code_ubuntu=$(make test-ubuntu-arm64 HOSTNAME=http://localhost:8080 DRY_RUN=true | tail -n 1)
-          echo "Response code: $response_code_ubuntu\n\n"
-          failed=$failed || [ "$response_code_ubuntu" != "200" ]
+          response_code_macOS=$(make -s test-macOS-arm64 HOSTNAME=http://localhost:8080 DRY_RUN=true | tail -n 1)
+          echo "Response code: $response_code_macOS"
+          echo
+          response_code_ubuntu=$(make -s test-ubuntu-arm64 HOSTNAME=http://localhost:8080 DRY_RUN=true | tail -n 1)
+          echo "Response code: $response_code_ubuntu"
+          echo
           docker stop github-runner-provisioner-aws
           echo "Container logs:"
           docker logs github-runner-provisioner-aws 
-          if [ "$failed" = true ]; then
-            echo "\nTest failed"
+          echo
+          if [ $response_code_macOS != "200" || $response_code_ubuntu != "200" ]; then
+            echo "Test failed"
             exit 1
           fi
+          echo "Test Successful"
           
 
   build:
@@ -111,8 +129,8 @@ jobs:
 
   deploy:
     runs-on: ubuntu-22.04
-    #needs: build
-    #github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v2
       - name: Update Kustomize
@@ -127,5 +145,5 @@ jobs:
           git status
           cat kustomization.yaml
           echo "Updating manifests with image version ${INFRA_ACTIONS_SHA} and pushing to branch ${branch}"
-        #  git commit -m "Deploying updated manifest to ${INFRA_ACTIONS_SHA} [skip ci]"
-        #  git push --set-upstream origin ${branch}
+          git commit -m "Deploying updated manifest to ${INFRA_ACTIONS_SHA} [skip ci]"
+          git push --set-upstream origin ${branch}
