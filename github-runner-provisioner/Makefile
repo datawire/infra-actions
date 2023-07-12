@@ -3,7 +3,7 @@ DRY_RUN := true
 RUNNER_TAG := ''
 
 .PHONY: test-runners
-test-runners: /tmp/test-ubuntu-arm64 /tmp/test-macOS-arm64
+test-runners: test-ubuntu-arm64 test-macOS-arm64
 	@if [ "$$(cat /tmp/test-ubuntu-arm64)" != "200" ] || [ "$$(cat /tmp/test-macOS-arm64)" != "200" ]; then \
 		@echo "Test failed"; \
 		exit 1; \

@@ -58,9 +58,8 @@ jobs:
             -e WEBHOOK_TOKEN=${WEBHOOK_TOKEN} \
             -e USE_CODEMAGIC="true" \
             datawiredev/github-runner-provisioner:${{ github.sha }}
-          make /tmp/test-macOS-arm64
+          make test-macOS-arm64
           docker stop github-runner-provisioner-codemagic
-          echo "Response code: $(cat /tmp/test-macOS-arm64)"
           echo
           echo "Container logs:"
           docker logs github-runner-provisioner-codemagic 
@@ -87,6 +86,7 @@ jobs:
             datawiredev/github-runner-provisioner:${{ github.sha }}
           make test-runners
           docker stop github-runner-provisioner-aws
+          echo
           echo "Container logs:"
           docker logs github-runner-provisioner-aws 
           echo
