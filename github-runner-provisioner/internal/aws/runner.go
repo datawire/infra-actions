@@ -8,6 +8,8 @@ import (
 	"github.com/datawire/infra-actions/github-runner-provisioner/internal/aws/aws_runners"
 )
 
+const dryRunApiError = "DryRunOperation"
+
 var runnerParams = map[string]func(string, string, string, string, bool) (ec2.RunInstancesInput, error){
 	"macOS-arm64":  aws_runners.MacM1RunInstancesInput,
 	"ubuntu-arm64": aws_runners.UbuntuArm64RunInstancesInput,
@@ -26,7 +28,7 @@ func CreateEC2Runner(ctx context.Context, owner string, repo string, token strin
 		var apiErr smithy.APIError
 		if errors.As(err, &apiErr) {
 			code := apiErr.ErrorCode()
-			if code == "DryRunOperation" && dryRun {
+			if code == dryRunApiError && dryRun {
 				return nil
 			}
 		}
