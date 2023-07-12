@@ -4,21 +4,27 @@ RUNNER_TAG := ''
 
 .PHONY: test-runners
 test-runners: /tmp/test-ubuntu-arm64 /tmp/test-macOS-arm64
-	@if [ "$$(cat /tmp/test-ubuntu-arm64)" != "200" || "$$(cat /tmp/test-macOS-arm64)" != "200" ]; then \
+	@if [ "$$(cat /tmp/test-ubuntu-arm64)" != "200" ] || [ "$$(cat /tmp/test-macOS-arm64)" != "200" ]; then \
 		@echo "Test failed"; \
 		exit 1; \
 	fi
 	@echo "Test passed"
 
+.PHONY: test-ubuntu-arm64
+test-ubuntu-arm64: /tmp/test-ubuntu-arm64
+	@echo "Response code: $$(cat /tmp/test-ubuntu-arm64)"
+
 .PHONY: /tmp/test-ubuntu-arm64
 /tmp/test-ubuntu-arm64:
 	make -s run-ubuntu-arm64 HOSTNAME=http://localhost:8080 DRY_RUN=true | tail -n 1 > /tmp/test-ubuntu-arm64
-	echo "Response code: $$(cat /tmp/test-ubuntu-arm64)"
+
+.PHONY: test-macOS-arm64
+test-macOS-arm64: /tmp/test-macOS-arm64
+	@echo "Response code: $$(cat /tmp/test-macOS-arm64)"
 
 .PHONY: /tmp/test-macOS-arm64
 /tmp/test-macOS-arm64:
 	make -s run-macOS-arm64 HOSTNAME=http://localhost:8080 DRY_RUN=true | tail -n 1 > /tmp/test-macOS-arm64
-	echo "Response code: $$(cat /tmp/test-macOS-arm64)"
 
 .PHONY: run-ubuntu-arm64
 run-ubuntu-arm64:
