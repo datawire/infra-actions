@@ -90,7 +90,7 @@ jobs:
           echo "Container logs:"
           docker logs github-runner-provisioner-aws 
           echo
-          if [ $(cat /tmp/test-ubuntu-arm64) != "200" || $(cat /tmp/test-macOS-arm64) != "200" ]; then
+          if [ $(cat /tmp/test-ubuntu-arm64) != "200" ] || [ $(cat /tmp/test-macOS-arm64) != "200" ]; then
             echo "Test failed"
             exit 1
           fi
