@@ -1,0 +1,6 @@
+resources:
+- github-runner-provisioner.yaml
+
+images:
+  - name: datawiredev/github-runner-provisioner
+    newTag: "3d41097437f6247fd728d3d518ec29ff7cf2731b"
