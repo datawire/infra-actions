@@ -4,6 +4,9 @@ on:
     paths:
       - .github/workflows/github-runner-provisioner.yaml
       - github-runner-provisioner
+  push:
+    branches:
+      - 'main'
 
 jobs:
   go_test:
