@@ -71,25 +71,16 @@ spec:
                 topologyKey: kubernetes.io/hostname
       containers:
       - name: github-runner-provisioner
-        image: golang:1.18.7
+        image: datawiredev/github-runner-provisioner
         imagePullPolicy: IfNotPresent
-        command: ["go", "run", "."]
-        workingDir: "/src"
         ports:
         - name: http
           containerPort: 8080
-        volumeMounts:
-        - name: code-root
-          mountPath: "/src"
-        - name: internal-aws
-          mountPath: "/src/internal/aws"
-        - name: internal-monitoring
-          mountPath: "/src/internal/monitoring"
-        - name: internal-utils
-          mountPath: "/src/internal/utils"
         env:
         - name: AWS_REGION
           value: us-east-1
+        - name: USE_CODEMAGIC
+          value: "true"
         envFrom:
           - secretRef:
               name: github-runner-provisioner-secrets
@@ -124,20 +115,6 @@ spec:
             cpu: 50m
             memory: 300Mi
       volumes:
-        # Provide the name of the ConfigMaps containing the files you want
-        # to add to the container
-        - name: code-root
-          configMap:
-            name: code-root
-        - name: internal-aws
-          configMap:
-            name: internal-aws
-        - name: internal-monitoring
-          configMap:
-            name: internal-monitoring
-        - name: internal-utils
-          configMap:
-            name: internal-utils
         - name: github-runner-provisioner-aws-config
           secret:
             secretName: github-runner-provisioner-aws-config

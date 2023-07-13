@@ -1,8 +1,8 @@
 # Documentation to enable developing and releasing the items in this repository.
 
-## Releasing the provision-cluster github action:
+## Releasing the provision-cluster GitHub Action:
 
-Github actions are released by creating a semver tag and pusing it to github. No additional steps
+GitHub Actions are released by creating a semver tag and pushing it to GitHub. No additional steps
 are needed.
 
 ### Step 1: Query existing tags
@@ -13,7 +13,7 @@ names. Release tags are of the form `vX.Y.Z` and release versions should follow 
 ### Step 2: Tag with your new version number
 
 Use `git tag vX.Y.Z` to tag with your new version number, and then run `git push --tags` to push the
-new tag up to github.
+new tag up to GitHub.
 
 ### Step 3: Verify the release works by updating the smoke test workflow.
 

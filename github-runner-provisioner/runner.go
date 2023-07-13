@@ -2,9 +2,12 @@ package main
 
 import (
 	"context"
-	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/datawire/infra-actions/github-runner-provisioner/internal/aws"
+	"github.com/datawire/infra-actions/github-runner-provisioner/internal/codemagic"
 )
+
+const macM1RunnerLabel = "macOS-arm64"
+const ubuntuArm64RunnerLabel = "ubuntu-arm64"
 
 var runners = map[string]func(context.Context, string, string, bool) error{
 	macM1RunnerLabel:       createMacM1Runner,
@@ -12,52 +15,33 @@ var runners = map[string]func(context.Context, string, string, bool) error{
 }
 
 func createMacM1Runner(ctx context.Context, owner string, repo string, dryRun bool) error {
-	userData, err := macM1RunnerUserData(ctx, owner, repo)
+	token, err := getGitHubRunnerToken(ctx, owner, repo, dryRun)
 	if err != nil {
 		return err
 	}
 
-	params := ec2.RunInstancesInput{
-		MaxCount:                          &macM1Config.instanceCount,
-		MinCount:                          &macM1Config.instanceCount,
-		DryRun:                            &dryRun,
-		ImageId:                           &macM1Config.imageId,
-		InstanceInitiatedShutdownBehavior: macM1Config.shutdownBehavior,
-		InstanceType:                      macM1Config.instanceType,
-		KeyName:                           &macM1Config.keyName,
-		Placement:                         &macM1Config.placement,
-		UserData:                          &userData,
-		TagSpecifications:                 aws.RunnerTags(owner, repo, macM1RunnerLabel),
-	}
-
-	_, err = ec2Client.Client.RunInstances(ctx, &params)
-	if err != nil {
-		return err
+	if cfg.UseCodeMagic {
+		err = codemagic.CreateMacM1Runner(ctx, owner, repo, token, macM1RunnerLabel, dryRun, cfg.CodeMagicToken)
+		if err != nil {
+			return err
+		}
+	} else {
+		err = aws.CreateEC2Runner(ctx, owner, repo, token, macM1RunnerLabel, dryRun)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
 }
 
 func createUbuntuArm64Runner(ctx context.Context, owner string, repo string, dryRun bool) error {
-	userData, err := ubuntuArm64UserData(ctx, owner, repo)
+	token, err := getGitHubRunnerToken(ctx, owner, repo, dryRun)
 	if err != nil {
 		return err
 	}
 
-	params := ec2.RunInstancesInput{
-		MaxCount:                          &ubuntuArm64RunnerConfig.instanceCount,
-		MinCount:                          &ubuntuArm64RunnerConfig.instanceCount,
-		DryRun:                            &dryRun,
-		ImageId:                           &ubuntuArm64RunnerConfig.imageId,
-		InstanceInitiatedShutdownBehavior: ubuntuArm64RunnerConfig.shutdownBehavior,
-		InstanceType:                      ubuntuArm64RunnerConfig.instanceType,
-		KeyName:                           &ubuntuArm64RunnerConfig.keyName,
-		Placement:                         &ubuntuArm64RunnerConfig.placement,
-		UserData:                          &userData,
-		TagSpecifications:                 aws.RunnerTags(owner, repo, ubuntuArm64RunnerLabel),
-	}
-
-	_, err = ec2Client.Client.RunInstances(ctx, &params)
+	err = aws.CreateEC2Runner(ctx, owner, repo, token, ubuntuArm64RunnerLabel, dryRun)
 	if err != nil {
 		return err
 	}

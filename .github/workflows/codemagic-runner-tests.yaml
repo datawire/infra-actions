@@ -1,0 +1,10 @@
+name: "Hello MacM1"
+
+on: [workflow_dispatch]
+
+jobs:
+  hello:
+    runs-on: codemagic-m1
+    steps:
+      - name: hello-world
+        run: echo "Hello from a CodeMagic M1 runner"

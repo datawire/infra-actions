@@ -1,0 +1,6 @@
+resources:
+- github-runner-provisioner.yaml
+
+images:
+  - name: datawiredev/github-runner-provisioner
+    newTag: "${INFRA_ACTIONS_SHA}"

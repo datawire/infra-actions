@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
+	"github.com/datawire/infra-actions/github-runner-provisioner/internal/aws/aws_runners"
 	"github.com/datawire/infra-actions/github-runner-provisioner/internal/utils"
 	log "github.com/sirupsen/logrus"
 	"time"
@@ -62,10 +63,10 @@ func (c *Ec2Client) GetInstances(filter []types.Filter) ([]*InstanceDetails, err
 
 func getActionRunnerLabel(instance types.Instance) (string, error) {
 	for _, tag := range instance.Tags {
-		if *tag.Key == LabelTag {
+		if *tag.Key == aws_runners.LabelTag {
 			return *tag.Value, nil
 		}
 	}
 
-	return "", fmt.Errorf("AWS instance %s does not contain tag %s", *instance.InstanceId, LabelTag)
+	return "", fmt.Errorf("AWS instance %s does not contain tag %s", *instance.InstanceId, aws_runners.LabelTag)
 }

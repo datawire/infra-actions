@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
+	"github.com/datawire/infra-actions/github-runner-provisioner/internal/aws/aws_runners"
 	mock_aws "github.com/datawire/infra-actions/github-runner-provisioner/internal/aws/mocks"
 	"github.com/datawire/infra-actions/github-runner-provisioner/internal/utils"
 	"github.com/golang/mock/gomock"
@@ -78,12 +79,12 @@ func Test_InstancesAreReturnedWhenThereAreNoErrors(t *testing.T) {
 							InstanceId: utils.StrPtr("macos-arm64-instance"),
 							Tags: []types.Tag{
 								{
-									Key:   utils.StrPtr(LabelTag),
+									Key:   utils.StrPtr(aws_runners.LabelTag),
 									Value: utils.StrPtr("macOS-arm64"),
 								},
 								{
-									Key:   utils.StrPtr(NameTag),
-									Value: utils.StrPtr(AppName),
+									Key:   utils.StrPtr(aws_runners.NameTag),
+									Value: utils.StrPtr(aws_runners.AppName),
 								},
 							},
 						},
@@ -92,12 +93,12 @@ func Test_InstancesAreReturnedWhenThereAreNoErrors(t *testing.T) {
 							InstanceId: utils.StrPtr("ubuntu-arm64-instance"),
 							Tags: []types.Tag{
 								{
-									Key:   utils.StrPtr(LabelTag),
+									Key:   utils.StrPtr(aws_runners.LabelTag),
 									Value: utils.StrPtr("ubuntu-arm64"),
 								},
 								{
-									Key:   utils.StrPtr(NameTag),
-									Value: utils.StrPtr(AppName),
+									Key:   utils.StrPtr(aws_runners.NameTag),
+									Value: utils.StrPtr(aws_runners.AppName),
 								},
 							},
 						},
@@ -148,12 +149,12 @@ func Test_InstancesAreReturnedWhenThereAreNoErrors(t *testing.T) {
 							InstanceId: utils.StrPtr("macos-arm64-instance"),
 							Tags: []types.Tag{
 								{
-									Key:   utils.StrPtr(LabelTag),
+									Key:   utils.StrPtr(aws_runners.LabelTag),
 									Value: utils.StrPtr("macOS-arm64"),
 								},
 								{
-									Key:   utils.StrPtr(NameTag),
-									Value: utils.StrPtr(AppName),
+									Key:   utils.StrPtr(aws_runners.NameTag),
+									Value: utils.StrPtr(aws_runners.AppName),
 								},
 							},
 						},
@@ -172,12 +173,12 @@ func Test_InstancesAreReturnedWhenThereAreNoErrors(t *testing.T) {
 							InstanceId: utils.StrPtr("ubuntu-arm64-instance"),
 							Tags: []types.Tag{
 								{
-									Key:   utils.StrPtr(LabelTag),
+									Key:   utils.StrPtr(aws_runners.LabelTag),
 									Value: utils.StrPtr("ubuntu-arm64"),
 								},
 								{
-									Key:   utils.StrPtr(NameTag),
-									Value: utils.StrPtr(AppName),
+									Key:   utils.StrPtr(aws_runners.NameTag),
+									Value: utils.StrPtr(aws_runners.AppName),
 								},
 							},
 						},

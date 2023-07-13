@@ -13,13 +13,17 @@
 name: "Telepresence Test Matrix"
 on:
   # Using pull_request for ease of iteration, but "workflow_dispatch" will let us manually trigger with parameters.
-  pull_request: {}
+  pull_request:
+    paths:
+      - .github/workflows/matrix.yaml
+      - provision-cluster
   workflow_dispatch:
     inputs:
       logLevel:
         description: 'Log level'
         required: true
         default: 'warning'
+
 jobs:
   telepresence_matrix:
     strategy:
