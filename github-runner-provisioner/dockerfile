@@ -20,6 +20,9 @@ FROM ubuntu:22.04
 
 WORKDIR /root/
 
+RUN apt-get update && apt-get install -y ca-certificates openssl
+ENV SSL_CERT_DIR=/etc/ssl/certs
+
 # Copy the pre-built binary from the previous stage.
 COPY --from=builder /app/main .
 
