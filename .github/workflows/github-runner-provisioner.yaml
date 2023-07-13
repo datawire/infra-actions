@@ -132,6 +132,8 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GRP_GITHUB_TOKEN }}
       - name: Update Kustomize
         env:
           INFRA_ACTIONS_SHA: ${{ github.sha }}
