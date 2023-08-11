@@ -46,7 +46,7 @@ var ubuntuArm64RunnerConfig = runnerConfig{
 	placement:        types.Placement{},
 	instanceCount:    1,
 	shutdownBehavior: "terminate",
-	instanceType:     "t4g.medium",
+	instanceType:     "t4g.xlarge",
 	keyName:          "m1_mac_runners",
 	// keeping default volume size hardcoded to 50gb
 	blockDeviceMappings: &[]types.BlockDeviceMapping{
