@@ -51,6 +51,7 @@ var ubuntuArm64RunnerConfig = runnerConfig{
 	// keeping default volume size hardcoded to 50gb
 	blockDeviceMappings: &[]types.BlockDeviceMapping{
 		{
+			DeviceName: &[]string{"/dev/sda1"}[0],
 			Ebs: &types.EbsBlockDevice{
 				VolumeSize: &[]int32{50}[0],
 			},
