@@ -13,6 +13,7 @@ type runnerConfig struct {
 	shutdownBehavior     types.ShutdownBehavior
 	instanceType         types.InstanceType
 	keyName              string
+	blockDeviceMappings  *[]types.BlockDeviceMapping
 }
 
 const LabelTag = "label"

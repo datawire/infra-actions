@@ -3,6 +3,7 @@ package aws_runners
 import (
 	"encoding/base64"
 	"fmt"
+
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
 )
@@ -47,6 +48,14 @@ var ubuntuArm64RunnerConfig = runnerConfig{
 	shutdownBehavior: "terminate",
 	instanceType:     "t4g.medium",
 	keyName:          "m1_mac_runners",
+	// keeping default volume size hardcoded to 50gb
+	blockDeviceMappings: &[]types.BlockDeviceMapping{
+		{
+			Ebs: &types.EbsBlockDevice{
+				VolumeSize: &[]int32{50}[0],
+			},
+		},
+	},
 }
 
 func ubuntuArm64UserData(owner string, repo string, token string, label string) (string, error) {
@@ -73,6 +82,7 @@ func UbuntuArm64RunInstancesInput(owner string, repo string, token string, label
 		Placement:                         &ubuntuArm64RunnerConfig.placement,
 		UserData:                          &userData,
 		TagSpecifications:                 runnerTags(owner, repo, label),
+		BlockDeviceMappings:               *ubuntuArm64RunnerConfig.blockDeviceMappings,
 	}
 
 	return params, nil
