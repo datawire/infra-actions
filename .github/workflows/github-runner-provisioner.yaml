@@ -3,7 +3,7 @@ on:
   pull_request:
     paths:
       - .github/workflows/github-runner-provisioner.yaml
-      - github-runner-provisioner
+      - github-runner-provisioner/**
   push:
     branches:
       - 'main'
