@@ -14,5 +14,5 @@ workflows:
         --url https://github.com/$GITHUB_REPO_OWNER/$GITHUB_REPO_NAME \
         --token $GITHUB_RUNNER_TOKEN \
         --labels $GITHUB_RUNNER_LABELS \
-        --unattended --ephemeral --disableupdate
+        --unattended --ephemeral
       - ./run.sh
