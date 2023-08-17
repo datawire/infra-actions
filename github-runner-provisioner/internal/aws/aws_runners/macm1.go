@@ -8,7 +8,7 @@ import (
 )
 
 const AmiMacOs12_6Arm64 = "ami-01b8fcd5770ceb9c1"
-const macM1RunnerInstaller = "https://github.com/actions/runner/releases/download/v2.308.0/actions-runner-osx-x64-2.308.0.tar.gz"
+const macM1RunnerInstaller = "https://github.com/actions/runner/releases/download/v2.308.0/actions-runner-osx-arm64-2.308.0.tar.gz"
 const macM1UserDataTemplate = `#!/bin/bash
 set -x
 
