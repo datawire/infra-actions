@@ -9,7 +9,7 @@ import (
 )
 
 const AmiUbuntuArm64 = "ami-0f69dd1d0d03ad669"
-const ubuntuArm64RunnerInstaller = "https://github.com/actions/runner/releases/download/v2.298.2/actions-runner-linux-arm64-2.298.2.tar.gz"
+const ubuntuArm64RunnerInstaller = "https://github.com/actions/runner/releases/download/v2.308.0/actions-runner-linux-arm64-2.308.0.tar.gz"
 const ubuntuArm64UserDataTemplate = `#!/bin/bash
 set -ex
 
