@@ -8,9 +8,10 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
 )
 
-const AmiUbuntuArm64 = "ami-0f69dd1d0d03ad669"
-const ubuntuArm64RunnerInstaller = "https://github.com/actions/runner/releases/download/v2.308.0/actions-runner-linux-arm64-2.308.0.tar.gz"
-const ubuntuArm64UserDataTemplate = `#!/bin/bash
+const (
+	AmiUbuntuArm64              = "ami-0f69dd1d0d03ad669"
+	ubuntuArm64RunnerInstaller  = "https://github.com/actions/runner/releases/download/v2.308.0/actions-runner-linux-arm64-2.308.0.tar.gz"
+	ubuntuArm64UserDataTemplate = `#!/bin/bash
 set -ex
 
 # Download the latest runner package
@@ -40,6 +41,7 @@ sudo su ubuntu - ./run_agent.sh 2>&1 | tee /var/log/github-agent.log
 
 shutdown -h now
 `
+)
 
 var ubuntuArm64RunnerConfig = runnerConfig{
 	imageId:          AmiUbuntuArm64,

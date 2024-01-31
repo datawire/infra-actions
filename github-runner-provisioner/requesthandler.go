@@ -4,13 +4,14 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"strings"
+	"time"
+
 	"github.com/datawire/infra-actions/github-runner-provisioner/internal/monitoring"
 	"github.com/google/go-github/v48/github"
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
-	"net/http"
-	"strings"
-	"time"
 )
 
 func setupLogFields(r *http.Request, status int, requestTime time.Time) log.Fields {
@@ -76,8 +77,11 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, message, http.StatusBadRequest)
 		log.WithFields(setupLogFields(r, http.StatusBadRequest, requestTime)).Errorf(message)
 
-		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorUnknownAction.String(),
-			"runner_label": "", "repo": *workflowJobEvent.Repo.Name}).Inc()
+		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{
+			"error":        monitoring.ErrorUnknownAction.String(),
+			"runner_label": "",
+			"repo":         *workflowJobEvent.Repo.Name,
+		}).Inc()
 		return
 	}
 
@@ -85,8 +89,11 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(http.StatusOK), http.StatusOK)
 		log.WithFields(setupLogFields(r, http.StatusOK, requestTime)).Infof("Ignoring GitHub event with action %s for repository %s", *workflowJobEvent.Action, *workflowJobEvent.Repo.Name)
 
-		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorUnknownAction.String(),
-			"runner_label": "", "repo": *workflowJobEvent.Repo.Name}).Inc()
+		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{
+			"error":        monitoring.ErrorUnknownAction.String(),
+			"runner_label": "",
+			"repo":         *workflowJobEvent.Repo.Name,
+		}).Inc()
 		return
 	}
 
@@ -106,8 +113,11 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, message, http.StatusOK)
 		log.WithFields(setupLogFields(r, http.StatusOK, requestTime)).Infof(message)
 
-		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorUnknownRunnerLabel.String(),
-			"runner_label": jobLabel, "repo": *workflowJobEvent.Repo.Name}).Inc()
+		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{
+			"error":        monitoring.ErrorUnknownRunnerLabel.String(),
+			"runner_label": jobLabel,
+			"repo":         *workflowJobEvent.Repo.Name,
+		}).Inc()
 		return
 	}
 
@@ -128,8 +138,11 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, message, http.StatusInternalServerError)
 			log.WithFields(setupLogFields(r, http.StatusInternalServerError, requestTime)).Errorf(message)
 
-			monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorCheckingAvailableRunners.String(),
-				"runner_label": jobLabel, "repo": *workflowJobEvent.Repo.Name}).Inc()
+			monitoring.RunnerProvisioningErrors.With(prometheus.Labels{
+				"error":        monitoring.ErrorCheckingAvailableRunners.String(),
+				"runner_label": jobLabel,
+				"repo":         *workflowJobEvent.Repo.Name,
+			}).Inc()
 			return
 		}
 
@@ -145,8 +158,11 @@ func handleProvisioningRequest(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, message, http.StatusInternalServerError)
 		log.WithFields(setupLogFields(r, http.StatusInternalServerError, requestTime)).Errorf(message)
 
-		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{"error": monitoring.ErrorRunnerCreation.String(),
-			"runner_label": jobLabel, "repo": *workflowJobEvent.Repo.Name}).Inc()
+		monitoring.RunnerProvisioningErrors.With(prometheus.Labels{
+			"error":        monitoring.ErrorRunnerCreation.String(),
+			"runner_label": jobLabel,
+			"repo":         *workflowJobEvent.Repo.Name,
+		}).Inc()
 		return
 	}
 

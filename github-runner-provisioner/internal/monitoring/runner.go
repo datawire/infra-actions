@@ -1,13 +1,14 @@
 package monitoring
 
 import (
+	"time"
+
 	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
 	"github.com/datawire/infra-actions/github-runner-provisioner/internal/aws"
 	"github.com/datawire/infra-actions/github-runner-provisioner/internal/aws/aws_runners"
 	"github.com/datawire/infra-actions/github-runner-provisioner/internal/utils"
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
-	"time"
 )
 
 var instanceFilter = []types.Filter{

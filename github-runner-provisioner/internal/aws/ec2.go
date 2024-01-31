@@ -3,12 +3,13 @@ package aws
 import (
 	"context"
 	"fmt"
+	"time"
+
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
 	"github.com/datawire/infra-actions/github-runner-provisioner/internal/aws/aws_runners"
 	"github.com/datawire/infra-actions/github-runner-provisioner/internal/utils"
 	log "github.com/sirupsen/logrus"
-	"time"
 )
 
 type InstanceDetails struct {

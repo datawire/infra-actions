@@ -3,13 +3,15 @@ package aws_runners
 import (
 	"encoding/base64"
 	"fmt"
+
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
 )
 
-const AmiMacOs12_6Arm64 = "ami-01b8fcd5770ceb9c1"
-const macM1RunnerInstaller = "https://github.com/actions/runner/releases/download/v2.308.0/actions-runner-osx-arm64-2.308.0.tar.gz"
-const macM1UserDataTemplate = `#!/bin/bash
+const (
+	AmiMacOs12_6Arm64     = "ami-01b8fcd5770ceb9c1"
+	macM1RunnerInstaller  = "https://github.com/actions/runner/releases/download/v2.308.0/actions-runner-osx-arm64-2.308.0.tar.gz"
+	macM1UserDataTemplate = `#!/bin/bash
 set -x
 
 cd /Users/ec2-user
@@ -30,7 +32,7 @@ curl -o github_runner_installer.tar.gz -L '%[1]s'
 tar xzf ./github_runner_installer.tar.gz
 
 # Configure the agent
-./config.sh --url https://github.com/%[2]s/%[3]s --token %[4]s --unattended --labels %[5]s 
+./config.sh --url https://github.com/%[2]s/%[3]s --token %[4]s --unattended --labels %[5]s
 
 # Run the agent for 1 day
 /opt/homebrew/bin/timeout 1d ./run.sh || true
@@ -43,9 +45,12 @@ chmod +x run_agent.sh
 sudo su ec2-user - ./run_agent.sh 2>&1 | tee /var/log/github-agent.log
 shutdown -h now
 `
+)
 
-var macM1HostResourceGroupArn = "arn:aws:resource-groups:us-east-1:914373874199:group/GitHub-Runners"
-var macM1AvailabilityZone = "us-east-1a"
+var (
+	macM1HostResourceGroupArn = "arn:aws:resource-groups:us-east-1:914373874199:group/GitHub-Runners"
+	macM1AvailabilityZone     = "us-east-1a"
+)
 
 var macM1RunnerConfig = runnerConfig{
 	imageId: AmiMacOs12_6Arm64,

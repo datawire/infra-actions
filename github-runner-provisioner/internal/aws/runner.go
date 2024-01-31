@@ -3,6 +3,7 @@ package aws
 import (
 	"context"
 	"errors"
+
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/aws/smithy-go"
 	"github.com/datawire/infra-actions/github-runner-provisioner/internal/aws/aws_runners"
