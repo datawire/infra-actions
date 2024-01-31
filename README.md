@@ -1,9 +1,12 @@
-# Infra-actions documentation
+# Infra-actions
 
 ## GitHub
-  - [Using the GitHub actions matrix strategy](./docs/GITHUB_ACTIONS.md)
-  - [Self-hosted GitHub action runners](./github-runner-provisioner/README.md)
-## Clusters
-  - [Cluster provisioning with custom manifests](./setup-cluster/README.md)
-## Dev loop
-  - [DEVELOPING.md](docs/DEVELOPING.md)
+
+- [Github Actions for Test Matrices](docs/GITHUB_ACTIONS.md)
+- [Custom GitHub action runners](docs/ACTION_RUNNERS.md)
+- [Self-hosted GitHub action runners](github-runner-provisioner/README.md)
+
+## Development
+
+- [Working with GitHub workflows and actions](docs/DEVELOPING.md)
+- [Provision Cluster GitHub Action](provision-cluster/README.md)
