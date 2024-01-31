@@ -2,13 +2,14 @@ package main
 
 import (
 	"context"
+
 	"github.com/google/go-github/v48/github"
 	"golang.org/x/exp/slices"
 	"golang.org/x/oauth2"
 )
 
 func getGitHubAPIClient(ctx context.Context) *github.Client {
-	var cfg = NewConfig()
+	cfg := NewConfig()
 
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: cfg.GithubToken},
@@ -47,15 +48,15 @@ func isRunnerAvailable(ctx context.Context, owner string, repo string, labels []
 		return false, err
 	}
 
-	//check all runners registered to the repo
+	// check all runners registered to the repo
 	for _, r := range runners.Runners {
-		//if all labels were matched, check the availability
+		// if all labels were matched, check the availability
 		if *r.Status != "online" || *r.Busy == true {
 			continue
 		}
 
-		//check for label matches with each runner
-		var runnerLabelNames = []string{}
+		// check for label matches with each runner
+		runnerLabelNames := []string{}
 		for _, runnerLabel := range r.Labels {
 			runnerLabelNames = append(runnerLabelNames, *runnerLabel.Name)
 		}

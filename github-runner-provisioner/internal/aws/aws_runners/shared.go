@@ -16,10 +16,12 @@ type runnerConfig struct {
 	blockDeviceMappings  *[]types.BlockDeviceMapping
 }
 
-const LabelTag = "label"
-const NameTag = "app"
-const ownerTag = "owner"
-const repoTag = "repo"
+const (
+	LabelTag = "label"
+	NameTag  = "app"
+	ownerTag = "owner"
+	repoTag  = "repo"
+)
 
 const AppName = "github-runner-provisioner"
 

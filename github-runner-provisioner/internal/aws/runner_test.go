@@ -2,6 +2,9 @@ package aws
 
 import (
 	"errors"
+	"testing"
+	"time"
+
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
 	"github.com/datawire/infra-actions/github-runner-provisioner/internal/aws/aws_runners"
@@ -10,8 +13,6 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"testing"
-	"time"
 )
 
 type fixture struct {
