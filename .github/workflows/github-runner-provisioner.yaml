@@ -16,7 +16,7 @@ jobs:
       CODEMAGIC_TOKEN: FAKE_TOKEN
       WEBHOOK_TOKEN: FAKE_TOKEN
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: actions/setup-go@v4
         with:
           go-version: '1.18'
@@ -34,11 +34,11 @@ jobs:
       AWS_ACCESS_KEY_ID: ${{ secrets.GRP_AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.GRP_AWS_SECRET_ACCESS_KEY }}
     steps:
-      - uses: actions/checkout@v2
-      - uses: docker/setup-buildx-action@v2
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
       - run: cd github-runner-provisioner
       - name: Build for Test
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v5
         with:
           context: "{{defaultContext}}:github-runner-provisioner"
           file: dockerfile
@@ -65,7 +65,7 @@ jobs:
           docker stop github-runner-provisioner-codemagic
           echo
           echo "Container logs:"
-          docker logs github-runner-provisioner-codemagic 
+          docker logs github-runner-provisioner-codemagic
           echo
           if [ "$(cat /tmp/test-macOS-arm64)" != "200" ]; then
             echo "Test failed"
@@ -90,29 +90,28 @@ jobs:
           docker stop github-runner-provisioner-aws
           echo
           echo "Container logs:"
-          docker logs github-runner-provisioner-aws 
+          docker logs github-runner-provisioner-aws
           echo
           if [ $(cat /tmp/test-ubuntu-arm64) != "200" ] || [ $(cat /tmp/test-macOS-arm64) != "200" ]; then
             echo "Test failed"
             exit 1
           fi
           echo "Test Successful"
-          
 
   build:
     runs-on: ubuntu-22.04
     needs: [go_test, mock_traffic_test]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
-      - uses: actions/checkout@v2
-      - uses: docker/setup-buildx-action@v2
-      - uses: docker/login-action@v2
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
         with:
             username: ${{ secrets.DOCKERHUB_USERNAME }}
-            password: ${{ secrets.DOCKERHUB_PASSWORD }}
+            password: ${{ secrets.DOCKERHUB_TOKEN }}
       - run: cd github-runner-provisioner
       - name: Build and push
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v5
         with:
           context: "{{defaultContext}}:github-runner-provisioner"
           file: ./dockerfile
@@ -130,7 +129,7 @@ jobs:
     needs: build
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           token: ${{ secrets.GRP_GITHUB_TOKEN }}
       - name: Update Kustomize
@@ -141,7 +140,7 @@ jobs:
           envsubst < kustomization.yaml.in > kustomization.yaml
           git config user.email "dev@datawire.io"
           git config user.name "d6e-automaton"
-          git add -A 
+          git add -A
           git status
           cat kustomization.yaml
           echo "Updating manifests with image version ${INFRA_ACTIONS_SHA} and pushing to branch ${branch}"
