@@ -22,15 +22,15 @@ jobs:
       matrix:
         clusters:
           - distribution: GKE
-            version: "1.23"
+            version: "1.27"
             useAuthProvider: "false"
           - distribution: GKE
-            version: "1.23"
+            version: "1.27"
             useAuthProvider: "true"
           - distribution: AKS
-            version: "1.22"
+            version: "1.27"
           - distribution: Kubeception
-            version: "1.23"
+            version: "1.27"
     steps:
       # The provision-cluster action will automatically register a cleanup hook to remove the
       # cluster it provisions when the job is done.
