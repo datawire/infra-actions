@@ -36,7 +36,7 @@ jobs:
 
     runs-on: ${{ matrix.client_os }}-${{ matrix.client_arch }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Kubectl tool installer
         uses: Azure/setup-kubectl@v3
         with:
