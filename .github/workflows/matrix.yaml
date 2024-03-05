@@ -4,6 +4,7 @@ on:
     paths:
       - .github/workflows/matrix.yaml
       - provision-cluster/**
+      - '!**/*.md'
   workflow_dispatch:
     inputs:
       logLevel:
