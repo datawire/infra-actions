@@ -14,15 +14,15 @@ jobs:
       matrix:
         clusters:
          - distribution: GKE
-           version: "1.23"
+           version: "1.27"
            useAuthProvider: "true"
 
          - distribution: GKE
-           version: "1.23"
+           version: "1.27"
            useAuthProvider: "false"
 
          - distribution: Kubeception
-           version: "1.22"
+           version: "1.27"
     runs-on: ubuntu-latest
     steps:
       - name: Kubectl tool installer
