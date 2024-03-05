@@ -15,7 +15,7 @@ jobs:
         distribution: [GKE]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       # Use the provision-cluster action with the noop input to delete any expired clusters.
       - uses: ./provision-cluster
         with:

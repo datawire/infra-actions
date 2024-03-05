@@ -29,7 +29,7 @@ jobs:
     steps:
       # The provision-cluster action will automatically register a cleanup hook to remove the
       # cluster it provisions when the job is done.
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 ```
 
 The following limitations apply to Mac M1 runners:
@@ -51,5 +51,5 @@ jobs:
     steps:
       # The provision-cluster action will automatically register a cleanup hook to remove the
       # cluster it provisions when the job is done.
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 ```
