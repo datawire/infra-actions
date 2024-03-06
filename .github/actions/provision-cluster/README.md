@@ -3,7 +3,7 @@
 ## Example Usage
 
 ```yaml
-- uses: ./provision-cluster
+- uses: datawire/infra-actions/provision-cluster@v0.2.5
   with:
     distribution: Kubeception
     version: 1.27
@@ -13,7 +13,7 @@
 ```
 
 ```yaml
-- uses: ./provision-cluster
+- uses: datawire/infra-actions/provision-cluster@v0.2.5
   with:
     distribution: GKE
     version: 1.27
