@@ -1,4 +1,4 @@
-module github.com/datawire/infra-actions/github-runner-provisioner
+module github.com/datawire/infra-actions
 
 go 1.22
 
