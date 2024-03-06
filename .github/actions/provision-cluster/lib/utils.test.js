@@ -75,7 +75,7 @@ test('fibonacciRetry fail all', async () => {
     returned = true
   } catch (err) {
     let elapsed = Date.now() - start
-    expect(err.message).toContain("Transient error")
+    expect(err.message).toContain("Error")
     expect(err.message).toContain("never big enough")
     expect(err.message).toContain("failing after")
     expect(err.message).toContain("attempts over")

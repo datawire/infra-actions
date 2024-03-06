@@ -64,24 +64,34 @@ class Client {
       kubeceptionProfile = "default"
     }
 
-    return utils.fibonacciRetry(async ()=>{
-      const response = await this.client.put(`https://sw.bakerstreet.io/kubeception/api/klusters/${name}?version=${version}&profile=${kubeceptionProfile}&timeoutSecs=${lifespan}`)
+    return utils.fibonacciRetry(async () => {
+      const response = await this.client.put(
+        `https://sw.bakerstreet.io/kubeception/api/klusters/${name}?version=${version}&profile=${kubeceptionProfile}&timeoutSecs=${lifespan}`
+      );
+
       if (!response || !response.message) {
-        throw Error("Unknown error getting response")
+        throw new utils.Transient("Unknown error getting response");
       }
 
-      if (response.message.statusCode == 200) {
-        return await response.readBody()
-      } else if (response.message.statusCode == 425) {
-        // The kubeception API uses 425 to signal that cluster creation is "in progress", so we want
-        // to retry later.
-        throw new utils.Transient(`status code ${response.message.statusCode}`)
-      } else {
-        // Any other status code is likely a permanent error.
-        let body = await response.readBody()
-        throw new Error(`Status code ${response.message.statusCode}: ${body}`)
+      switch (response.message.statusCode) {
+        case 200:
+        case 201:
+          return await response.readBody();
+        case 202:
+          throw new utils.Retry("Request is still pending");
+        default:
+          if (response.message.statusCode >= 400) {
+            throw new utils.Transient(
+              `Status code ${response.message.statusCode}`
+            );
+          } else {
+            let body = await response.readBody();
+            throw new Error(
+              `Status code ${response.message.statusCode}: ${body}`
+            );
+          }
       }
-    })
+    });
   }
 
   async deleteKluster(name) {
