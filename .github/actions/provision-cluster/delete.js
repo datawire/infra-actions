@@ -1,7 +1,6 @@
 'use strict';
 
 const core = require('@actions/core')
-const github = require('@actions/github')
 
 const registry = require('./lib/registry.js')
 const slack = require('./lib/slack.js')
@@ -24,14 +23,14 @@ async function do_delete() {
   return Promise.all(promises)
 }
 
-async function expire(provider, distribution) {
+async function expire(provider) {
   let orphaned = await provider.expireClusters()
 
   if (orphaned.length == 0) {
     return
   }
 
-  core.notice(`Orhpaned Clusters: ${orphaned.join(', ')}`)
+  core.notice(`Orphaned Clusters: ${orphaned.join(', ')}`)
   slack.notify(`Orphaned clusters:\n\n - ${orphaned.join("\n - ")}`)
 }
 
