@@ -1,4 +1,4 @@
-# Infra-actions
+# Infrastructure GitHub Actions
 
 ## GitHub
 
