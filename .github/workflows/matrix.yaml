@@ -1,8 +1,14 @@
 name: "Telepresence Test Matrix"
 on:
+  push:
+    branches:
+      - integration/**
+    paths-ignore:
+      - '**/*.md'
   pull_request:
     paths:
       - .github/workflows/matrix.yaml
+      - .github/actions/provision-cluster/**
       - provision-cluster/**
       - '!**/*.md'
   workflow_dispatch:
