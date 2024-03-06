@@ -1,6 +1,5 @@
 'use strict';
 
-const gke = require('./gke.js')
 const common = require('./common_test.js')
 const mock = require('./mock.js')
 

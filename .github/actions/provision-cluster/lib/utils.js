@@ -65,7 +65,13 @@ class Transient extends Error {}
 async function fibonacciRetry(action, timeout=600000, minDelay=1000, maxDelay=30000) {
   let start = Date.now()
   let nextDelay = fibonacciDelaySequence(minDelay, maxDelay)
-  for (let count = 1; true; count++) {
+
+  let count = 0;
+  let timeoutReached = false;
+
+  do {
+    count++;
+
     try {
       return await action()
     } catch (e) {
@@ -73,7 +79,6 @@ async function fibonacciRetry(action, timeout=600000, minDelay=1000, maxDelay=30
         throw e
       }
       let delay = nextDelay()
-      let now = Date.now()
       let elapsed = Date.now() - start
       let remaining = timeout - elapsed
       if (remaining > 0) {
@@ -81,10 +86,14 @@ async function fibonacciRetry(action, timeout=600000, minDelay=1000, maxDelay=30
         core.info(`Error (${e.message}) retrying after ${t/1000}s ...`)
         await sleep(t)
       } else {
+        timeoutReached = true;
+      }
+
+      if (timeoutReached) {
         throw new Error(`Error (${e.message}) failing after ${count} attempts over ${elapsed/1000}s.`)
       }
     }
-  }
+  } while (!timeoutReached);
 }
 
 module.exports = { getUniqueClusterName, writeFile, sleep, fibonacciDelaySequence, uid, Retry, Transient, fibonacciRetry }

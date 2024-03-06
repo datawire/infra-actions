@@ -56,7 +56,7 @@ test('kubeception profile', async ()=>{
         }
       }
     }
-    async del(url) {
+    async del() {
       return {
         message: {
           statusCode: 200

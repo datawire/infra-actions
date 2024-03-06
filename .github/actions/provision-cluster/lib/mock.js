@@ -38,14 +38,13 @@ class MockGKE {
     return [cluster]
   }
 
-  async getOperation(op) {
+  async getOperation() {
     return [new MockOp()]
   }
 
 }
 
 class MockAuth {
-  
   getAccessToken() {
     return MOCK.ACCESS_TOKEN
   }

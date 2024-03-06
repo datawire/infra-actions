@@ -2,7 +2,6 @@
 
 const core = require('@actions/core')
 const container = require('@google-cloud/container')
-const crypto = require('crypto')
 const utils = require('./utils.js')
 
 const STATUS_ENUM = container.protos.google.container.v1.Operation.Status
