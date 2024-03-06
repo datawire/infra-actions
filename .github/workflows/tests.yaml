@@ -2,15 +2,21 @@ name: "Testing for Action Code"
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - '**'
+    paths-ignore:
+      - '**/*.md'
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
+    paths-ignore:
+      - '**/*.md'
 
 jobs:
   tests:
     strategy:
       matrix:
-        node-version: [14.x, 15.x, 16.x]
+        node-version: [20.x]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

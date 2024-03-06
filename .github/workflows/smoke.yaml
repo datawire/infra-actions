@@ -1,12 +1,12 @@
-# This github workflow is for smoke testing the latest release of the actions defined in this
-# repo. This workflow is executed whenever this file is changed. That will happen when the "uses"
-# line below is updated to reference the latest release as defined in the release process.
-
 name: "Release Smoke Test"
+
 on:
+  schedule:
+    - cron: '0 0 1 * *'
   push:
     paths:
       - '.github/workflows/smoke.yaml'
+
 jobs:
   release_smoke:
     strategy:
@@ -29,11 +29,8 @@ jobs:
         uses: Azure/setup-kubectl@v3
         with:
           version: 'v1.25.3'
-      # The provision-cluster action will automatically register a cleanup hook to remove the
-      # cluster it provisions when the job is done.
-      # todo: update once changes are merged
       - id: provision
-        uses: datawire/infra-actions/provision-cluster@v0.2.5
+        uses: datawire/infra-actions/provision-cluster@v0.2.6
         with:
           distribution: ${{ matrix.clusters.distribution }}
           version: ${{ matrix.clusters.version }}

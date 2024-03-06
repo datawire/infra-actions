@@ -1,9 +1,9 @@
+name: "Cleanup Expired Clusters"
+
 on:
-  # Run expire once per hour.
   schedule:
     - cron: '0 * * * *'
 
-  # Run on any PR that changes this workflow.
   pull_request:
     paths:
       - .github/workflows/expire.yaml
@@ -16,7 +16,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      # Use the provision-cluster action with the noop input to delete any expired clusters.
       - uses: ./provision-cluster
         with:
           action: expire
