@@ -42,6 +42,9 @@ jobs:
         cluster_telepresence_version:  ["none"]
 
     runs-on: ${{ matrix.client_os }}-${{ matrix.client_arch }}
+    env:
+      KUBECEPTION_TOKEN: ${{ secrets.KUBECEPTION_TOKEN }}
+      GKE_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
     steps:
       - uses: actions/checkout@v4
       - name: Kubectl tool installer
@@ -54,8 +57,8 @@ jobs:
           distribution: ${{ matrix.clusters.distribution }}
           version: ${{ matrix.clusters.version }}
           kubeconfig: kubeconfig.yaml
-          kubeceptionToken: ${{ secrets.KUBECEPTION_TOKEN }}
-          gkeCredentials: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+          kubeceptionToken: ${{ matrix.clusters.distribution == 'Kubeception' && env.KUBECEPTION_TOKEN }}
+          gkeCredentials: ${{ matrix.clusters.distribution == 'GKE' && env.GKE_CREDENTIALS }}
           gkeConfig: ${{ matrix.clusters.config }}
 
       - run: |
