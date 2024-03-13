@@ -24,6 +24,9 @@ jobs:
          - distribution: Kubeception
            version: "1.27"
     runs-on: ubuntu-latest
+    env:
+      KUBECEPTION_TOKEN: ${{ secrets.KUBECEPTION_TOKEN }}
+      GKE_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
     steps:
       - name: Kubectl tool installer
         uses: Azure/setup-kubectl@v3
@@ -35,8 +38,8 @@ jobs:
           distribution: ${{ matrix.clusters.distribution }}
           version: ${{ matrix.clusters.version }}
           kubeconfig: ${{ runner.temp}}/kubeconfig.yaml
-          kubeceptionToken: ${{ secrets.KUBECEPTION_TOKEN }}
-          gkeCredentials: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+          kubeceptionToken: ${{ matrix.clusters.distribution == 'Kubeception' && env.KUBECEPTION_TOKEN }}
+          gkeCredentials: ${{ matrix.clusters.distribution == 'GKE' && env.GKE_CREDENTIALS }}
           useAuthProvider: ${{ matrix.clusters.useAuthProvider }}
       - name: "Get kubeconfig and cluster information"
         run: |
