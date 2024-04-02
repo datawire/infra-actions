@@ -33,7 +33,7 @@ jobs:
         with:
           version: 'v1.25.3'
       - id: provision
-        uses: datawire/infra-actions/provision-cluster@v0.2.8
+        uses: datawire/infra-actions/provision-cluster@v0.2.9
         with:
           distribution: ${{ matrix.clusters.distribution }}
           version: ${{ matrix.clusters.version }}
