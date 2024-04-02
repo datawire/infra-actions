@@ -1,44 +1,44 @@
-'use strict';
+"use strict";
 
-const core = require('@actions/core')
+const core = require("@actions/core");
 
-const registry = require('./lib/registry.js')
-const slack = require('./lib/slack.js')
+const registry = require("./lib/registry.js");
+const slack = require("./lib/slack.js");
 
 async function do_delete() {
   // inputs are defined in action metadata file
-  const distribution = core.getInput('distribution')
-  const clusterName = core.getState(registry.CLUSTER_NAME)
+  const distribution = core.getInput("distribution");
+  const clusterName = core.getState(registry.CLUSTER_NAME);
 
-  let provider = registry.getProvider(distribution)
+  let provider = registry.getProvider(distribution);
 
-  let promises = []
-  promises.push(expire(provider, distribution))
+  let promises = [];
+  promises.push(expire(provider, distribution));
 
   if (typeof clusterName !== typeof undefined && clusterName !== "") {
-    core.notice(`Deleting ${distribution} cluster ${clusterName}!`)
-    promises.push(delete_allocated(provider, clusterName))
+    core.notice(`Deleting ${distribution} cluster ${clusterName}!`);
+    promises.push(delete_allocated(provider, clusterName));
   }
 
-  return Promise.all(promises)
+  return Promise.all(promises);
 }
 
 async function expire(provider) {
-  let orphaned = await provider.expireClusters()
+  let orphaned = await provider.expireClusters();
 
   if (orphaned.length == 0) {
-    return
+    return;
   }
 
-  core.notice(`Orphaned Clusters: ${orphaned.join(', ')}`)
-  slack.notify(`Orphaned clusters:\n\n - ${orphaned.join("\n - ")}`)
+  core.notice(`Orphaned Clusters: ${orphaned.join(", ")}`);
+  slack.notify(`Orphaned clusters:\n\n - ${orphaned.join("\n - ")}`);
 }
 
 async function delete_allocated(provider, name) {
-  let cluster = await provider.getCluster(name)
-  return provider.deleteCluster(cluster)
+  let cluster = await provider.getCluster(name);
+  return provider.deleteCluster(cluster);
 }
 
-do_delete().catch((error)=>{
-  core.setFailed(error.message)
-})
+do_delete().catch((error) => {
+  core.setFailed(error.message);
+});
