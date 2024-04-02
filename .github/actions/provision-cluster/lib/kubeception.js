@@ -16,7 +16,8 @@ class Client {
 
   async allocateCluster(version, lifespan) {
     const clusterName = utils.getUniqueClusterName(MAX_KLUSTER_NAME_LEN);
-    const kubeConfig = await this.createKluster(clusterName, version, lifespan);
+    await this.createKluster(clusterName, version, lifespan);
+    const kubeConfig = await this.getKlusterKubeconfig(clusterName);
     return {
       name: clusterName,
       config: kubeConfig,
@@ -42,11 +43,11 @@ class Client {
 
   async createKluster(name, version, lifespan) {
     if (!name) {
-      throw new Error("Function createKluster() needs a Kluster name");
+      throw new Error("Kluster name is required");
     }
 
     if (!version) {
-      throw Error("Function createKluster() needs a Kluster version");
+      throw Error("Kluster version is required");
     }
 
     if (
@@ -55,13 +56,6 @@ class Client {
       lifespan === 0
     ) {
       lifespan = defaultLifespan;
-    }
-
-    const kubeceptionToken = core.getInput("kubeceptionToken");
-    if (!kubeceptionToken) {
-      throw Error(
-        `kubeceptionToken is missing. Make sure that input parameter kubeceptionToken was provided`
-      );
     }
 
     let kubeceptionProfile = core.getInput("kubeceptionProfile");
@@ -75,6 +69,41 @@ class Client {
     return utils.fibonacciRetry(async () => {
       const response = await this.client.put(
         `https://sw.bakerstreet.io/kubeception/api/klusters/${name}?version=${version}&profile=${kubeceptionProfile}&timeoutSecs=${lifespan}`
+      );
+
+      if (!response || !response.message) {
+        throw new utils.Transient("Unknown error getting response");
+      }
+
+      switch (response.message.statusCode) {
+        case 200:
+        case 201:
+        case 202:
+          return;
+        case 425:
+          // This will be deprecated in the future, pending rework of the API
+          // 425 should be treated as any other 4xx error
+          return;
+        default:
+          if (response.message.statusCode >= 400) {
+            throw new utils.Transient(
+              `Status code ${response.message.statusCode}`
+            );
+          } else {
+            throw new Error(`Status code ${response.message.statusCode}`);
+          }
+      }
+    });
+  }
+
+  async getKlusterKubeconfig(name) {
+    if (!name) {
+      throw new Error("Kluster name is required");
+    }
+
+    return utils.fibonacciRetry(async () => {
+      const response = await this.client.get(
+        `https://sw.bakerstreet.io/kubeception/api/klusters/${name}/kubeconfig`
       );
 
       if (!response || !response.message) {
@@ -104,7 +133,7 @@ class Client {
 
   async deleteKluster(name) {
     if (!name) {
-      throw Error("Function deleteKluster() needs a Kluster name");
+      throw Error("Kluster name is required");
     }
 
     const response = await this.client.del(

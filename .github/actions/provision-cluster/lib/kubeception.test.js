@@ -23,6 +23,13 @@ test("kubeception profile", async () => {
         inputs.kubeceptionProfile
       );
 
+      return {
+        message: {
+          statusCode: 200,
+        },
+      };
+    }
+    async get() {
       let status = 200;
       if (count < 2) {
         status = 425;
