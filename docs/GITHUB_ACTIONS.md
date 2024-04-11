@@ -17,34 +17,43 @@ By including this github action in your workflow you can easily run the same tes
 
 ```yaml
 jobs:
-  my_matrix_job:
+  my_matrix_job_gke:
     strategy:
       matrix:
         clusters:
-          - distribution: GKE
-            version: "1.27"
-            useAuthProvider: "false"
-          - distribution: GKE
-            version: "1.27"
-            useAuthProvider: "true"
-          - distribution: AKS
-            version: "1.27"
-          - distribution: Kubeception
-            version: "1.27"
+          - version: "1.26"
+          - version: "1.27"
+          - version: "1.28"
     steps:
       # The provision-cluster action will automatically register a cleanup hook to remove the
       # cluster it provisions when the job is done.
       - uses: datawire/infra-actions/provision-cluster@v0.2.9
         with:
-          distribution: ${{ matrix.clusters.distribution }}
+          distribution: GKE
           version: ${{ matrix.clusters.version }}
           # Tells provision-cluster where to write the kubeconfig file.
           kubeconfig: kubeconfig.yaml
-
-          kubeceptionToken: ${{ secrets.KUBECEPTION_TOKEN }}
           gkeCredentials: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+          useAuthProvider: "false"
+      - run: make tests
 
-          useAuthProvider: ${{ matrix.clusters.useAuthProvider }}
+  my_matrix_job_kubeception:
+    strategy:
+      matrix:
+        clusters:
+          - version: "1.26"
+          - version: "1.27"
+          - version: "1.28"
+    steps:
+      # The provision-cluster action will automatically register a cleanup hook to remove the
+      # cluster it provisions when the job is done.
+      - uses: datawire/infra-actions/provision-cluster@v0.2.9
+        with:
+          distribution: Kubeception
+          version: ${{ matrix.clusters.version }}
+          # Tells provision-cluster where to write the kubeconfig file.
+          kubeconfig: kubeconfig.yaml
+          kubeceptionToken: ${{ secrets.KUBECEPTION_TOKEN }}
       - run: make tests
 ```
 

@@ -10,19 +10,14 @@ on:
 
 jobs:
   expire_clusters:
-    strategy:
-      matrix:
-        distribution: [GKE]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./provision-cluster
         with:
           action: expire
-          distribution: ${{ matrix.distribution }}
-          kubeceptionToken: ${{ secrets.KUBECEPTION_TOKEN }}
+          distribution: GKE
           gkeCredentials: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
           slackWebhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           slackChannel: "#team-infra"
           slackRunbook: "Runbook TBD"
-

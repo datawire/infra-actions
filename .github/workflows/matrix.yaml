@@ -1,4 +1,4 @@
-name: "Telepresence Test Matrix"
+name: "Test Matrix"
 on:
   push:
     branches:
@@ -20,53 +20,32 @@ on:
         default: 'warning'
 
 jobs:
-  telepresence_matrix:
+  test_matrix_gke:
     strategy:
       matrix:
-
         client_os: [ubuntu]
         client_arch: [latest]
-
-        client_telepresence_version: ["2.7"]
-
         clusters:
-         - distribution: GKE
-           version: "1.27"
-
-         - distribution: Kubeception
-           version: "1.27"
-
-         - distribution: GKE
-           version: "1.27"
+         - version: "1.27"
+         - version: "1.27"
            config: '{ "initialNodeCount" : 2 }'
-
-        cluster_telepresence_version:  ["none"]
-
     runs-on: ${{ matrix.client_os }}-${{ matrix.client_arch }}
     env:
-      KUBECEPTION_TOKEN: ${{ secrets.KUBECEPTION_TOKEN }}
       GKE_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
     steps:
       - uses: actions/checkout@v4
-      - name: Kubectl tool installer
-        uses: Azure/setup-kubectl@v3
-        with:
-          # These tests require Kubectl 1.25 or lower since 1.26+ does noe support the GCP auth plugin
-          version: 'v1.25.3'
+      - uses: Azure/setup-kubectl@v3
       - uses: ./provision-cluster
         with:
-          distribution: ${{ matrix.clusters.distribution }}
+          distribution: GKE
           version: ${{ matrix.clusters.version }}
           kubeconfig: kubeconfig.yaml
-          kubeceptionToken: ${{ matrix.clusters.distribution == 'Kubeception' && env.KUBECEPTION_TOKEN }}
-          gkeCredentials: ${{ matrix.clusters.distribution == 'GKE' && env.GKE_CREDENTIALS }}
+          gkeCredentials: ${{ env.GKE_CREDENTIALS }}
           gkeConfig: ${{ matrix.clusters.config }}
-
+          useAuthProvider: "false"
       - run: |
-          echo Testing telepresence client version ${{ matrix.client_telepresence_version }} on ${{ matrix.client_os }} ${{ matrix.client_arch }} against server version ${{ matrix.cluster_telepresence_version }} on ${{ matrix.clusters.distribution }} cluster version ${{ matrix.clusters.version }}
           kubectl version
           kubectl get pods -A
-
       - name: "validate gke config"
         if: ${{ startsWith(matrix.clusters.config, '{') }}
         run: |
@@ -77,3 +56,26 @@ jobs:
             echo "Gke config was not used"
             exit 1
           fi
+
+  test_matrix_kubeception:
+    strategy:
+      matrix:
+        client_os: [ubuntu]
+        client_arch: [latest]
+        clusters:
+          - version: "1.27"
+    runs-on: ${{ matrix.client_os }}-${{ matrix.client_arch }}
+    env:
+      KUBECEPTION_TOKEN: ${{ secrets.KUBECEPTION_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: Azure/setup-kubectl@v3
+      - uses: ./provision-cluster
+        with:
+          distribution: Kubeception
+          version: ${{ matrix.clusters.version }}
+          kubeconfig: kubeconfig.yaml
+          kubeceptionToken: ${{ env.KUBECEPTION_TOKEN }}
+      - run: |
+          kubectl version
+          kubectl get pods -A

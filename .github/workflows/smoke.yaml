@@ -8,42 +8,55 @@ on:
       - '.github/workflows/smoke.yaml'
 
 jobs:
-  release_smoke:
+  release_smoke_gke:
     strategy:
       fail-fast: false
       matrix:
         clusters:
-         - distribution: GKE
-           version: "1.27"
-           useAuthProvider: "true"
-
-         - distribution: GKE
-           version: "1.27"
-           useAuthProvider: "false"
-
-         - distribution: Kubeception
-           version: "1.27"
+         - version: "1.27"
     runs-on: ubuntu-latest
     env:
-      KUBECEPTION_TOKEN: ${{ secrets.KUBECEPTION_TOKEN }}
       GKE_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
     steps:
       - name: Kubectl tool installer
         uses: Azure/setup-kubectl@v3
-        with:
-          version: 'v1.25.3'
       - id: provision
         uses: datawire/infra-actions/provision-cluster@v0.2.9
         with:
-          distribution: ${{ matrix.clusters.distribution }}
+          distribution: GKE
           version: ${{ matrix.clusters.version }}
           kubeconfig: ${{ runner.temp}}/kubeconfig.yaml
-          kubeceptionToken: ${{ matrix.clusters.distribution == 'Kubeception' && env.KUBECEPTION_TOKEN }}
-          gkeCredentials: ${{ matrix.clusters.distribution == 'GKE' && env.GKE_CREDENTIALS }}
-          useAuthProvider: ${{ matrix.clusters.useAuthProvider }}
+          gkeCredentials: ${{ env.GKE_CREDENTIALS }}
+          useAuthProvider: "false"
       - name: "Get kubeconfig and cluster information"
         run: |
           set -e
           kubectl config view
-          kubectl version --short
+          kubectl version
+          kubectl get pods -A
+
+  release_smoke_kubeception:
+    strategy:
+      fail-fast: false
+      matrix:
+        clusters:
+         - version: "1.27"
+    runs-on: ubuntu-latest
+    env:
+      KUBECEPTION_TOKEN: ${{ secrets.KUBECEPTION_TOKEN }}
+    steps:
+      - name: Kubectl tool installer
+        uses: Azure/setup-kubectl@v3
+      - id: provision
+        uses: datawire/infra-actions/provision-cluster@v0.2.9
+        with:
+          distribution: Kubeception
+          version: ${{ matrix.clusters.version }}
+          kubeconfig: ${{ runner.temp}}/kubeconfig.yaml
+          kubeceptionToken: ${{ env.KUBECEPTION_TOKEN }}
+      - name: "Get kubeconfig and cluster information"
+        run: |
+          set -e
+          kubectl config view
+          kubectl version
           kubectl get pods -A

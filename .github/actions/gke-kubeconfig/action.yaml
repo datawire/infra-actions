@@ -18,12 +18,12 @@ runs:
   using: "composite"
   steps:
     - name: Authenticate to Google Cloud
-      uses: google-github-actions/auth@v1
+      uses: google-github-actions/auth@v2
       with:
         credentials_json: ${{ inputs.gkeCredentials }}
         create_credentials_file: true
     - name: Get cluster credentials using GitHub action
-      uses: google-github-actions/get-gke-credentials@v1
+      uses: google-github-actions/get-gke-credentials@v2
       with:
         project_id: ${{ env.GOOGLE_CLOUD_PROJECT }}
         location: ${{ inputs.location }}
