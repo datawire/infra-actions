@@ -12,6 +12,7 @@ async function create() {
   const version = core.getInput("version");
   const lifespan = core.getInput("lifespan");
   const kubeconfigPath = core.getInput("kubeconfig");
+  const useAuthProvider = core.getInput("useAuthProvider");
 
   let provider = registry.getProvider(distribution);
 
@@ -30,7 +31,10 @@ async function create() {
   core.setOutput("location", cluster?.zone);
 
   core.notice(`Creating ${distribution} cluster ${cluster.name} ...`);
-  let kubeconfig = await provider.makeKubeconfig(cluster);
+  let kubeconfig = await provider.makeKubeconfig(
+    cluster,
+    JSON.parse(useAuthProvider)
+  );
   core.notice(`Cluster created: ${cluster.name}!`);
   let contents = JSON.stringify(kubeconfig, undefined, 2) + "\n";
   utils.writeFile(kubeconfigPath, contents);

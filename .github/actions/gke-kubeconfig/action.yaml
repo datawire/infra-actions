@@ -22,10 +22,7 @@ runs:
       with:
         credentials_json: ${{ inputs.gkeCredentials }}
         create_credentials_file: true
-    - name: Get cluster credentials using GitHub action
-      uses: google-github-actions/get-gke-credentials@v2
+    - name: Install gke-gcloud-auth-plugin
+      uses: google-github-actions/setup-gcloud@v2
       with:
-        project_id: ${{ env.GOOGLE_CLOUD_PROJECT }}
-        location: ${{ inputs.location }}
-        cluster_name: ${{ inputs.clusterName }}
-        use_auth_provider: ${{ inputs.useAuthProvider }}
+        install_components: gke-gcloud-auth-plugin

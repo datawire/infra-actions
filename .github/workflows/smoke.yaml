@@ -13,7 +13,10 @@ jobs:
       fail-fast: false
       matrix:
         clusters:
-         - version: "1.27"
+        - version: "1.27"
+          useAuthProvider: "true"
+        - version: "1.27"
+          useAuthProvider: "false"
     runs-on: ubuntu-latest
     env:
       GKE_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
@@ -25,10 +28,12 @@ jobs:
         with:
           distribution: GKE
           version: ${{ matrix.clusters.version }}
-          kubeconfig: ${{ runner.temp}}/kubeconfig.yaml
+          kubeconfig: ${{ runner.temp }}/kubeconfig.yaml
           gkeCredentials: ${{ env.GKE_CREDENTIALS }}
-          useAuthProvider: "false"
+          useAuthProvider: ${{ matrix.clusters.useAuthProvider }}
       - name: "Get kubeconfig and cluster information"
+        env:
+          KUBECONFIG: ${{ runner.temp }}/kubeconfig.yaml
         run: |
           set -e
           kubectl config view
@@ -52,9 +57,11 @@ jobs:
         with:
           distribution: Kubeception
           version: ${{ matrix.clusters.version }}
-          kubeconfig: ${{ runner.temp}}/kubeconfig.yaml
+          kubeconfig: ${{ runner.temp }}/kubeconfig.yaml
           kubeceptionToken: ${{ env.KUBECEPTION_TOKEN }}
       - name: "Get kubeconfig and cluster information"
+        env:
+          KUBECONFIG: ${{ runner.temp }}/kubeconfig.yaml
         run: |
           set -e
           kubectl config view
