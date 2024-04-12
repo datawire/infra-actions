@@ -64,6 +64,17 @@ runs:
         repository: ${{ env.REPO }}
         ref: ${{ env.REF }}
         path: infra-actions
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v2
+      if: ${{ inputs.distribution == 'GKE' && inputs.action != 'expire' }}
+      with:
+        credentials_json: ${{ inputs.gkeCredentials }}
+        create_credentials_file: true
+    - name: Install gke-gcloud-auth-plugin
+      uses: google-github-actions/setup-gcloud@v2
+      if: ${{ inputs.distribution == 'GKE' && inputs.action != 'expire' }}
+      with:
+        install_components: gke-gcloud-auth-plugin
     - id: provision-cluster
       uses: ./infra-actions/.github/actions/provision-cluster
       with:
@@ -79,15 +90,4 @@ runs:
         gkeCredentials: ${{ inputs.gkeCredentials }}
         gkeConfig: ${{ inputs.gkeConfig }}
         kubeceptionProfile: ${{ inputs.kubeceptionProfile }}
-    - name: "Get GKE kubeconfig"
-      uses: ./infra-actions/.github/actions/gke-kubeconfig
-      if: ${{ inputs.distribution == 'GKE' && inputs.action != 'expire' }}
-      with:
         useAuthProvider: ${{ inputs.useAuthProvider }}
-        gkeCredentials: ${{ inputs.gkeCredentials }}
-        clusterName: ${{ steps.provision-cluster.outputs.clusterName }}
-        location: ${{ steps.provision-cluster.outputs.location }}
-    - name: "Copy generated Kubeconfig for GKE clusters to ${{ inputs.kubeconfig }}"
-      run: cp "${KUBECONFIG}" '${{ inputs.kubeconfig }}'
-      shell: sh
-      if: ${{ inputs.distribution == 'GKE' && inputs.action != 'expire' }}

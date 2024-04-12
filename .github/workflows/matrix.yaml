@@ -26,9 +26,12 @@ jobs:
         client_os: [ubuntu]
         client_arch: [latest]
         clusters:
-         - version: "1.27"
-         - version: "1.27"
-           config: '{ "initialNodeCount" : 2 }'
+        - version: "1.27"
+          useAuthProvider: "true"
+        - version: "1.27"
+          useAuthProvider: "false"
+        - version: "1.27"
+          config: '{ "initialNodeCount" : 2 }'
     runs-on: ${{ matrix.client_os }}-${{ matrix.client_arch }}
     env:
       GKE_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
@@ -42,8 +45,9 @@ jobs:
           kubeconfig: kubeconfig.yaml
           gkeCredentials: ${{ env.GKE_CREDENTIALS }}
           gkeConfig: ${{ matrix.clusters.config }}
-          useAuthProvider: "false"
+          useAuthProvider: ${{ matrix.clusters.useAuthProvider }}
       - run: |
+          kubectl config view
           kubectl version
           kubectl get pods -A
       - name: "validate gke config"
@@ -77,5 +81,6 @@ jobs:
           kubeconfig: kubeconfig.yaml
           kubeceptionToken: ${{ env.KUBECEPTION_TOKEN }}
       - run: |
+          kubectl config view
           kubectl version
           kubectl get pods -A
