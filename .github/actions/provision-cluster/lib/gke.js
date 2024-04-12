@@ -102,9 +102,7 @@ class Client {
   }
 
   // Make a functioning kubeconfig from a cluster object.
-  async makeKubeconfig(cluster) {
-    let token = await this.client.auth.getAccessToken();
-
+  async makeKubeconfig(cluster, useAuthProvider = true) {
     let kubeconfig = {
       apiVersion: "v1",
       kind: "Config",
@@ -118,7 +116,6 @@ class Client {
           name: "gke-cluster",
         },
       ],
-      users: [{ name: "gke-user", user: { token: token } }],
       contexts: [
         {
           context: {
@@ -131,6 +128,29 @@ class Client {
       ],
       "current-context": "gke-context",
     };
+
+    if (useAuthProvider) {
+      kubeconfig.users = [
+        {
+          name: "gke-user",
+          user: {
+            exec: {
+              apiVersion: "client.authentication.k8s.io/v1beta1",
+              args: null,
+              command: "gke-gcloud-auth-plugin",
+              env: null,
+              installHint:
+                "Install gke-gcloud-auth-plugin for use with kubectl by following https://cloud.google.com/blog/products/containers-kubernetes/kubectl-auth-changes-in-gke",
+              interactiveMode: "IfAvailable",
+              provideClusterInfo: true,
+            },
+          },
+        },
+      ];
+    } else {
+      let token = await this.client.auth.getAccessToken();
+      kubeconfig.users = [{ name: "gke-user", user: { token: token } }];
+    }
 
     return kubeconfig;
   }

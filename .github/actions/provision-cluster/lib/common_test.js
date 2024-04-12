@@ -6,7 +6,7 @@ let cluster = mock.cluster;
 
 async function lifecycle(client) {
   let allocated = await client.allocateCluster("1.22", 300);
-  let kubeconfig = await client.makeKubeconfig(allocated);
+  let kubeconfig = await client.makeKubeconfig(allocated, false);
   expect(kubeconfig).toEqual({
     apiVersion: "v1",
     kind: "Config",
