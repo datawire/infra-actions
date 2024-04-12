@@ -21,13 +21,12 @@ jobs:
       - name: Kubectl tool installer
         uses: Azure/setup-kubectl@v3
       - id: provision
-        uses: datawire/infra-actions/provision-cluster@v0.2.9
+        uses: datawire/infra-actions/provision-cluster@v0.3.0
         with:
           distribution: GKE
           version: ${{ matrix.clusters.version }}
-          kubeconfig: ${{ runner.temp}}/kubeconfig.yaml
+          kubeconfig: ${{ runner.temp }}/kubeconfig.yaml
           gkeCredentials: ${{ env.GKE_CREDENTIALS }}
-          useAuthProvider: "false"
       - name: "Get kubeconfig and cluster information"
         run: |
           set -e
@@ -48,11 +47,11 @@ jobs:
       - name: Kubectl tool installer
         uses: Azure/setup-kubectl@v3
       - id: provision
-        uses: datawire/infra-actions/provision-cluster@v0.2.9
+        uses: datawire/infra-actions/provision-cluster@v0.3.0
         with:
           distribution: Kubeception
           version: ${{ matrix.clusters.version }}
-          kubeconfig: ${{ runner.temp}}/kubeconfig.yaml
+          kubeconfig: ${{ runner.temp }}/kubeconfig.yaml
           kubeceptionToken: ${{ env.KUBECEPTION_TOKEN }}
       - name: "Get kubeconfig and cluster information"
         run: |
