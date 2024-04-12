@@ -3,4 +3,4 @@ resources:
 
 images:
   - name: datawiredev/github-runner-provisioner
-    newTag: "81939fc5cf60929b8a281f91eeab4c7783622c63"
+    newTag: "a237282f60235e4e570f1c5bb1a14e2d7749255d"
