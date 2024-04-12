@@ -10,8 +10,6 @@ The [provision-cluster](../provision-cluster/README.md) action can be used to pr
 
 - Kubeception (k3s based)
 - GKE
-- EKS (unimplemented)
-- AKS (unimplemented)
 
 By including this github action in your workflow you can easily run the same test suite against any supported set of clusters:
 
