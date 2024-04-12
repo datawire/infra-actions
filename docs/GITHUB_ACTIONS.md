@@ -25,14 +25,13 @@ jobs:
     steps:
       # The provision-cluster action will automatically register a cleanup hook to remove the
       # cluster it provisions when the job is done.
-      - uses: datawire/infra-actions/provision-cluster@v0.2.9
+      - uses: datawire/infra-actions/provision-cluster@v0.3.0
         with:
           distribution: GKE
           version: ${{ matrix.clusters.version }}
           # Tells provision-cluster where to write the kubeconfig file.
           kubeconfig: kubeconfig.yaml
           gkeCredentials: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
-          useAuthProvider: "false"
       - run: make tests
 
   my_matrix_job_kubeception:
@@ -45,7 +44,7 @@ jobs:
     steps:
       # The provision-cluster action will automatically register a cleanup hook to remove the
       # cluster it provisions when the job is done.
-      - uses: datawire/infra-actions/provision-cluster@v0.2.9
+      - uses: datawire/infra-actions/provision-cluster@v0.3.0
         with:
           distribution: Kubeception
           version: ${{ matrix.clusters.version }}
