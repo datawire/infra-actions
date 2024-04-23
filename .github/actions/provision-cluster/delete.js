@@ -16,7 +16,7 @@ async function do_delete() {
   promises.push(expire(provider, distribution));
 
   if (typeof clusterName !== typeof undefined && clusterName !== "") {
-    core.notice(`Deleting ${distribution} cluster ${clusterName}!`);
+    core.info(`Deleting ${distribution} cluster ${clusterName}!`);
     promises.push(delete_allocated(provider, clusterName));
   }
 
@@ -39,6 +39,10 @@ async function delete_allocated(provider, name) {
   return provider.deleteCluster(cluster);
 }
 
-do_delete().catch((error) => {
-  core.setFailed(error.message);
-});
+do_delete()
+  .then(() => {
+    core.info("Deletion successful");
+  })
+  .catch((error) => {
+    core.setFailed(error.message);
+  });
