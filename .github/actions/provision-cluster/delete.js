@@ -39,6 +39,14 @@ async function delete_allocated(provider, name) {
   return provider.deleteCluster(cluster);
 }
 
-do_delete().catch((error) => {
-  core.setFailed(error.message);
-});
+async function run() {
+  try {
+    await do_delete();
+  } catch (error) {
+    core.setFailed(error.message);
+  }
+
+  process.exit();
+}
+
+run();

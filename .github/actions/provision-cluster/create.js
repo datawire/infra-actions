@@ -44,6 +44,14 @@ async function create() {
   core.exportVariable("KUBECONFIG", kubeconfigPath);
 }
 
-create().catch((error) => {
-  core.setFailed(error.message);
-});
+async function run() {
+  try {
+    await create();
+  } catch (error) {
+    core.setFailed(error.message);
+  }
+
+  process.exit();
+}
+
+run();
