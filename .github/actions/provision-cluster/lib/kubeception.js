@@ -169,7 +169,12 @@ function getHttpClient() {
   const credentialHandler = new httpClientLib.BearerCredentialHandler(
     kubeceptionToken
   );
-  return new httpClient.HttpClient(userAgent, [credentialHandler]);
+
+  const options = {
+    keepAlive: false,
+  };
+
+  return new httpClient.HttpClient(userAgent, [credentialHandler], options);
 }
 
 module.exports = { Client, getHttpClient };
