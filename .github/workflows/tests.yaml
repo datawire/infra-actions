@@ -16,7 +16,7 @@ jobs:
   tests:
     strategy:
       matrix:
-        node-version: [20.x]
+        node-version: [16.x]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

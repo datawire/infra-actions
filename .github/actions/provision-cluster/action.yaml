@@ -50,6 +50,6 @@ outputs:
   location:
     description: "For GKE, the cluster location (region or zone)."
 runs:
-  using: node20
+  using: node16
   main: create.js
   post: delete.js
