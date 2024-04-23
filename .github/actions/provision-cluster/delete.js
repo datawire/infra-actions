@@ -5,6 +5,16 @@ const core = require("@actions/core");
 const registry = require("./lib/registry.js");
 const slack = require("./lib/slack.js");
 
+async function run() {
+  try {
+    await do_delete();
+  } catch (error) {
+    core.setFailed(error.message);
+  }
+
+  process.exit();
+}
+
 async function do_delete() {
   // inputs are defined in action metadata file
   const distribution = core.getInput("distribution");
@@ -39,6 +49,4 @@ async function delete_allocated(provider, name) {
   return provider.deleteCluster(cluster);
 }
 
-do_delete().catch((error) => {
-  core.setFailed(error.message);
-});
+run();
