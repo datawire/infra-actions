@@ -22,7 +22,7 @@ jobs:
       - name: Kubectl tool installer
         uses: Azure/setup-kubectl@v3
       - id: provision
-        uses: datawire/infra-actions/provision-cluster@v0.3.0
+        uses: datawire/infra-actions/provision-cluster@v0.3.1
         with:
           distribution: GKE
           version: ${{ matrix.clusters.version }}
@@ -48,7 +48,7 @@ jobs:
       - name: Kubectl tool installer
         uses: Azure/setup-kubectl@v3
       - id: provision
-        uses: datawire/infra-actions/provision-cluster@v0.3.0
+        uses: datawire/infra-actions/provision-cluster@v0.3.1
         with:
           distribution: Kubeception
           version: ${{ matrix.clusters.version }}
