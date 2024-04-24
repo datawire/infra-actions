@@ -13,7 +13,9 @@ async function notify(message) {
   const runbook = core.getInput("slackRunbook");
   const username = core.getInput("slackUsername");
 
-  const client = new http.HttpClient("datawire/provision-cluster");
+  const client = new http.HttpClient("datawire/provision-cluster", [], {
+    keepAlive: false,
+  });
 
   const body = {
     channel: channel,
