@@ -6,6 +6,7 @@ on:
   push:
     paths:
       - '.github/workflows/smoke.yaml'
+  workflow_dispatch: {}
 
 jobs:
   release_smoke_gke:
