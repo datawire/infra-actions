@@ -26,11 +26,11 @@ jobs:
         client_os: [ubuntu]
         client_arch: [latest]
         clusters:
-        - version: "1.27"
+        - version: "1.29"
           useAuthProvider: "true"
-        - version: "1.27"
+        - version: "1.29"
           useAuthProvider: "false"
-        - version: "1.27"
+        - version: "1.29"
           config: '{ "initialNodeCount" : 2 }'
     runs-on: ${{ matrix.client_os }}-${{ matrix.client_arch }}
     env:
@@ -67,7 +67,7 @@ jobs:
         client_os: [ubuntu]
         client_arch: [latest]
         clusters:
-          - version: "1.27"
+          - version: "1.29"
     runs-on: ${{ matrix.client_os }}-${{ matrix.client_arch }}
     env:
       KUBECEPTION_TOKEN: ${{ secrets.KUBECEPTION_TOKEN }}

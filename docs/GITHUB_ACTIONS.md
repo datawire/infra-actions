@@ -19,9 +19,9 @@ jobs:
     strategy:
       matrix:
         clusters:
-          - version: "1.26"
-          - version: "1.27"
           - version: "1.28"
+          - version: "1.29"
+          - version: "1.30"
     steps:
       # The provision-cluster action will automatically register a cleanup hook to remove the
       # cluster it provisions when the job is done.
@@ -38,9 +38,9 @@ jobs:
     strategy:
       matrix:
         clusters:
-          - version: "1.26"
-          - version: "1.27"
           - version: "1.28"
+          - version: "1.29"
+          - version: "1.30"
     steps:
       # The provision-cluster action will automatically register a cleanup hook to remove the
       # cluster it provisions when the job is done.

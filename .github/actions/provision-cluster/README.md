@@ -6,7 +6,7 @@
 - uses: datawire/infra-actions/provision-cluster@v0.3.1
   with:
     distribution: Kubeception
-    version: 1.27
+    version: 1.29
     kubeconfig: kubeconfig.yaml
 
     kubeceptionToken: ${{ secrets.KUBECEPTION_TOKEN }}
@@ -16,7 +16,7 @@
 - uses: datawire/infra-actions/provision-cluster@v0.3.1
   with:
     distribution: GKE
-    version: 1.27
+    version: 1.29
     kubeconfig: kubeconfig.yaml
 
     gkeCredentials: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
