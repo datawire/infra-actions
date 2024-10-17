@@ -6,23 +6,16 @@ const common = require("./common_test.js");
 const mock = require("./mock.js");
 const MOCK = mock.MOCK;
 const cluster = mock.cluster;
-const URL = require("url").URL;
 
-test("kubeception profile", async () => {
+test("kubeception", async () => {
   let inputs = {
     kubeceptionToken: "mock-kube-token",
-    kubeceptionProfile: "mock-profile",
   };
 
   let count = 0;
 
   class MockHttpClient {
-    async put(url) {
-      let parsed = new URL(url);
-      expect(parsed.searchParams.get("profile")).toBe(
-        inputs.kubeceptionProfile
-      );
-
+    async post() {
       return {
         message: {
           statusCode: 200,

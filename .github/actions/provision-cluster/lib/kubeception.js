@@ -7,7 +7,10 @@ const utils = require("./utils.js");
 const yaml = require("yaml");
 
 const MAX_KLUSTER_NAME_LEN = 63;
-const defaultLifespan = 60 * 60; // One hour worth of seconds
+const DEFAULT_ARCHETYPE = "small";
+const DEFAULT_MODE = "active";
+const DEFAULT_LIFESPAN = 60 * 60;
+const KUBECEPTION_URL = "https://kubeception.datawire.io";
 
 class Client {
   constructor(client) {
@@ -47,28 +50,26 @@ class Client {
     }
 
     if (!version) {
-      throw Error("Kluster version is required");
+      throw new Error("Kluster version is required");
     }
 
-    if (
-      typeof lifespan === typeof undefined ||
-      lifespan === "" ||
-      lifespan === 0
-    ) {
-      lifespan = defaultLifespan;
-    }
+    lifespan = lifespan || DEFAULT_LIFESPAN;
 
-    let kubeceptionProfile = core.getInput("kubeceptionProfile");
-    if (
-      typeof kubeceptionProfile !== typeof "" ||
-      kubeceptionProfile.trim() === ""
-    ) {
-      kubeceptionProfile = "default";
-    }
+    let kluster = {
+      name: name,
+      version: version,
+      archetype: DEFAULT_ARCHETYPE,
+      mode: DEFAULT_MODE,
+      timeoutSecs: lifespan,
+    };
 
     return utils.fibonacciRetry(async () => {
-      const response = await this.client.put(
-        `https://sw.bakerstreet.io/kubeception/api/klusters/${name}?version=${version}&profile=${kubeceptionProfile}&timeoutSecs=${lifespan}`
+      const response = await this.client.post(
+        `${KUBECEPTION_URL}/api/klusters`,
+        JSON.stringify(kluster),
+        {
+          "Content-Type": "application/json",
+        }
       );
 
       if (!response || !response.message) {
@@ -101,55 +102,61 @@ class Client {
       throw new Error("Kluster name is required");
     }
 
-    return utils.fibonacciRetry(async () => {
-      const response = await this.client.get(
-        `https://sw.bakerstreet.io/kubeception/api/klusters/${name}/kubeconfig`
-      );
+    return utils.fibonacciRetry(
+      async () => {
+        const response = await this.client.get(
+          `${KUBECEPTION_URL}/api/klusters/${name}/kubeconfig`
+        );
 
-      if (!response || !response.message) {
-        throw new utils.Transient("Unknown error getting response");
-      }
+        if (!response || !response.message) {
+          throw new utils.Transient("Unknown error getting response");
+        }
 
-      switch (response.message.statusCode) {
-        case 200:
-        case 201:
-          return await response.readBody();
-        case 202:
-          throw new utils.Retry("Request is still pending");
-        default:
-          if (response.message.statusCode >= 400) {
-            throw new utils.Transient(
-              `Status code ${response.message.statusCode}`
-            );
-          } else {
-            let body = await response.readBody();
-            throw new Error(
-              `Status code ${response.message.statusCode}: ${body}`
-            );
-          }
-      }
-    });
+        switch (response.message.statusCode) {
+          case 200:
+          case 201:
+            return await response.readBody();
+          case 202:
+            throw new utils.Retry("Request is still pending");
+          default:
+            if (response.message.statusCode >= 400) {
+              throw new utils.Transient(
+                `Status code ${response.message.statusCode}`
+              );
+            } else {
+              let body = await response.readBody();
+              throw new Error(
+                `Status code ${response.message.statusCode}: ${body}`
+              );
+            }
+        }
+      },
+      600000,
+      1000,
+      600000
+    );
   }
 
   async deleteKluster(name) {
     if (!name) {
-      throw Error("Kluster name is required");
+      throw new Error("Kluster name is required");
     }
 
     const response = await this.client.del(
-      `https://sw.bakerstreet.io/kubeception/api/klusters/${name}`
+      `${KUBECEPTION_URL}/api/klusters/${name}`
     );
+
     if (!response || !response.message) {
-      throw Error("Unknown error getting response");
+      throw new Error("Unknown error getting response");
     }
 
-    if (response.message.statusCode == 200) {
+    if (response.message.statusCode === 200) {
       return {
         done: true,
         status: "deleted",
       };
     } else {
-      throw Error(
+      throw new Error(
         `Expected status code 200 but got ${response.message.statusCode}`
       );
     }
