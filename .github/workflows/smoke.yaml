@@ -14,7 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         clusters:
-         - version: "1.29"
+         - version: "1.31"
     runs-on: ubuntu-latest
     env:
       GKE_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
@@ -22,7 +22,7 @@ jobs:
       - name: Kubectl tool installer
         uses: Azure/setup-kubectl@v4
       - id: provision
-        uses: datawire/infra-actions/provision-cluster@v0.3.1
+        uses: datawire/infra-actions/provision-cluster@v0.4.0
         with:
           distribution: GKE
           version: ${{ matrix.clusters.version }}
@@ -40,7 +40,7 @@ jobs:
       fail-fast: false
       matrix:
         clusters:
-         - version: "1.29"
+         - version: "1.31"
     runs-on: ubuntu-latest
     env:
       KUBECEPTION_TOKEN: ${{ secrets.KUBECEPTION_TOKEN }}
@@ -48,7 +48,7 @@ jobs:
       - name: Kubectl tool installer
         uses: Azure/setup-kubectl@v4
       - id: provision
-        uses: datawire/infra-actions/provision-cluster@v0.3.1
+        uses: datawire/infra-actions/provision-cluster@v0.4.0
         with:
           distribution: Kubeception
           version: ${{ matrix.clusters.version }}
