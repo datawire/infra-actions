@@ -37,7 +37,7 @@ jobs:
       GKE_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
     steps:
       - uses: actions/checkout@v4
-      - uses: Azure/setup-kubectl@v3
+      - uses: Azure/setup-kubectl@v4
       - uses: ./provision-cluster
         with:
           distribution: GKE
@@ -73,7 +73,7 @@ jobs:
       KUBECEPTION_TOKEN: ${{ secrets.KUBECEPTION_TOKEN }}
     steps:
       - uses: actions/checkout@v4
-      - uses: Azure/setup-kubectl@v3
+      - uses: Azure/setup-kubectl@v4
       - uses: ./provision-cluster
         with:
           distribution: Kubeception

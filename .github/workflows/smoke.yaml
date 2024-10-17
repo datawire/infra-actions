@@ -20,7 +20,7 @@ jobs:
       GKE_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
     steps:
       - name: Kubectl tool installer
-        uses: Azure/setup-kubectl@v3
+        uses: Azure/setup-kubectl@v4
       - id: provision
         uses: datawire/infra-actions/provision-cluster@v0.3.1
         with:
@@ -46,7 +46,7 @@ jobs:
       KUBECEPTION_TOKEN: ${{ secrets.KUBECEPTION_TOKEN }}
     steps:
       - name: Kubectl tool installer
-        uses: Azure/setup-kubectl@v3
+        uses: Azure/setup-kubectl@v4
       - id: provision
         uses: datawire/infra-actions/provision-cluster@v0.3.1
         with:
