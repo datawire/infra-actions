@@ -22,10 +22,11 @@ jobs:
           - version: "1.28"
           - version: "1.29"
           - version: "1.30"
+          - version: "1.31"
     steps:
       # The provision-cluster action will automatically register a cleanup hook to remove the
       # cluster it provisions when the job is done.
-      - uses: datawire/infra-actions/provision-cluster@v0.3.1
+      - uses: datawire/infra-actions/provision-cluster@v0.4.0
         with:
           distribution: GKE
           version: ${{ matrix.clusters.version }}
@@ -41,10 +42,11 @@ jobs:
           - version: "1.28"
           - version: "1.29"
           - version: "1.30"
+          - version: "1.31"
     steps:
       # The provision-cluster action will automatically register a cleanup hook to remove the
       # cluster it provisions when the job is done.
-      - uses: datawire/infra-actions/provision-cluster@v0.3.1
+      - uses: datawire/infra-actions/provision-cluster@v0.4.0
         with:
           distribution: Kubeception
           version: ${{ matrix.clusters.version }}

@@ -3,20 +3,20 @@
 ## Example Usage
 
 ```yaml
-- uses: datawire/infra-actions/provision-cluster@v0.3.1
+- uses: datawire/infra-actions/provision-cluster@v0.4.0
   with:
     distribution: Kubeception
-    version: 1.29
+    version: 1.31
     kubeconfig: kubeconfig.yaml
 
     kubeceptionToken: ${{ secrets.KUBECEPTION_TOKEN }}
 ```
 
 ```yaml
-- uses: datawire/infra-actions/provision-cluster@v0.3.1
+- uses: datawire/infra-actions/provision-cluster@v0.4.0
   with:
     distribution: GKE
-    version: 1.29
+    version: 1.31
     kubeconfig: kubeconfig.yaml
 
     gkeCredentials: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
