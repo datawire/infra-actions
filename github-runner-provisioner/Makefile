@@ -3,8 +3,8 @@ DRY_RUN := true
 RUNNER_TAG := ''
 
 .PHONY: test-runners
-test-runners: test-ubuntu-arm64 test-macOS-arm64
-	@if [ "$$(cat /tmp/test-ubuntu-arm64)" != "200" ] || [ "$$(cat /tmp/test-macOS-arm64)" != "200" ]; then \
+test-runners: test-ubuntu-arm64
+	@if [ "$$(cat /tmp/test-ubuntu-arm64)" != "200" ]; then \
 		@echo "Test failed"; \
 		exit 1; \
 	fi
@@ -18,28 +18,11 @@ test-ubuntu-arm64: /tmp/test-ubuntu-arm64
 /tmp/test-ubuntu-arm64:
 	make -s run-ubuntu-arm64 HOSTNAME=http://localhost:8080 DRY_RUN=true | tail -n 1 > /tmp/test-ubuntu-arm64
 
-.PHONY: test-macOS-arm64
-test-macOS-arm64: /tmp/test-macOS-arm64
-	@echo "Response code: $$(cat /tmp/test-macOS-arm64)"
-
-.PHONY: /tmp/test-macOS-arm64
-/tmp/test-macOS-arm64:
-	make -s run-macOS-arm64 HOSTNAME=http://localhost:8080 DRY_RUN=true | tail -n 1 > /tmp/test-macOS-arm64
-
 .PHONY: run-ubuntu-arm64
 run-ubuntu-arm64:
 	# SHA can be calculated like this:
     #echo -n "payload=$(cat github-runner-provisioner/test/ubuntu-arm64_payload.json)" | openssl dgst -sha1 -hmac FAKE_TOKEN
 	make test-github-provisioner SHA1=8e39e0658c5eacf3a3e006a46ef46092cbccb5ec RUNNER_TAG=ubuntu-arm64
-
-.PHONY: run-macOS-arm64
-run-macOS-arm64:
-	# SHA can be calculated like this:
-	#echo -n "payload=$(cat github-runner-provisioner/test/macOS-arm64_payload.json)" | openssl dgst -sha1 -hmac FAKE_TOKEN
-
-	make test-github-provisioner SHA1=e504cfa93721fbea2a394d4de9c9be7d5270fc19 RUNNER_TAG=macOS-arm64
-
-
 
 .PHONY: test-github-provisioner
 test-github-provisioner:

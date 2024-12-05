@@ -6,15 +6,11 @@ This service is based on the [echo template](https://github.com/datawire/infrast
 
 We use the GitHub-Runner-Provisioner to serve a webhook to GitHub Actions. GitHub will send any Actions events to the GRP running in Skunkworks, which will parse those events looking for workflows that request special labels in their `runs-on` property.
 
-Using the GitHub Self-Hosted Runner binaries we then spin up the custom runners in one of our supported runner providers - currently AWS and CodeMagic. Supported runners are configured in [runner.go](runner.go).
+Using the GitHub Self-Hosted Runner binaries we then spin up the custom runners in one of our supported runner providers - currently AWS only. Supported runners are configured in [runner.go](runner.go).
 
 ### AWS
 
 AWS runners are created in EC2 using the AWS SDK. See the [aws_runners](internal/aws/runners) package for details on the implementation.
-
-### CodeMagic
-
-CodeMagic runners are actually CodeMagic Builds (CI jobs in their service) that then pull the GitHub Self-Hosted binaries and register themselves as ephemeral (single-use) runners - picking up a single job from the calling repo and then terminating.
 
 ## Testing
 
@@ -24,12 +20,12 @@ CodeMagic runners are actually CodeMagic Builds (CI jobs in their service) that 
 
 You will also need to set `GITHUB_TOKEN` to a PAT for the D6E Automaton. These values can all be found in the [github-runner-provisioner-secrets.yaml](/keybase/team/datawireio/skunkworks/github-runner-provisioner-secrets.yaml) file in Keybase - you will need to base64 decode them before use. If only running dry-runs only AWS and GitHub authentication is required.
 
-To test the application we use targets in the Makefile. The `make go-unit-tests` target will run the unit tests, and `make test-runners` will run the integration tests against the dry-run endpoints. Note that to test the AWS `macOS-arm64` runner you will need to set the `USE_CODEMAGIC` environment variable to `true` in the GRP.
+To test the application we use targets in the Makefile. The `make go-unit-tests` target will run the unit tests, and `make test-runners` will run the integration tests against the dry-run endpoints.
 
-Testing CodeMagic M1 & AWS ubuntu-arm64:
+Testing AWS ubuntu-arm64:
 
 ```bash
-USE_CODEMAGIC=true GITHUB_TOKEN=<pat> go run main.go --dry-run
+GITHUB_TOKEN=<pat> go run main.go --dry-run
 make test-runners
 ```
 
@@ -51,6 +47,4 @@ The runner provisioner requires the following variables to be configured:
   We use the `D6E-Automaton`'s token in production.
 - `WEBHOOK_TOKEN` - the secret used to configure the webhook in GitHub. We use the token stored at
   `/Keybase/team/datawireio/infra/github-runner-provisioner-secrets`
-- `CODEMAGIC_TOKEN` - the secret used to authenticate to the CodeMagic build API to trigger M1 runners
-- `USE_CODEMAGIC` - a boolean flag to indicate whether to use CodeMagic or AWS to provision M1 runners
 - AWS auth can be configured with `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` or by using the AWS CLI

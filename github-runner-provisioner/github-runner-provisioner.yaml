@@ -21,7 +21,7 @@ kind: Service
 metadata:
   annotations:
     a8r.io/chat: '#team-infra'
-    a8r.io/description: "Mac M1 provisioner for GitHub jobs in Ambassador Labs repositories"
+    a8r.io/description: "GitHub runner provisioner for GitHub jobs in Ambassador repositories"
     a8r.io/logs: ""
     a8r.io/owner: Infrastructure
     a8r.io/repository: https://github.com/datawire/infra-actions
@@ -79,8 +79,6 @@ spec:
         env:
         - name: AWS_REGION
           value: us-east-1
-        - name: USE_CODEMAGIC
-          value: "true"
         envFrom:
           - secretRef:
               name: github-runner-provisioner-secrets
@@ -111,6 +109,7 @@ spec:
         resources:
           limits:
             cpu: 1000m
+            memory: 600Mi
           requests:
             cpu: 50m
             memory: 300Mi

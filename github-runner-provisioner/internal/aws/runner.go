@@ -12,7 +12,6 @@ import (
 const dryRunApiError = "DryRunOperation"
 
 var runnerParams = map[string]func(string, string, string, string, bool) (ec2.RunInstancesInput, error){
-	"macOS-arm64":  aws_runners.MacM1RunInstancesInput,
 	"ubuntu-arm64": aws_runners.UbuntuArm64RunInstancesInput,
 }
 
