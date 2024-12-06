@@ -17,7 +17,6 @@ jobs:
     runs-on: ubuntu-22.04
     env:
       GITHUB_TOKEN: FAKE_TOKEN
-      CODEMAGIC_TOKEN: FAKE_TOKEN
       WEBHOOK_TOKEN: FAKE_TOKEN
     steps:
       - uses: actions/checkout@v4
@@ -33,7 +32,6 @@ jobs:
     runs-on: ubuntu-22.04
     env:
       GITHUB_TOKEN: ${{ secrets.GRP_GITHUB_TOKEN }}
-      CODEMAGIC_TOKEN: FAKE_TOKEN
       WEBHOOK_TOKEN: FAKE_TOKEN
       AWS_ACCESS_KEY_ID: ${{ secrets.GRP_AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.GRP_AWS_SECRET_ACCESS_KEY }}
@@ -54,27 +52,6 @@ jobs:
             type=gha,scope=refs/heads/main
             type=gha,scope=github-runner-provisioner-${{github.ref}}
           cache-to: type=gha,mode=max,scope=github-runner-provisioner-${{github.ref}}
-      - name: Test CodeMagic
-        run: |
-          cd github-runner-provisioner
-          docker load --input /tmp/github-runner-provisioner.tar
-          docker run -d --name=github-runner-provisioner-codemagic -p 8080:8080 \
-            -e GITHUB_TOKEN=${GITHUB_TOKEN} \
-            -e CODEMAGIC_TOKEN=${CODEMAGIC_TOKEN} \
-            -e WEBHOOK_TOKEN=${WEBHOOK_TOKEN} \
-            -e USE_CODEMAGIC="true" \
-            datawiredev/github-runner-provisioner:${{ github.sha }}
-          make test-macOS-arm64
-          docker stop github-runner-provisioner-codemagic
-          echo
-          echo "Container logs:"
-          docker logs github-runner-provisioner-codemagic
-          echo
-          if [ "$(cat /tmp/test-macOS-arm64)" != "200" ]; then
-            echo "Test failed"
-            exit 1
-          fi
-          echo "Test Successful"
 
       - name: Test AWS
         run: |
@@ -82,9 +59,7 @@ jobs:
           docker load --input /tmp/github-runner-provisioner.tar
           docker run -d --name=github-runner-provisioner-aws -p 8080:8080 \
             -e GITHUB_TOKEN=${GITHUB_TOKEN} \
-            -e CODEMAGIC_TOKEN=${CODEMAGIC_TOKEN} \
             -e WEBHOOK_TOKEN=${WEBHOOK_TOKEN} \
-            -e USE_CODEMAGIC="false" \
             -e AWS_REGION="us-east-1" \
             -e AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
             -e AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
@@ -95,7 +70,7 @@ jobs:
           echo "Container logs:"
           docker logs github-runner-provisioner-aws
           echo
-          if [ $(cat /tmp/test-ubuntu-arm64) != "200" ] || [ $(cat /tmp/test-macOS-arm64) != "200" ]; then
+          if [ $(cat /tmp/test-ubuntu-arm64) != "200" ]; then
             echo "Test failed"
             exit 1
           fi
@@ -110,8 +85,8 @@ jobs:
       - uses: docker/setup-buildx-action@v3
       - uses: docker/login-action@v3
         with:
-            username: ${{ secrets.DOCKERHUB_USERNAME }}
-            password: ${{ secrets.DOCKERHUB_TOKEN }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
       - run: cd github-runner-provisioner
       - name: Build and push
         uses: docker/build-push-action@v5

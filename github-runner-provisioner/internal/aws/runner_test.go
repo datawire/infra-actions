@@ -54,16 +54,11 @@ func Test_InstancesAreReturnedWhenThereAreNoErrors(t *testing.T) {
 		assert.Equal(t, expectedDetails, instanceDetails)
 	})
 
-	t.Run("Should return the Mac and Ubuntu instances", func(t *testing.T) {
+	t.Run("Should return the expected instances", func(t *testing.T) {
 		f := setup(t)
 		defer f.mockCtrl.Finish()
 
 		expectedDetails := []*InstanceDetails{
-			{
-				LaunchTime:        utils.TimePtr(time.Unix(1000, 0)),
-				InstanceId:        utils.StrPtr("macos-arm64-instance"),
-				ActionRunnerLabel: utils.StrPtr("macOS-arm64"),
-			},
 			{
 				LaunchTime:        utils.TimePtr(time.Unix(2000, 0)),
 				InstanceId:        utils.StrPtr("ubuntu-arm64-instance"),
@@ -75,20 +70,6 @@ func Test_InstancesAreReturnedWhenThereAreNoErrors(t *testing.T) {
 			Reservations: []types.Reservation{
 				{
 					Instances: []types.Instance{
-						{
-							LaunchTime: utils.TimePtr(time.Unix(1000, 0)),
-							InstanceId: utils.StrPtr("macos-arm64-instance"),
-							Tags: []types.Tag{
-								{
-									Key:   utils.StrPtr(aws_runners.LabelTag),
-									Value: utils.StrPtr("macOS-arm64"),
-								},
-								{
-									Key:   utils.StrPtr(aws_runners.NameTag),
-									Value: utils.StrPtr(aws_runners.AppName),
-								},
-							},
-						},
 						{
 							LaunchTime: utils.TimePtr(time.Unix(2000, 0)),
 							InstanceId: utils.StrPtr("ubuntu-arm64-instance"),
@@ -130,42 +111,13 @@ func Test_InstancesAreReturnedWhenThereAreNoErrors(t *testing.T) {
 
 		expectedDetails := []*InstanceDetails{
 			{
-				LaunchTime:        utils.TimePtr(time.Unix(1000, 0)),
-				InstanceId:        utils.StrPtr("macos-arm64-instance"),
-				ActionRunnerLabel: utils.StrPtr("macOS-arm64"),
-			},
-			{
 				LaunchTime:        utils.TimePtr(time.Unix(2000, 0)),
 				InstanceId:        utils.StrPtr("ubuntu-arm64-instance"),
 				ActionRunnerLabel: utils.StrPtr("ubuntu-arm64"),
 			},
 		}
 
-		page1 := &ec2.DescribeInstancesOutput{
-			Reservations: []types.Reservation{
-				{
-					Instances: []types.Instance{
-						{
-							LaunchTime: utils.TimePtr(time.Unix(1000, 0)),
-							InstanceId: utils.StrPtr("macos-arm64-instance"),
-							Tags: []types.Tag{
-								{
-									Key:   utils.StrPtr(aws_runners.LabelTag),
-									Value: utils.StrPtr("macOS-arm64"),
-								},
-								{
-									Key:   utils.StrPtr(aws_runners.NameTag),
-									Value: utils.StrPtr(aws_runners.AppName),
-								},
-							},
-						},
-					},
-				},
-			},
-			NextToken: utils.StrPtr("NEXT_PAGE_TOKEN"),
-		}
-
-		page2 := &ec2.DescribeInstancesOutput{
+		page := &ec2.DescribeInstancesOutput{
 			Reservations: []types.Reservation{
 				{
 					Instances: []types.Instance{
@@ -192,10 +144,7 @@ func Test_InstancesAreReturnedWhenThereAreNoErrors(t *testing.T) {
 			EXPECT().
 			DescribeInstances(gomock.Any(), gomock.Any(), gomock.Any()).
 			DoAndReturn(func(_ interface{}, params *ec2.DescribeInstancesInput, _ ...interface{}) (*ec2.DescribeInstancesOutput, error) {
-				if params.NextToken == nil {
-					return page1, nil
-				}
-				return page2, nil
+				return page, nil
 			}).
 			AnyTimes()
 
